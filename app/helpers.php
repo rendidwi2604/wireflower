@@ -90,12 +90,16 @@ function flash(string $type, string $message)
 
 function site_url($path = '')
 {
-    $base = '/wireflower';
+    // Di Vercel (atau domain root), tidak pakai prefix /wireflower
+    // Di localhost XAMPP, pakai prefix /wireflower
+    $isVercel = !empty($_SERVER['VERCEL']) || !empty(getenv('VERCEL'));
+    $isLocal  = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1'], true)
+                || str_contains($_SERVER['HTTP_HOST'] ?? '', 'localhost:');
+
+    $base = (!$isVercel && $isLocal) ? '/wireflower' : '';
+
     $path = ltrim((string) $path, '/');
-    if ($path === ltrim($base, '/') || str_starts_with($path, ltrim($base, '/') . '/')) {
-        return '/' . $path;
-    }
-    return $base . ($path === '' ? '' : '/' . $path);
+    return $base . ($path === '' ? '/' : '/' . $path);
 }
 
 function redirect($url)

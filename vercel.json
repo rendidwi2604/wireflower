@@ -1,24 +1,17 @@
 {
   "functions": {
-    "api/*.php": {
-      "runtime": "vercel-php@0.7.2"
-    },
-    "admin/*.php": {
-      "runtime": "vercel-php@0.7.2"
-    },
-    "auth/*.php": {
-      "runtime": "vercel-php@0.7.2"
-    },
-    "*.php": {
+    "api/index.php": {
       "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/admin/(.+\\.php)(.*)", "dest": "/admin/$1$2" },
-    { "src": "/auth/(.+\\.php)(.*)",  "dest": "/auth/$1$2" },
-    { "src": "/api/(.+\\.php)(.*)",   "dest": "/api/$1$2" },
-    { "src": "/(cart_actions|checkout|kategori|keranjang|notifikasi|pembayaran|pengaturan|pesanan|produk|profil|proses_checkout|search|ulasan)\\.php(.*)", "dest": "/$1.php$2" },
-    { "src": "/(.*)", "dest": "/index.php" }
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.php"
+    }
   ]
 }
