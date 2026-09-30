@@ -1,0 +1,22 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment & secrets — JANGAN commit file ini
+.env
+.env.local
+.env.production
+
+# Upload files
+/assets/img/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
