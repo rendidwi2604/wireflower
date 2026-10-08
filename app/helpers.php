@@ -121,9 +121,15 @@ function rupiah($angka)
     return 'Rp ' . number_format($angka, 0, ',', '.');
 }
 
-function asset_img($filename, string $fallback)
+function asset_img($filename, string $fallback = '')
 {
-    return $filename ? site_url('assets/img/' . $filename) : $fallback;
+    if (!$filename) return $fallback;
+    // Jika sudah URL penuh (Supabase Storage), langsung return
+    if (str_starts_with($filename, 'http://') || str_starts_with($filename, 'https://')) {
+        return $filename;
+    }
+    // File lokal
+    return site_url('assets/img/' . $filename);
 }
 
 function generate_order_code()
