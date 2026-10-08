@@ -36,16 +36,29 @@ class ProductController extends Controller
 
     public function category(): void
     {
-        $slug = $_GET['slug'] ?? '';
+        $slug       = $_GET['slug'] ?? '';
+        $sort       = $_GET['sort'] ?? 'terbaru';
         $categories = $this->model(CategoryModel::class);
-        $active = $slug !== '' ? $categories->findBySlug($slug) : null;
+        $products   = $this->model(ProductModel::class);
+        $active     = $slug !== '' ? $categories->findBySlug($slug) : null;
+
+        if ($slug !== '' && !$active) {
+            // slug ada tapi tidak ditemukan
+            $productList = [];
+        } elseif ($active) {
+            $productList = $products->byCategory((int) $active['id']);
+        } else {
+            // slug kosong = Semua
+            $productList = $products->all($sort);
+        }
 
         $this->render('category', [
-            'page_title' => 'Kategori Produk',
-            'kategori_list' => $categories->all(),
-            'slug' => $slug,
+            'page_title'      => 'Kategori Produk',
+            'kategori_list'   => $categories->all(),
+            'slug'            => $slug,
+            'sort'            => $sort,
             'active_category' => $active,
-            'products' => $active ? $this->model(ProductModel::class)->byCategory((int) $active['id']) : [],
+            'products'        => $productList,
         ]);
     }
 
