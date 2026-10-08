@@ -1,18 +1,18 @@
 
 <?php
-// Gambar bunga asli (natural) — kategori
+// Gambar bunga asli (natural) — kategori, verified Unsplash flower photos
 $cat_images = [
   'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80', // pink roses bouquet
-  'https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=700&q=80', // red roses close
-  'https://images.unsplash.com/photo-1518895312237-a9e23508077d?auto=format&fit=crop&w=700&q=80', // gift/wrapped flowers
-  'https://images.unsplash.com/photo-1508610048659-a06b669e3321?auto=format&fit=crop&w=700&q=80', // colourful mix
+  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80', // red rose single
+  'https://images.unsplash.com/photo-1487530811015-780eddf6e9a6?auto=format&fit=crop&w=700&q=80', // sunflower bouquet
+  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=700&q=80', // mixed bouquet pastel
 ];
-// Gambar wire flower (reveal) — gunakan header lokal untuk reveal
+// Gambar reveal — wire/crafted flower, berbeda dari header hero
 $wire_images = [
-  site_url('assets/img/header1.png'),
-  site_url('assets/img/header2.png'),
-  site_url('assets/img/header1.png'),
-  site_url('assets/img/header2.png'),
+  'https://images.unsplash.com/photo-1595351298020-038700609878?auto=format&fit=crop&w=700&q=80', // dried wire pampas
+  'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=700&q=80', // colourful craft flowers
+  'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80', // pink tulip close
+  'https://images.unsplash.com/photo-1477039181047-efb4432d0d27?auto=format&fit=crop&w=700&q=80', // white daisy bouquet
 ];
 $shown = array_slice($kategori ?? [], 0, 4);
 if (empty($shown)) {
