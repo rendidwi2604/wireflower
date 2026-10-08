@@ -3,13 +3,16 @@
 // KONFIGURASI APLIKASI - Wire Flower
 // =====================================================
 
-// Baca env var dengan fallback ke nilai hardcode
-// Mendukung: getenv(), $_ENV[], $_SERVER[]
+// Baca env var — cek getenv(), $_ENV[], $_SERVER[] (Vercel pakai $_SERVER)
 function _env(string $key, string $default = ''): string {
     $v = getenv($key);
     if ($v !== false && $v !== '') return $v;
-    if (isset($_ENV[$key])    && $_ENV[$key]    !== '') return $_ENV[$key];
-    if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') return $_SERVER[$key];
+    if (!empty($_ENV[$key]))    return $_ENV[$key];
+    if (!empty($_SERVER[$key])) return $_SERVER[$key];
+    // Coba lowercase juga
+    $lower = strtolower($key);
+    if (!empty($_ENV[$lower]))    return $_ENV[$lower];
+    if (!empty($_SERVER[$lower])) return $_SERVER[$lower];
     return $default;
 }
 

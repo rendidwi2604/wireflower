@@ -92,6 +92,7 @@ class ProductModel extends Model
 
     public function save(?int $id, array $data, ?string $image): int
     {
+        // Cast boolean dengan benar untuk PostgreSQL + PDO emulate prepares
         $fields = [
             'category_id' => (int)   $data['category_id'],
             'name'        =>          $data['name'],
@@ -99,8 +100,8 @@ class ProductModel extends Model
             'description' =>          $data['description'],
             'price'       => (float)  $data['price'],
             'stock'       => (int)    $data['stock'],
-            'is_featured' => (bool)   $data['is_featured'],
-            'is_active'   => (bool)   $data['is_active'],
+            'is_featured' => $data['is_featured'] ? 'TRUE' : 'FALSE',
+            'is_active'   => $data['is_active']   ? 'TRUE' : 'FALSE',
         ];
 
         if ($image) {

@@ -59,8 +59,18 @@ class ProductController extends Controller
         $fileContent = file_get_contents($_FILES['image']['tmp_name']);
 
         // ── Coba Supabase Storage (untuk Vercel / server read-only) ──
-        $supabaseUrl = getenv('SUPABASE_URL') ?: $_ENV['SUPABASE_URL'] ?? $_SERVER['SUPABASE_URL'] ?? '';
-        $supabaseKey = getenv('SUPABASE_KEY') ?: $_ENV['SUPABASE_KEY'] ?? $_SERVER['SUPABASE_KEY'] ?? '';
+        $supabaseUrl = '';
+        $supabaseKey = '';
+
+        // Vercel meletakkan env vars di $_SERVER
+        foreach (['SUPABASE_URL', 'supabase_url'] as $k) {
+            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
+            if ($v) { $supabaseUrl = $v; break; }
+        }
+        foreach (['SUPABASE_KEY', 'supabase_key'] as $k) {
+            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
+            if ($v) { $supabaseKey = $v; break; }
+        }
 
         if ($supabaseUrl && $supabaseKey) {
             $bucket   = 'products';
