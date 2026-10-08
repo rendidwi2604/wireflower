@@ -265,7 +265,77 @@
 <?php endif; ?>
 
 <script>
-// Mobile nav toggle
+// ══ PAGE LOADER ══
+(function () {
+  var loader = document.getElementById('wf-loader');
+  function hideLoader() {
+    if (loader) loader.classList.add('hidden');
+  }
+  // Hide on load, max 2.5s fallback
+  if (document.readyState === 'complete') {
+    setTimeout(hideLoader, 120);
+  } else {
+    window.addEventListener('load', function () { setTimeout(hideLoader, 120); });
+    setTimeout(hideLoader, 2500);
+  }
+})();
+
+// ══ LAZY CARD ENTRANCE (IntersectionObserver) ══
+(function () {
+  // Tag all product/category cards as lazy-card
+  document.querySelectorAll(
+    '.product-card, .wf-prod-card, .wf-cat-card, .category-card, .wf-benefit'
+  ).forEach(function (el) {
+    el.classList.add('lazy-card');
+  });
+
+  if (!('IntersectionObserver' in window)) {
+    // Fallback: show all immediately
+    document.querySelectorAll('.lazy-card').forEach(function (el) {
+      el.classList.add('visible');
+    });
+    return;
+  }
+
+  var cardObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        // Stagger siblings in same grid row
+        var siblings = Array.from(entry.target.parentElement.children);
+        var idx = siblings.indexOf(entry.target);
+        entry.target.style.transitionDelay = (idx % 4 * 80) + 'ms';
+        entry.target.classList.add('visible');
+        cardObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.lazy-card').forEach(function (el) {
+    cardObserver.observe(el);
+  });
+})();
+
+// ══ LAZY IMAGE LOADING (native + fallback) ══
+(function () {
+  document.querySelectorAll('img').forEach(function (img) {
+    // Skip tiny icons, logos, hero images already visible
+    if (img.closest('.site-navbar, #wf-hero, .wf-hero, #wf-loader')) return;
+    if (img.width < 40 && img.height < 40) return;
+
+    // Use native lazy if supported
+    img.loading = 'lazy';
+    img.classList.add('lazy-img');
+
+    // Mark as loaded once decoded
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', function () { img.classList.add('loaded'); }, { once: true });
+    }
+  });
+})();
+
+// ══ MOBILE NAV ══
 const toggler = document.getElementById('navToggler');
 const navLinks = document.getElementById('navLinks');
 
@@ -283,21 +353,15 @@ if (toggler && navLinks) {
     const icon = toggler.querySelector('i');
     icon.className = isOpen ? 'bi bi-x' : 'bi bi-list';
   });
-
-  // Close when any nav link is clicked (mobile)
   navLinks.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => closeNav());
   });
-
-  // Close when clicking outside
   document.addEventListener('click', (e) => {
-    if (!navLinks.contains(e.target) && !toggler.contains(e.target)) {
-      closeNav();
-    }
+    if (!navLinks.contains(e.target) && !toggler.contains(e.target)) closeNav();
   });
 }
 
-// Auto-dismiss flash
+// ══ AUTO-DISMISS FLASH ══
 setTimeout(() => {
   document.querySelectorAll('.flash').forEach(el => el.remove());
 }, 5000);
