@@ -704,6 +704,8 @@ if (empty($shown)) {
 
   /* ══ ScrollTrigger: gs-scale (stagger per row) ══ */
   gsap.utils.toArray('.gs-scale').forEach(function(el, i) {
+    // skip jika sudah dihandle oleh lazy-card IntersectionObserver
+    if (el.classList.contains('wf-prod-card') || el.classList.contains('wf-cat-card')) return;
     gsap.to(el, {
       opacity:1, scale:1, duration:.65, ease:'power3.out',
       delay:(i % 4) * .08,
