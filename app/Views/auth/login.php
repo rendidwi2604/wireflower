@@ -4,8 +4,8 @@
   <div class="auth-panel-left">
     <!-- Full garden photo background -->
     <img
-      src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=900&q=85"
-      alt="Flower garden"
+      src="<?= site_url('assets/img/bungatangan.png') ?>"
+      alt="Bunga Tangan WireFlower"
       class="auth-garden-bg"
     >
     <!-- Gradient overlay for readability -->
