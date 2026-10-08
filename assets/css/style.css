@@ -253,35 +253,40 @@ button, input, select, textarea { font: inherit; }
 /* ---- Left decorative panel ---- */
 .auth-panel-left {
   position: relative;
-  background: linear-gradient(145deg, #fce8ef 0%, #f7d6e0 40%, #edddd8 100%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2.5rem;
-  text-align: center;
   overflow: hidden;
 }
-.auth-panel-left::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 30% 20%, rgba(232,121,154,.18) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 80%, rgba(201,81,111,.13) 0%, transparent 55%);
-  pointer-events: none;
+
+/* Full-cover garden photo */
+.auth-garden-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 0;
 }
-/* big decorative circles */
-.auth-panel-left::after {
-  content: "";
-  position: absolute;
-  width: 380px; height: 380px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(201,81,111,.12);
-  top: -100px; left: -120px;
-  pointer-events: none;
+
+/* Dark gradient overlay — bottom heavy for text contrast */
+.auth-garden-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(
+    160deg,
+    rgba(10,20,10,.45) 0%,
+    rgba(15,30,15,.55) 40%,
+    rgba(20,10,15,.75) 100%
+  );
 }
-.auth-left-inner { position: relative; z-index: 1; }
+
+/* Remove old gradient/pseudo backgrounds */
+.auth-panel-left::before,
+.auth-panel-left::after { display: none; }
+
+.auth-left-inner {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  height: 100%; padding: 2.5rem 2rem;
+  gap: .75rem;
+}
 
 .auth-brand {
   display: inline-flex;
@@ -290,79 +295,47 @@ button, input, select, textarea { font: inherit; }
   font-family: Georgia, serif;
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--pink-deep);
-  margin-bottom: 2rem;
+  color: #fff;
+  margin-bottom: .5rem;
   text-decoration: none;
+  text-shadow: 0 1px 8px rgba(0,0,0,.4);
 }
 .auth-brand-img {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-  flex-shrink: 0;
+  width: 38px; height: 38px;
+  object-fit: contain; flex-shrink: 0;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,.3));
 }
-/* legacy - hide old icon box if still present */
 .auth-brand-icon { display: none; }
 
-/* floral illustration placeholder */
-.auth-floral-wrap {
-  width: 260px; height: 260px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.55);
-  border: 1.5px solid rgba(201,81,111,.15);
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 2rem;
-  backdrop-filter: blur(4px);
-  box-shadow: 0 8px 32px rgba(201,81,111,.12);
-}
-.auth-floral-wrap svg { width: 170px; height: 170px; opacity: .92; }
+.auth-floral-wrap { display: none; }
 
 .auth-panel-left h2 {
   font-family: Georgia, serif;
-  font-size: 1.65rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: .6rem;
-  line-height: 1.25;
+  font-size: 1.65rem; font-weight: 700;
+  color: #fff; margin-bottom: .6rem; line-height: 1.25;
+  text-shadow: 0 2px 12px rgba(0,0,0,.35);
 }
 .auth-panel-left p {
-  font-size: .9rem;
-  color: var(--text-muted);
-  max-width: 260px;
-  line-height: 1.65;
-  margin: 0 auto;
+  font-size: .9rem; color: rgba(255,255,255,.85);
+  max-width: 260px; line-height: 1.65; margin: 0 auto;
+  text-shadow: 0 1px 6px rgba(0,0,0,.25);
 }
 
-/* tagline badges */
 .auth-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
-  justify-content: center;
-  margin-top: 1.5rem;
+  display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center;
+  margin-top: 1rem;
 }
 .auth-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  padding: .35rem .8rem;
-  border-radius: 50px;
-  background: rgba(255,255,255,.7);
-  border: 1px solid rgba(201,81,111,.2);
-  font-size: .75rem;
-  font-weight: 600;
-  color: var(--pink-deep);
-  backdrop-filter: blur(4px);
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .35rem .8rem; border-radius: 50px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.28);
+  font-size: .75rem; font-weight: 600; color: #fff;
+  backdrop-filter: blur(6px);
 }
 
-/* decorative circles bottom-right */
-.auth-deco-circle {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid rgba(201,81,111,.1);
-  pointer-events: none;
-}
-.auth-deco-circle.c1 { width: 200px; height: 200px; bottom: -60px; right: -60px; }
-.auth-deco-circle.c2 { width: 120px; height: 120px; bottom: 40px; right: 20px; }
+/* Hide old deco circles */
+.auth-deco-circle { display: none; }
 
 /* ---- Right form panel ---- */
 .auth-panel-right {
