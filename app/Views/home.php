@@ -1,18 +1,18 @@
 
 <?php
-// Gambar bunga asli (natural) — kategori, all verified 200 OK
+// Gambar bunga asli (natural) — kategori, all verified visually
 $cat_images = [
-  'https://images.unsplash.com/photo-1520763185298-1b434c919102?auto=format&fit=crop&w=700&q=80', // pink rose bouquet
-  'https://images.unsplash.com/photo-1548094990-c16ca90f1f0d?auto=format&fit=crop&w=700&q=80', // red roses
-  'https://images.unsplash.com/photo-1546842931-886c185b4c8c?auto=format&fit=crop&w=700&q=80', // yellow flower field
-  'https://images.unsplash.com/photo-1533616688419-b7a585564566?auto=format&fit=crop&w=700&q=80', // mixed bouquet
+  'https://images.unsplash.com/photo-1520763185298-1b434c919102?auto=format&fit=crop&w=700&q=80', // tulip pink
+  'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80', // poppy orange field
+  'https://images.unsplash.com/photo-1508610048659-a06b669e3321?auto=format&fit=crop&w=700&q=80', // mixed pastel bouquet
+  'https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?auto=format&fit=crop&w=700&q=80', // cherry blossom / sakura
 ];
-// Gambar reveal — craft/wire flower aesthetic, semua verified 200 OK, beda dari hero
+// Gambar reveal — bunga berbeda, semua verified visually
 $wire_images = [
-  'https://images.unsplash.com/photo-1471086569966-db3eebc25a59?auto=format&fit=crop&w=700&q=80', // dried flowers arrangement
-  'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?auto=format&fit=crop&w=700&q=80', // colourful craft bouquet
-  'https://images.unsplash.com/photo-1592890288564-76628a30a657?auto=format&fit=crop&w=700&q=80', // pastel flowers close
-  'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=700&q=80', // pink peonies bouquet
+  'https://images.unsplash.com/photo-1483401757487-2ced3fa77952?auto=format&fit=crop&w=700&q=80', // dahlia pink close-up
+  'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?auto=format&fit=crop&w=700&q=80', // peony bouquet
+  'https://images.unsplash.com/photo-1444021465936-c6ca81d39b84?auto=format&fit=crop&w=700&q=80', // tulip merah putih
+  'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=700&q=80', // sunflower field
 ];
 $shown = array_slice($kategori ?? [], 0, 4);
 if (empty($shown)) {
