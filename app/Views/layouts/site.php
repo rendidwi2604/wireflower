@@ -143,6 +143,38 @@
              class="<?= basename($_SERVER['PHP_SELF']) === 'pesanan.php' ? 'active' : '' ?>">Pesanan</a>
         </li>
       <?php endif; ?>
+
+      <!-- ── Mobile-only extras (hidden on desktop via CSS) ── -->
+      <li class="nav-mobile-extra" style="display:none;">
+        <div style="height:1px;background:var(--border);margin:.4rem 0;"></div>
+      </li>
+      <?php if (is_logged_in()): ?>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('profil.php') ?>"><i class="bi bi-person"></i> Profil Saya</a>
+        </li>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('pengaturan.php') ?>"><i class="bi bi-gear"></i> Pengaturan</a>
+        </li>
+        <?php if (is_admin()): ?>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('admin/index.php') ?>"><i class="bi bi-speedometer2"></i> Admin Panel</a>
+        </li>
+        <?php endif; ?>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('auth/logout.php') ?>" style="color:#c0392b;">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        </li>
+      <?php else: ?>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('auth/login.php') ?>"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+        </li>
+        <li class="nav-mobile-extra" style="display:none;">
+          <a href="<?= site_url('auth/register.php') ?>" style="color:var(--pink-deep);font-weight:700;">
+            <i class="bi bi-person-plus"></i> Daftar Gratis
+          </a>
+        </li>
+      <?php endif; ?>
     </ul>
 
     <!-- Right actions -->
