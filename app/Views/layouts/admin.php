@@ -169,9 +169,74 @@ tbody tr:hover td { background: #fdfbfb; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .adm-sidebar { transform: translateX(-100%); transition: transform .25s; }
-  .adm-sidebar.open { transform: translateX(0); }
+  body { display: block; }
+
+  /* Sidebar — slide in/out dari kiri */
+  .adm-sidebar {
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    z-index: 300;
+    width: 260px;
+  }
+  .adm-sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.15); }
+
+  /* Overlay backdrop */
+  .adm-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 299;
+    background: rgba(20,8,10,.45);
+    backdrop-filter: blur(2px);
+  }
+  .adm-overlay.show { display: block; }
+
+  /* Main area full width */
   .adm-main { margin-left: 0; }
+
+  /* Topbar: hamburger kiri, title tengah, user kanan */
+  .adm-topbar {
+    padding: .7rem 1rem;
+    gap: .75rem;
+  }
+  .adm-topbar-title { font-size: .95rem; flex: 1; text-align: center; }
+  .adm-topbar-user { font-size: .75rem; }
+  .adm-toggler {
+    display: flex !important;
+    align-items: center; justify-content: center;
+    width: 38px; height: 38px;
+    border: none; background: none;
+    font-size: 1.4rem; cursor: pointer;
+    color: #2c1a1e; flex-shrink: 0;
+    border-radius: 8px;
+    transition: background .15s;
+  }
+  .adm-toggler:hover { background: #fce8ef; color: #c9516f; }
+
+  /* Body padding kecil */
+  .adm-body { padding: 1rem; }
+
+  /* Card full width */
+  .adm-card { padding: 1rem; }
+
+  /* Tables — scrollable horizontal */
+  .adm-card .table-wrap,
+  .adm-body .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+  }
+  table { min-width: 500px; }
+  thead th { font-size: .7rem; padding: .5rem .65rem; }
+  tbody td { font-size: .8rem; padding: .55rem .65rem; }
+
+  /* Bootstrap row/col pada dashboard */
+  .row { margin: 0 -.4rem; }
+  .col-md-3 { padding: 0 .4rem; }
+}
+
+/* Desktop: sembunyikan toggler dan overlay */
+@media (min-width: 769px) {
+  .adm-toggler { display: none; }
+  .adm-overlay { display: none !important; }
 }
 </style>
 </head>
