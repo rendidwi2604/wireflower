@@ -302,6 +302,9 @@ tbody tr:hover td { background: #fdfbfb; }
 <div class="adm-main">
   <!-- Topbar -->
   <div class="adm-topbar">
+    <button class="adm-toggler" id="admToggler" aria-label="Toggle menu">
+      <i class="bi bi-list"></i>
+    </button>
     <span class="adm-topbar-title"><?= e($page_title ?? 'Admin') ?></span>
     <span class="adm-topbar-user">
       <i class="bi bi-person-circle"></i>
