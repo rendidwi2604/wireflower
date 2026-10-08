@@ -15,13 +15,14 @@ function adminNavActive(string $path, string $currentUri): string {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($page_title) ?> — Admin WireFlower</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; background: #f7f5f3; color: #2c1a1e; display: flex; min-height: 100vh; }
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; background: #f7f5f3; color: #2c1a1e; display: flex; min-height: 100vh; margin: 0; padding: 0; }
 
 /* ── Sidebar ── */
 .adm-sidebar {
@@ -258,6 +259,7 @@ tbody tr:hover td { background: #fdfbfb; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // Auto-dismiss flash after 4s
 setTimeout(function(){ var f=document.getElementById('adm-flash'); if(f) f.remove(); }, 4000);
