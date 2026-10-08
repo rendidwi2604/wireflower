@@ -128,9 +128,9 @@
           Hadiah cantik yang bisa bertahan selamanya.
         </p>
         <div class="footer-socials">
-          <a class="footer-social-btn" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a class="footer-social-btn" href="#" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
-          <a class="footer-social-btn" href="#" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          <a class="footer-social-btn" href="https://instagram.com/wireflower" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a class="footer-social-btn" href="https://tiktok.com/@wireflower" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+          <a class="footer-social-btn" href="https://wa.me/6281234567890" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
         </div>
       </div>
 
