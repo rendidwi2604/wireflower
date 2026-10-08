@@ -35,48 +35,38 @@
       <a href="<?= site_url('kategori.php') ?>" class="btn btn-primary" style="margin-top:1rem;">Lihat Semua</a>
     </div>
 
-  <?php elseif ($active_category ?? null): ?>
-    <!-- Category products -->
-    <div class="section-header">
+  <?php else: ?>
+    <!-- Header: judul + sort -->
+    <div class="section-header" style="margin-bottom:1.25rem;">
       <div>
-        <h2 class="section-title"><?= e($active_category['name']) ?></h2>
-        <?php if (!empty($active_category['description'])): ?>
-          <p style="color:var(--text-muted);margin:.35rem 0 0;font-size:.9rem;"><?= e($active_category['description']) ?></p>
+        <?php if ($active_category ?? null): ?>
+          <h2 class="section-title"><?= e($active_category['name']) ?></h2>
+          <?php if (!empty($active_category['description'])): ?>
+            <p style="color:var(--text-muted);margin:.35rem 0 0;font-size:.9rem;"><?= e($active_category['description']) ?></p>
+          <?php endif; ?>
+        <?php else: ?>
+          <h2 class="section-title">Semua Produk</h2>
+          <p style="color:var(--text-muted);margin:.35rem 0 0;font-size:.9rem;"><?= count($products ?? []) ?> produk tersedia</p>
         <?php endif; ?>
       </div>
+      <!-- Sort (hanya tampil di Semua / per kategori) -->
+      <form method="GET" action="<?= site_url('kategori.php') ?>" style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;">
+        <?php if ($slug ?? ''): ?>
+          <input type="hidden" name="slug" value="<?= e($slug) ?>">
+        <?php endif; ?>
+        <label for="sort-select" style="font-size:.82rem;color:var(--text-muted);white-space:nowrap;">Urutkan:</label>
+        <select id="sort-select" name="sort" onchange="this.form.submit()"
+                style="padding:.38rem .75rem;border:1.5px solid var(--border);border-radius:50px;font-size:.82rem;background:#fff;color:var(--text);cursor:pointer;outline:none;">
+          <option value="terbaru"    <?= ($sort??'terbaru')==='terbaru'    ? 'selected' : '' ?>>Terbaru</option>
+          <option value="terlaris"   <?= ($sort??'')==='terlaris'          ? 'selected' : '' ?>>Terlaris</option>
+          <option value="harga_asc"  <?= ($sort??'')==='harga_asc'         ? 'selected' : '' ?>>Harga: Rendah</option>
+          <option value="harga_desc" <?= ($sort??'')==='harga_desc'        ? 'selected' : '' ?>>Harga: Tinggi</option>
+        </select>
+      </form>
     </div>
+
     <?php require VIEW_PATH . '/partials/product_grid.php'; ?>
 
-  <?php else: ?>
-    <!-- All categories as cards -->
-    <?php
-    $cat_images = [
-      'https://images.unsplash.com/photo-1477039181047-efb4432d0d27?auto=format&fit=crop&w=600&q=85',
-      'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=85',
-      'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=85',
-      'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=600&q=85',
-      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=85',
-      'https://images.unsplash.com/photo-1593691509543-c55fb32e5cee?auto=format&fit=crop&w=600&q=85',
-    ];
-    ?>
-    <div class="category-grid" style="grid-template-columns:repeat(3,1fr);">
-      <?php foreach ($kategori_list ?? [] as $i => $k): ?>
-      <a class="category-card" href="<?= site_url('kategori.php?slug=' . $k['slug']) ?>">
-        <div class="category-card-img">
-          <img src="<?= $cat_images[$i % count($cat_images)] ?>" alt="<?= e($k['name']) ?>">
-        </div>
-        <div class="category-card-body">
-          <div>
-            <h4><?= e($k['name']) ?></h4>
-            <?php if (!empty($k['description'])): ?>
-              <small><?= e($k['description']) ?></small>
-            <?php endif; ?>
-          </div>
-          <span class="category-card-arrow"><i class="bi bi-arrow-right"></i></span>
-        </div>
-      </a>
-      <?php endforeach; ?>
-    </div>
   <?php endif; ?>
 
 </div>
