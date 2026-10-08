@@ -1,18 +1,18 @@
 
 <?php
-// Gambar bunga asli (natural)
+// Gambar bunga asli (natural) — kategori
 $cat_images = [
-  'https://images.unsplash.com/photo-1477039181047-efb4432d0d27?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=700&q=80',
+  'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80', // pink roses bouquet
+  'https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=700&q=80', // red roses close
+  'https://images.unsplash.com/photo-1518895312237-a9e23508077d?auto=format&fit=crop&w=700&q=80', // gift/wrapped flowers
+  'https://images.unsplash.com/photo-1508610048659-a06b669e3321?auto=format&fit=crop&w=700&q=80', // colourful mix
 ];
-// Gambar bunga kawat bulu (wire flower) — sesuai posisi kategori
+// Gambar wire flower (reveal) — gunakan header lokal untuk reveal
 $wire_images = [
-  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1487530811015-780eddf6e9a6?auto=format&fit=crop&w=700&q=80',
+  site_url('assets/img/header1.png'),
+  site_url('assets/img/header2.png'),
+  site_url('assets/img/header1.png'),
+  site_url('assets/img/header2.png'),
 ];
 $shown = array_slice($kategori ?? [], 0, 4);
 if (empty($shown)) {
@@ -209,17 +209,15 @@ if (empty($shown)) {
 }
 .wf-cat-card:hover .wf-cat-card__arrow { opacity:1; transform:translate(0,0); }
 
-/* Wire flower reveal layer */
+/* Wire flower reveal layer — cursor-tracked spotlight */
 .wf-cat-card__reveal {
   position:absolute; inset:0; z-index:1;
-  clip-path:circle(0% at 50% 50%);
-  transition:clip-path .65s cubic-bezier(.25,.46,.45,.94);
+  /* clip-path updated live by JS */
+  clip-path:circle(0px at 50% 50%);
+  will-change:clip-path;
 }
 .wf-cat-card__reveal img {
   width:100%; height:100%; object-fit:cover; transition:none;
-}
-.wf-cat-card:hover .wf-cat-card__reveal {
-  clip-path:circle(75% at 50% 50%);
 }
 /* label wire flower */
 .wf-cat-card__wire-tag {
@@ -342,6 +340,23 @@ if (empty($shown)) {
   margin:0;
 }
 
+/* ── HERO SPOTLIGHT REVEAL ── */
+.wf-hero__reveal-layer {
+  position:absolute; inset:0; z-index:1;
+  pointer-events:none;
+  /* two images stacked — header1 base, header2 on top */
+}
+.wf-hero__reveal-img {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center;
+}
+.wf-hero__reveal-img--1 { opacity:.38; }
+.wf-hero__reveal-img--2 {
+  opacity:.45;
+  clip-path:circle(0px at 50% 50%);
+  will-change:clip-path;
+}
+
 /* ── Responsive ── */
 @media(max-width:1024px) {
   .wf-cat-grid  { grid-template-columns:repeat(2, 1fr); }
@@ -378,6 +393,16 @@ if (empty($shown)) {
        src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1600&q=85"
        alt="WireFlower Hero">
   <div class="wf-hero__noise"></div>
+
+  <!-- Reveal layer: header1 always visible softly, header2 follows cursor -->
+  <div class="wf-hero__reveal-layer" id="heroRevealLayer">
+    <img class="wf-hero__reveal-img wf-hero__reveal-img--1"
+         src="<?= site_url('assets/img/header1.png') ?>"
+         alt="">
+    <img class="wf-hero__reveal-img wf-hero__reveal-img--2"
+         src="<?= site_url('assets/img/header2.png') ?>"
+         alt="" id="heroRevealImg2">
+  </div>
 
   <div class="wf-hero__content">
     <div class="wf-hero__tag">
@@ -716,19 +741,77 @@ if (empty($shown)) {
     });
   });
 
-  /* ══ Category reveal — GSAP enhance (tidak wajib, CSS sudah handle) ══
-     Tambah GSAP untuk overlay teks saat hover lebih smooth */
+  /* ══ Category reveal — cursor-tracked spotlight per card ══ */
   document.querySelectorAll('.wf-cat-card').forEach(function(card) {
-    var name = card.querySelector('.wf-cat-card__name');
-    var desc = card.querySelector('.wf-cat-card__desc');
+    var reveal  = card.querySelector('.wf-cat-card__reveal');
+    var name    = card.querySelector('.wf-cat-card__name');
+    var desc    = card.querySelector('.wf-cat-card__desc');
+    var radius  = 0;
+    var cx = 50, cy = 50; // percent
+
+    function applyClip() {
+      reveal.style.clipPath = 'circle(' + radius + 'px at ' + cx + '% ' + cy + '%)';
+    }
 
     card.addEventListener('mouseenter', function() {
+      // Tween radius via gsap
+      var obj = {r:0};
+      gsap.to(obj, { r:120, duration:.5, ease:'power2.out',
+        onUpdate: function(){ radius = obj.r; applyClip(); }
+      });
       gsap.to([name, desc], { y:-4, duration:.3, ease:'power2.out', stagger:.05 });
     });
+
+    card.addEventListener('mousemove', function(e) {
+      var rect = card.getBoundingClientRect();
+      cx = ((e.clientX - rect.left) / rect.width)  * 100;
+      cy = ((e.clientY - rect.top)  / rect.height) * 100;
+      applyClip();
+    });
+
     card.addEventListener('mouseleave', function() {
+      var obj = {r:radius};
+      gsap.to(obj, { r:0, duration:.4, ease:'power2.in',
+        onUpdate: function(){ radius = obj.r; applyClip(); }
+      });
       gsap.to([name, desc], { y:0, duration:.25, ease:'power2.in', stagger:.03 });
     });
   });
+
+  /* ══ Hero spotlight reveal — cursor follows mouse over hero ══ */
+  (function(){
+    var hero    = document.getElementById('wf-hero');
+    var img2    = document.getElementById('heroRevealImg2');
+    if (!hero || !img2) return;
+
+    var radius  = 0;
+    var cx = 50, cy = 50;
+
+    function applyHeroClip() {
+      img2.style.clipPath = 'circle(' + radius + 'px at ' + cx + '% ' + cy + '%)';
+    }
+
+    hero.addEventListener('mouseenter', function() {
+      var obj = {r:0};
+      gsap.to(obj, { r:220, duration:.7, ease:'power2.out',
+        onUpdate: function(){ radius = obj.r; applyHeroClip(); }
+      });
+    });
+
+    hero.addEventListener('mousemove', function(e) {
+      var rect = hero.getBoundingClientRect();
+      cx = ((e.clientX - rect.left) / rect.width)  * 100;
+      cy = ((e.clientY - rect.top)  / rect.height) * 100;
+      applyHeroClip();
+    });
+
+    hero.addEventListener('mouseleave', function() {
+      var obj = {r:radius};
+      gsap.to(obj, { r:0, duration:.5, ease:'power2.in',
+        onUpdate: function(){ radius = obj.r; applyHeroClip(); }
+      });
+    });
+  })();
 
 })();
 </script>
