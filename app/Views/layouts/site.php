@@ -141,17 +141,17 @@
           <li><a href="<?= site_url('index.php') ?>">Home</a></li>
           <li><a href="<?= site_url('kategori.php') ?>">Shop</a></li>
           <li><a href="<?= site_url('kategori.php?slug=custom-bouquet') ?>">Custom Bouquet</a></li>
-          <li><a href="#">About</a></li>
+          <li><a href="<?= site_url('index.php#wf-benefits') ?>">About</a></li>
         </ul>
       </div>
 
       <div>
         <div class="footer-heading">Bantuan</div>
         <ul class="footer-links">
-          <li><a href="#">Cara Pemesanan</a></li>
-          <li><a href="#">Pengiriman</a></li>
-          <li><a href="#">Pengembalian</a></li>
-          <li><a href="#">FAQ</a></li>
+          <li><a href="<?= site_url('pesanan.php') ?>">Cara Pemesanan</a></li>
+          <li><a href="<?= site_url('checkout.php') ?>">Pengiriman</a></li>
+          <li><a href="<?= site_url('pesanan.php') ?>">Pengembalian</a></li>
+          <li><a href="<?= site_url('index.php#wf-benefits') ?>">FAQ</a></li>
         </ul>
       </div>
 
