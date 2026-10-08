@@ -2,79 +2,72 @@
 
   <!-- ===== LEFT PANEL ===== -->
   <div class="auth-panel-left">
-    <div class="auth-left-inner">
+    <!-- Full garden photo background -->
+    <img
+      src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=900&q=85"
+      alt="Flower garden"
+      class="auth-garden-bg"
+    >
+    <!-- Gradient overlay for readability -->
+    <div class="auth-garden-overlay"></div>
 
+    <div class="auth-left-inner">
       <!-- Brand -->
-      <a href="<?= site_url('index.php') ?>" class="auth-brand">
+      <a href="<?= site_url('index.php') ?>" class="auth-brand" style="color:#fff;">
         <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="WireFlower Logo" class="auth-brand-img">
         WireFlower
       </a>
 
-      <!-- Floral illustration -->
-      <div class="auth-floral-wrap">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Stem -->
-          <path d="M100 170 C100 140 95 120 100 90" stroke="#5a8a5a" stroke-width="3" stroke-linecap="round"/>
-          <!-- Leaves -->
-          <path d="M100 130 C85 120 75 105 82 95 C90 105 100 115 100 130Z" fill="#7ab87a" opacity=".85"/>
-          <path d="M100 115 C115 105 125 90 118 80 C110 90 100 100 100 115Z" fill="#6aac6a" opacity=".75"/>
-          <!-- Petals layer 1 (outer) -->
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(0 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(45 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(90 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(135 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(180 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(225 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(270 100 90)"/>
-          <ellipse cx="100" cy="68" rx="10" ry="22" fill="#e8799a" opacity=".7" transform="rotate(315 100 90)"/>
-          <!-- Petals layer 2 (inner) -->
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(22.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(67.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(112.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(157.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(202.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(247.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(292.5 100 90)"/>
-          <ellipse cx="100" cy="74" rx="7" ry="16" fill="#c9516f" opacity=".85" transform="rotate(337.5 100 90)"/>
-          <!-- Center -->
-          <circle cx="100" cy="90" r="13" fill="#fff" opacity=".9"/>
-          <circle cx="100" cy="90" r="8" fill="#f9d45c"/>
-          <circle cx="100" cy="90" r="4" fill="#e5a820"/>
-          <!-- Small accent flower top-right -->
-          <circle cx="155" cy="45" r="5" fill="#e8799a" opacity=".5"/>
-          <circle cx="148" cy="38" r="3.5" fill="#e8799a" opacity=".4"/>
-          <circle cx="162" cy="38" r="3.5" fill="#e8799a" opacity=".4"/>
-          <circle cx="148" cy="52" r="3.5" fill="#e8799a" opacity=".4"/>
-          <circle cx="162" cy="52" r="3.5" fill="#e8799a" opacity=".4"/>
-          <!-- Small accent flower bottom-left -->
-          <circle cx="45" cy="150" r="4" fill="#c9516f" opacity=".4"/>
-          <circle cx="39" cy="144" r="2.8" fill="#c9516f" opacity=".35"/>
-          <circle cx="51" cy="144" r="2.8" fill="#c9516f" opacity=".35"/>
-          <circle cx="39" cy="156" r="2.8" fill="#c9516f" opacity=".35"/>
-          <circle cx="51" cy="156" r="2.8" fill="#c9516f" opacity=".35"/>
-          <!-- Dotted sparkles -->
-          <circle cx="60" cy="55" r="2.5" fill="#e8799a" opacity=".45"/>
-          <circle cx="145" cy="135" r="2" fill="#c9516f" opacity=".4"/>
-          <circle cx="165" cy="100" r="1.8" fill="#e8799a" opacity=".35"/>
-          <circle cx="35" cy="90" r="2" fill="#c9516f" opacity=".38"/>
-        </svg>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem;">
+        <!-- Floating badge -->
+        <span style="display:inline-flex;align-items:center;gap:.4rem;padding:.35rem 1rem;border-radius:50px;
+          background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);
+          font-size:.73rem;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">
+          <i class="bi bi-flower1"></i> Handmade Wire Flower
+        </span>
+
+        <!-- Headline -->
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;
+          color:#fff;margin:0;line-height:1.2;text-shadow:0 2px 12px rgba(0,0,0,.3);">
+          Bunga yang<br>Tak Pernah Layu.
+        </h2>
+        <p style="font-size:.9rem;color:rgba(255,255,255,.85);max-width:260px;line-height:1.65;
+          text-shadow:0 1px 6px rgba(0,0,0,.25);">
+          Dibuat satu per satu dengan kawat bulu premium — hadiah abadi yang selalu memesona.
+        </p>
+
+        <!-- Badges -->
+        <div class="auth-badges">
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-heart-fill"></i> Handmade
+          </span>
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-truck"></i> Pengiriman Cepat
+          </span>
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-star-fill"></i> Terpercaya
+          </span>
+        </div>
       </div>
 
-      <!-- Copy -->
-      <h2>Bunga yang<br>Tak Pernah Layu.</h2>
-      <p>Handmade wire flower, dibuat satu per satu untuk hadiah yang bisa bertahan lebih lama.</p>
-
-      <!-- Badges -->
-      <div class="auth-badges">
-        <span class="auth-badge"><i class="bi bi-heart-fill"></i> Handmade</span>
-        <span class="auth-badge"><i class="bi bi-truck"></i> Pengiriman Cepat</span>
-        <span class="auth-badge"><i class="bi bi-star-fill"></i> Terpercaya</span>
+      <!-- Bottom: review snippet -->
+      <div style="background:rgba(255,255,255,.14);backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:.85rem 1.1rem;
+        display:flex;align-items:center;gap:.75rem;">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.3);
+          flex-shrink:0;display:flex;align-items:center;justify-content:center;
+          font-size:1rem;color:#fff;">🌸</div>
+        <div>
+          <div style="display:flex;gap:.15rem;margin-bottom:.2rem;">
+            <?php for($i=0;$i<5;$i++): ?><i class="bi bi-star-fill" style="color:#fbbf24;font-size:.75rem;"></i><?php endfor; ?>
+          </div>
+          <p style="font-size:.75rem;color:rgba(255,255,255,.9);margin:0;line-height:1.4;">
+            "Bunganya cantik banget, awet dan cocok buat hadiah!"
+          </p>
+          <p style="font-size:.68rem;color:rgba(255,255,255,.6);margin:.15rem 0 0;">— Pelanggan WireFlower</p>
+        </div>
       </div>
     </div>
-
-    <!-- Decorative circles -->
-    <div class="auth-deco-circle c1"></div>
-    <div class="auth-deco-circle c2"></div>
   </div>
 
   <!-- ===== RIGHT PANEL ===== -->
