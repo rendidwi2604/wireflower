@@ -9,7 +9,7 @@ $cat_images = [
 ];
 // Gambar reveal — bunga berbeda, semua verified visually
 $wire_images = [
-  'https://images.unsplash.com/photo-1483401757487-2ced3fa77952?auto=format&fit=crop&w=700&q=80', // dahlia pink close-up
+  'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?auto=format&fit=crop&w=700&q=80', // tangan + bouquet warna-warni
   'https://images.unsplash.com/photo-1591886960571-74d43a9d4166?auto=format&fit=crop&w=700&q=80', // peony bouquet
   'https://images.unsplash.com/photo-1444021465936-c6ca81d39b84?auto=format&fit=crop&w=700&q=80', // tulip merah putih
   'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?auto=format&fit=crop&w=700&q=80', // sunflower field
