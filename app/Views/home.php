@@ -577,7 +577,7 @@ if (empty($shown)) {
 </section>
 
 <!-- ══════════════ BENEFITS ══════════════ -->
-<section class="wf-section" style="padding-top:0;">
+<section class="wf-section" id="wf-benefits" style="padding-top:0;">
   <div class="wf-container">
     <div class="wf-benefits">
       <?php
