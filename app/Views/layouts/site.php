@@ -182,7 +182,57 @@
 <!-- /NAVBAR -->
 <?php endif; ?>
 
-<!-- Flash messages -->
+<!-- ══════════ LOGIN PROMPT MODAL ══════════ -->
+<div id="wf-login-modal" role="dialog" aria-modal="true" aria-labelledby="wfLoginModalTitle"
+     style="display:none;position:fixed;inset:0;z-index:99998;align-items:center;justify-content:center;">
+  <!-- Backdrop -->
+  <div id="wf-modal-backdrop"
+       style="position:absolute;inset:0;background:rgba(20,8,10,.55);backdrop-filter:blur(3px);"></div>
+  <!-- Box -->
+  <div style="position:relative;z-index:1;background:#fff;border-radius:20px;
+              padding:2rem 2rem 1.75rem;max-width:360px;width:calc(100% - 2rem);
+              box-shadow:0 24px 60px rgba(0,0,0,.18);text-align:center;
+              animation:wfModalIn .3s cubic-bezier(.34,1.56,.64,1) both;">
+    <!-- Icon -->
+    <div style="width:60px;height:60px;border-radius:50%;background:#fce8ef;
+                display:flex;align-items:center;justify-content:center;
+                margin:0 auto 1rem;font-size:1.6rem;color:#c9516f;">
+      <i class="bi bi-person-lock"></i>
+    </div>
+    <h3 id="wfLoginModalTitle"
+        style="font-family:Georgia,serif;font-size:1.25rem;margin:0 0 .5rem;color:#1e1212;">
+      Login Dulu, Yuk!
+    </h3>
+    <p style="font-size:.875rem;color:#7a6060;margin:0 0 1.5rem;line-height:1.6;">
+      Kamu perlu login untuk menambahkan produk ke keranjang.
+    </p>
+    <div style="display:flex;gap:.65rem;">
+      <button id="wf-modal-cancel"
+              style="flex:1;padding:.7rem;border:1.5px solid #eeddd9;border-radius:50px;
+                     background:#fff;color:#7a6060;font-size:.875rem;font-weight:600;cursor:pointer;">
+        Batal
+      </button>
+      <a id="wf-modal-login"
+         href="<?= site_url('auth/login.php') ?>"
+         style="flex:1;padding:.7rem;border-radius:50px;background:#c9516f;color:#fff;
+                font-size:.875rem;font-weight:700;text-decoration:none;
+                display:flex;align-items:center;justify-content:center;gap:.4rem;">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+      </a>
+    </div>
+    <a href="<?= site_url('auth/register.php') ?>"
+       style="display:block;margin-top:1rem;font-size:.8rem;color:#c9516f;font-weight:600;">
+      Belum punya akun? Daftar gratis
+    </a>
+  </div>
+</div>
+
+<style>
+@keyframes wfModalIn {
+  from { opacity:0; transform:scale(.88) translateY(16px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+</style>
 <?php if (isset($_SESSION['flash'])): ?>
 <div class="flash-container">
   <div class="flash flash-<?= e($_SESSION['flash']['type']) ?>">
