@@ -16,16 +16,31 @@ class ProductModel extends Model
     public function latest(int $limit = 8): array
     {
         return $this->fetchAll(
-            'SELECT * FROM products WHERE is_active = TRUE ORDER BY created_at DESC LIMIT $1',
+            'SELECT p.*,
+                    COALESCE(AVG(r.rating), 0)  AS avg_rating,
+                    COUNT(r.id)                  AS review_count
+             FROM products p
+             LEFT JOIN reviews r ON r.product_id = p.id
+             WHERE p.is_active = TRUE
+             GROUP BY p.id
+             ORDER BY p.created_at DESC
+             LIMIT $1',
             [$limit]
         );
     }
 
     public function featured(int $limit = 8): array
     {
-        // PostgreSQL: RANDOM() bukan RAND()
         return $this->fetchAll(
-            'SELECT * FROM products WHERE is_active = TRUE AND is_featured = TRUE ORDER BY RANDOM() LIMIT $1',
+            'SELECT p.*,
+                    COALESCE(AVG(r.rating), 0)  AS avg_rating,
+                    COUNT(r.id)                  AS review_count
+             FROM products p
+             LEFT JOIN reviews r ON r.product_id = p.id
+             WHERE p.is_active = TRUE AND p.is_featured = TRUE
+             GROUP BY p.id
+             ORDER BY RANDOM()
+             LIMIT $1',
             [$limit]
         );
     }
@@ -33,8 +48,32 @@ class ProductModel extends Model
     public function byCategory(int $categoryId): array
     {
         return $this->fetchAll(
-            'SELECT * FROM products WHERE category_id = $1 AND is_active = TRUE ORDER BY created_at DESC',
+            'SELECT p.*,
+                    COALESCE(AVG(r.rating), 0)  AS avg_rating,
+                    COUNT(r.id)                  AS review_count
+             FROM products p
+             LEFT JOIN reviews r ON r.product_id = p.id
+             WHERE p.category_id = $1 AND p.is_active = TRUE
+             GROUP BY p.id
+             ORDER BY p.created_at DESC',
             [$categoryId]
+        );
+    }
+
+    public function all(string $sort = 'terbaru'): array
+    {
+        $orderBy = self::SORTS[$sort] ?? 'p.created_at DESC';
+        // prefix kolom sort dengan alias p. jika diperlukan
+        $orderBy = preg_replace('/^(created_at|sold_count|price)/', 'p.$1', $orderBy);
+        return $this->fetchAll(
+            "SELECT p.*,
+                    COALESCE(AVG(r.rating), 0)  AS avg_rating,
+                    COUNT(r.id)                  AS review_count
+             FROM products p
+             LEFT JOIN reviews r ON r.product_id = p.id
+             WHERE p.is_active = TRUE
+             GROUP BY p.id
+             ORDER BY {$orderBy}"
         );
     }
 
