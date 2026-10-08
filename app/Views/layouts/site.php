@@ -58,6 +58,7 @@
              class="<?= basename($_SERVER['PHP_SELF']) === 'pesanan.php' ? 'active' : '' ?>">Pesanan</a>
         </li>
       <?php endif; ?>
+    </ul>
 
     <!-- Right actions -->
     <div class="nav-actions">
