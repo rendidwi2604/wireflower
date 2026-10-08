@@ -79,26 +79,36 @@ class ProductModel extends Model
 
     public function search(string $q, $categoryId, string $sort): array
     {
-        // PostgreSQL: gunakan ILIKE untuk case-insensitive search
-        $conditions = ['is_active = TRUE'];
+        $conditions = ['p.is_active = TRUE'];
         $params     = [];
         $i          = 1;
 
         if ($q !== '') {
-            $conditions[] = "name ILIKE \${$i}";
+            $conditions[] = "p.name ILIKE \${$i}";
             $params[]     = "%{$q}%";
             $i++;
         }
         if ($categoryId !== '' && $categoryId !== null) {
-            $conditions[] = "category_id = \${$i}";
+            $conditions[] = "p.category_id = \${$i}";
             $params[]     = $categoryId;
             $i++;
         }
 
-        $where    = implode(' AND ', $conditions);
-        $orderBy  = self::SORTS[$sort] ?? 'created_at DESC';
+        $where   = implode(' AND ', $conditions);
+        $sortRaw = self::SORTS[$sort] ?? 'created_at DESC';
+        $orderBy = preg_replace('/^(created_at|sold_count|price)/', 'p.$1', $sortRaw);
 
-        return $this->fetchAll("SELECT * FROM products WHERE {$where} ORDER BY {$orderBy}", $params);
+        return $this->fetchAll(
+            "SELECT p.*,
+                    COALESCE(AVG(r.rating), 0) AS avg_rating,
+                    COUNT(r.id)                AS review_count
+             FROM products p
+             LEFT JOIN reviews r ON r.product_id = p.id
+             WHERE {$where}
+             GROUP BY p.id
+             ORDER BY {$orderBy}",
+            $params
+        );
     }
 
     public function findBySlug(string $slug): ?array
