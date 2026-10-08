@@ -334,6 +334,53 @@ tbody tr:hover td { background: #fdfbfb; }
 <script>
 // Auto-dismiss flash after 4s
 setTimeout(function(){ var f=document.getElementById('adm-flash'); if(f) f.remove(); }, 4000);
+
+// ── Sidebar toggle (mobile) ──
+(function () {
+  var toggler  = document.getElementById('admToggler');
+  var sidebar  = document.querySelector('.adm-sidebar');
+  var overlay  = document.getElementById('admOverlay');
+  if (!toggler || !sidebar) return;
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    if (overlay) overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    toggler.querySelector('i').className = 'bi bi-x';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('show');
+    document.body.style.overflow = '';
+    toggler.querySelector('i').className = 'bi bi-list';
+  }
+
+  toggler.addEventListener('click', function () {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+
+  if (overlay) overlay.addEventListener('click', closeSidebar);
+
+  // Close on nav link click (mobile)
+  sidebar.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeSidebar();
+  });
+})();
+
+// ── Wrap all tables in scrollable div ──
+document.querySelectorAll('.adm-body table').forEach(function (tbl) {
+  if (tbl.closest('.table-wrap')) return;
+  var wrap = document.createElement('div');
+  wrap.className = 'table-wrap';
+  tbl.parentNode.insertBefore(wrap, tbl);
+  wrap.appendChild(tbl);
+});
 </script>
 </body>
 </html>
