@@ -242,6 +242,9 @@ tbody tr:hover td { background: #fdfbfb; }
 </head>
 <body>
 
+<!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+<div class="adm-overlay" id="admOverlay"></div>
+
 <!-- ===== SIDEBAR ===== -->
 <aside class="adm-sidebar">
   <a href="<?= site_url('admin/index.php') ?>" class="adm-brand">
