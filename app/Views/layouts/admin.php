@@ -238,6 +238,18 @@ tbody tr:hover td { background: #fdfbfb; }
   .adm-toggler { display: none; }
   .adm-overlay { display: none !important; }
 }
+
+@media (max-width: 480px) {
+  .adm-body { padding: .75rem; }
+  .adm-card { padding: .85rem; }
+  /* Dashboard stat cards: 2 per row */
+  .col-md-3 { width: 50%; }
+  /* Topbar lebih compact */
+  .adm-topbar { padding: .6rem .75rem; }
+  .adm-topbar-title { font-size: .88rem; }
+  /* Buttons */
+  .btn-adm { padding: .35rem .7rem; font-size: .75rem; }
+}
 </style>
 </head>
 <body>
