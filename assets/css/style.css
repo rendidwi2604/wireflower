@@ -595,10 +595,27 @@ button, input, select, textarea { font: inherit; }
   .category-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
+  /* ── Navbar mobile: brand kiri, hamburger kanan ── */
   .site-navbar { position: sticky; top: 0; }
-  .site-navbar .container { gap: .75rem; height: 60px; }
-  .nav-brand { font-size: 1.05rem; }
+  .site-navbar .container {
+    height: 58px;
+    gap: 0;
+    /* brand kiri — auto space — toggler kanan */
+    justify-content: space-between;
+  }
+  .nav-brand { font-size: 1.05rem; flex-shrink: 0; }
   .nav-brand-img { width: 24px; height: 24px; }
+
+  /* Sembunyikan nav-actions selain toggler di mobile */
+  .nav-actions { gap: 0; }
+  .nav-actions > *:not(.nav-toggler) { display: none !important; }
+  .nav-toggler {
+    display: flex; align-items: center; justify-content: center;
+    width: 42px; height: 42px; border-radius: var(--radius-sm);
+    font-size: 1.5rem; flex-shrink: 0;
+  }
+
+  /* Dropdown menu jatuh dari navbar full-width */
   .nav-links {
     display: none;
     position: absolute; top: 100%; left: 0; right: 0;
@@ -607,7 +624,7 @@ button, input, select, textarea { font: inherit; }
     border-top: 1px solid var(--border);
     flex-direction: column;
     align-items: stretch;
-    padding: .5rem 1rem .75rem;
+    padding: .5rem .75rem .85rem;
     gap: 0;
     z-index: 100;
     box-shadow: 0 8px 24px rgba(0,0,0,.08);
@@ -615,23 +632,23 @@ button, input, select, textarea { font: inherit; }
   .nav-links.open { display: flex; }
   .nav-links li { display: block; }
   .nav-links a {
-    padding: .75rem .75rem;
+    padding: .8rem 1rem;
     border-radius: var(--radius-sm);
     border-bottom: none;
-    font-size: .9rem;
-    display: flex; align-items: center; gap: .5rem;
+    font-size: .92rem;
+    display: flex; align-items: center; gap: .55rem;
+    font-weight: 500;
   }
   .nav-links a:hover, .nav-links a.active {
     background: var(--pink-soft);
     color: var(--pink-deep);
-    border-bottom: none;
     border-radius: var(--radius-sm);
   }
-  .nav-links li + li { border-top: 1px solid var(--border); }
-  .nav-toggler { display: flex; align-items: center; justify-content: center; }
-  /* hide text labels in nav-actions on small screens */
-  .nav-dropdown-toggle span { display: none; }
-  .nav-dropdown-toggle { padding: .4rem .6rem; }
+  .nav-links li + li { border-top: 1px solid #f5eeec; }
+
+  /* User/login links tambahan di dalam hamburger menu */
+  .nav-mobile-extra { display: block !important; }
+
   /* hero */
   .hero-section { min-height: 320px; margin: 1rem 0 2rem; }
   .hero-content { padding: 2rem 1.5rem; }
