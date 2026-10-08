@@ -10,9 +10,94 @@
 <style>
   /* Prevent FOUC */
   .nav-links { transition: none; }
+
+  /* ── PAGE LOADER ── */
+  #wf-loader {
+    position: fixed; inset: 0; z-index: 99999;
+    background: #faf8f5;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 1.5rem;
+    transition: opacity .45s ease, visibility .45s ease;
+  }
+  #wf-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .wf-loader-brand {
+    display: flex; align-items: center; gap: .55rem;
+    font-family: Georgia, serif; font-size: 1.35rem; font-weight: 700;
+    color: #1e1212; opacity: 0;
+    animation: loaderFadeIn .5s .1s ease forwards;
+  }
+  .wf-loader-brand img { width: 34px; height: 34px; object-fit: contain; }
+
+  /* 3 flower dots */
+  .wf-loader-dots {
+    display: flex; align-items: flex-end; gap: .65rem;
+    height: 44px;
+  }
+  .wf-loader-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    animation: flowerBounce 1.1s ease-in-out infinite;
+    position: relative;
+  }
+  /* petal ring inside dot */
+  .wf-loader-dot::after {
+    content: '';
+    position: absolute; inset: 2px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.45);
+  }
+  .wf-loader-dot:nth-child(1) { background: #e8799a; animation-delay: 0s; }    /* rose */
+  .wf-loader-dot:nth-child(2) { background: #f4a460; animation-delay: .18s; }  /* peach */
+  .wf-loader-dot:nth-child(3) { background: #c9516f; animation-delay: .36s; }  /* deep rose */
+
+  @keyframes flowerBounce {
+    0%, 80%, 100% { transform: translateY(0) scale(1); box-shadow: 0 4px 10px rgba(0,0,0,.08); }
+    40%           { transform: translateY(-18px) scale(1.15); box-shadow: 0 14px 18px rgba(0,0,0,.12); }
+  }
+  @keyframes loaderFadeIn {
+    to { opacity: 1; }
+  }
+
+  .wf-loader-text {
+    font-size: .75rem; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: #b09090;
+    opacity: 0; animation: loaderFadeIn .5s .35s ease forwards;
+  }
+
+  /* ── LAZY LOAD — product card entrance ── */
+  .lazy-card {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .lazy-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── IMG lazy placeholder ── */
+  img.lazy-img {
+    background: #fce8ef;
+    min-height: 100px;
+  }
+  img.lazy-img.loaded { background: none; }
 </style>
 </head>
 <body>
+
+<!-- ══════════ PAGE LOADER ══════════ -->
+<div id="wf-loader" role="status" aria-label="Memuat halaman">
+  <div class="wf-loader-brand">
+    <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="">
+    WireFlower
+  </div>
+  <div class="wf-loader-dots" aria-hidden="true">
+    <span class="wf-loader-dot"></span>
+    <span class="wf-loader-dot"></span>
+    <span class="wf-loader-dot"></span>
+  </div>
+  <p class="wf-loader-text">Menyiapkan bunga untuk kamu…</p>
+</div>
 
 <?php $is_auth_page = in_array($page_title ?? '', ['Login', 'Daftar', 'Register', 'Daftar Akun']); ?>
 
