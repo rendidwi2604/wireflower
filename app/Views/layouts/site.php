@@ -315,6 +315,10 @@
 <?php endif; ?>
 
 <script>
+// ══ AUTH STATE (from PHP) ══
+var WF_LOGGED_IN = <?= is_logged_in() ? 'true' : 'false' ?>;
+var WF_LOGIN_URL = '<?= site_url('auth/login.php') ?>';
+
 // ══ PAGE LOADER ══
 (function () {
   var loader = document.getElementById('wf-loader');
