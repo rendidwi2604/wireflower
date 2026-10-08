@@ -3,100 +3,72 @@
 
   <!-- ===== LEFT PANEL ===== -->
   <div class="auth-panel-left">
-    <div class="auth-left-inner">
+    <!-- Full garden photo background -->
+    <img
+      src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=900&q=85"
+      alt="Flower garden"
+      class="auth-garden-bg"
+    >
+    <!-- Gradient overlay for readability -->
+    <div class="auth-garden-overlay"></div>
 
+    <div class="auth-left-inner">
       <!-- Brand -->
-      <a href="<?= site_url('index.php') ?>" class="auth-brand">
+      <a href="<?= site_url('index.php') ?>" class="auth-brand" style="color:#fff;">
         <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="WireFlower Logo" class="auth-brand-img">
         WireFlower
       </a>
 
-      <!-- Floral illustration — bouquet style -->
-      <div class="auth-floral-wrap">
-        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Main stems -->
-          <path d="M100 175 C100 155 96 140 98 115" stroke="#5a8a5a" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M100 175 C92 155 82 145 78 120" stroke="#6aac6a" stroke-width="2" stroke-linecap="round"/>
-          <path d="M100 175 C108 155 118 145 122 120" stroke="#6aac6a" stroke-width="2" stroke-linecap="round"/>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem;">
+        <!-- Floating badge -->
+        <span style="display:inline-flex;align-items:center;gap:.4rem;padding:.35rem 1rem;border-radius:50px;
+          background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);
+          font-size:.73rem;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">
+          <i class="bi bi-flower1"></i> Bergabung Gratis
+        </span>
 
-          <!-- Left leaf -->
-          <path d="M88 138 C72 130 63 115 70 104 C80 116 88 125 88 138Z" fill="#7ab87a" opacity=".8"/>
-          <!-- Right leaf -->
-          <path d="M112 135 C128 127 137 112 130 101 C120 113 112 122 112 135Z" fill="#6aac6a" opacity=".75"/>
+        <!-- Headline -->
+        <h2 style="font-family:Georgia,serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;
+          color:#fff;margin:0;line-height:1.2;text-shadow:0 2px 12px rgba(0,0,0,.3);">
+          Bergabung &amp;<br>Temukan Koleksimu.
+        </h2>
+        <p style="font-size:.9rem;color:rgba(255,255,255,.85);max-width:260px;line-height:1.65;
+          text-shadow:0 1px 6px rgba(0,0,0,.25);">
+          Daftar gratis dan dapatkan akses ke koleksi bunga kawat bulu handmade terbaik.
+        </p>
 
-          <!-- Left flower (tulip-ish) -->
-          <ellipse cx="78" cy="100" rx="8" ry="18" fill="#e8799a" opacity=".75" transform="rotate(-15 78 110)"/>
-          <ellipse cx="78" cy="100" rx="8" ry="18" fill="#e8799a" opacity=".75" transform="rotate(15 78 110)"/>
-          <ellipse cx="78" cy="100" rx="8" ry="18" fill="#c9516f" opacity=".6" transform="rotate(0 78 110)"/>
-          <ellipse cx="78" cy="100" rx="6" ry="14" fill="#c9516f" opacity=".7" transform="rotate(30 78 110)"/>
-          <ellipse cx="78" cy="100" rx="6" ry="14" fill="#c9516f" opacity=".7" transform="rotate(-30 78 110)"/>
-          <circle cx="78" cy="97" r="5" fill="#f9d45c" opacity=".9"/>
-
-          <!-- Center flower (rose) -->
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(0 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(45 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(90 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(135 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(180 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(225 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(270 100 95)"/>
-          <ellipse cx="100" cy="82" rx="9" ry="20" fill="#e8799a" opacity=".8" transform="rotate(315 100 95)"/>
-          <!-- inner petals -->
-          <ellipse cx="100" cy="87" rx="6" ry="13" fill="#c9516f" opacity=".9" transform="rotate(22.5 100 95)"/>
-          <ellipse cx="100" cy="87" rx="6" ry="13" fill="#c9516f" opacity=".9" transform="rotate(67.5 100 95)"/>
-          <ellipse cx="100" cy="87" rx="6" ry="13" fill="#c9516f" opacity=".9" transform="rotate(112.5 100 95)"/>
-          <ellipse cx="100" cy="87" rx="6" ry="13" fill="#c9516f" opacity=".9" transform="rotate(157.5 100 95)"/>
-          <circle cx="100" cy="95" r="10" fill="#fff" opacity=".85"/>
-          <circle cx="100" cy="95" r="6" fill="#f9d45c"/>
-          <circle cx="100" cy="95" r="3" fill="#e5a820"/>
-
-          <!-- Right flower (daisy-ish) -->
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(0 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(40 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(80 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(120 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(160 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(200 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(240 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(280 122 112)"/>
-          <ellipse cx="122" cy="100" rx="7" ry="17" fill="#f5c6d5" opacity=".8" transform="rotate(320 122 112)"/>
-          <circle cx="122" cy="112" r="7" fill="#f9d45c" opacity=".95"/>
-          <circle cx="122" cy="112" r="4" fill="#e5a820"/>
-
-          <!-- Wrap ribbon -->
-          <path d="M72 162 Q100 155 128 162 Q118 175 100 178 Q82 175 72 162Z" fill="#fce8ef" stroke="#e8799a" stroke-width="1.2" opacity=".8"/>
-          <!-- Ribbon bow -->
-          <path d="M95 162 Q88 155 82 158 Q86 163 95 162Z" fill="#e8799a" opacity=".7"/>
-          <path d="M105 162 Q112 155 118 158 Q114 163 105 162Z" fill="#e8799a" opacity=".7"/>
-
-          <!-- Sparkles -->
-          <circle cx="50" cy="75" r="2.5" fill="#e8799a" opacity=".4"/>
-          <circle cx="58" cy="68" r="1.8" fill="#c9516f" opacity=".35"/>
-          <circle cx="152" cy="72" r="2.2" fill="#e8799a" opacity=".4"/>
-          <circle cx="160" cy="80" r="1.6" fill="#c9516f" opacity=".35"/>
-          <circle cx="40" cy="130" r="2" fill="#e8799a" opacity=".35"/>
-          <circle cx="162" cy="140" r="1.8" fill="#c9516f" opacity=".32"/>
-          <!-- Small floating dots -->
-          <circle cx="65" cy="50" r="3" fill="#f9d45c" opacity=".5"/>
-          <circle cx="138" cy="48" r="2.5" fill="#f9d45c" opacity=".45"/>
-        </svg>
+        <!-- Badges -->
+        <div class="auth-badges">
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-gift"></i> Hadiah Cantik
+          </span>
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-shield-check"></i> Aman &amp; Terpercaya
+          </span>
+          <span class="auth-badge" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(6px);">
+            <i class="bi bi-infinity"></i> Tak Pernah Layu
+          </span>
+        </div>
       </div>
 
-      <!-- Copy -->
-      <h2>Bergabung &amp;<br>Temukan Koleksimu</h2>
-      <p>Daftar gratis dan dapatkan akses ke koleksi bunga kawat bulu handmade terbaik.</p>
-
-      <!-- Badges -->
-      <div class="auth-badges">
-        <span class="auth-badge"><i class="bi bi-gift"></i> Hadiah Cantik</span>
-        <span class="auth-badge"><i class="bi bi-shield-check"></i> Aman &amp; Terpercaya</span>
-        <span class="auth-badge"><i class="bi bi-infinity"></i> Tak Pernah Layu</span>
+      <!-- Bottom: review snippet -->
+      <div style="background:rgba(255,255,255,.14);backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:.85rem 1.1rem;
+        display:flex;align-items:center;gap:.75rem;">
+        <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.3);
+          flex-shrink:0;display:flex;align-items:center;justify-content:center;
+          font-size:1rem;color:#fff;">🌷</div>
+        <div>
+          <div style="display:flex;gap:.15rem;margin-bottom:.2rem;">
+            <?php for($i=0;$i<5;$i++): ?><i class="bi bi-star-fill" style="color:#fbbf24;font-size:.75rem;"></i><?php endfor; ?>
+          </div>
+          <p style="font-size:.75rem;color:rgba(255,255,255,.9);margin:0;line-height:1.4;">
+            "Produknya luar biasa, packaging rapih dan pengiriman cepat!"
+          </p>
+          <p style="font-size:.68rem;color:rgba(255,255,255,.6);margin:.15rem 0 0;">— Pelanggan WireFlower</p>
+        </div>
       </div>
     </div>
-
-    <!-- Decorative circles -->
-    <div class="auth-deco-circle c1"></div>
-    <div class="auth-deco-circle c2"></div>
   </div>
 
   <!-- ===== RIGHT PANEL ===== -->
