@@ -4,7 +4,7 @@
 $cat_images = [
   'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80', // pink roses bouquet
   'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80', // red rose single
-  'https://images.unsplash.com/photo-1487530811015-780eddf6e9a6?auto=format&fit=crop&w=700&q=80', // sunflower bouquet
+  'https://images.unsplash.com/photo-1533616688419-b7a585564566?auto=format&fit=crop&w=700&q=80', // sunflower bouquet
   'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=700&q=80', // mixed bouquet pastel
 ];
 // Gambar reveal — wire/crafted flower, berbeda dari header hero
