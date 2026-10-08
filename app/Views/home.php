@@ -1,18 +1,18 @@
 
 <?php
-// Gambar bunga asli (natural) — kategori, verified Unsplash flower photos
+// Gambar bunga asli (natural) — kategori, all verified 200 OK
 $cat_images = [
-  'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=700&q=80', // pink roses bouquet
-  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80', // red rose single
-  'https://images.unsplash.com/photo-1533616688419-b7a585564566?auto=format&fit=crop&w=700&q=80', // sunflower bouquet
-  'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=700&q=80', // mixed bouquet pastel
+  'https://images.unsplash.com/photo-1520763185298-1b434c919102?auto=format&fit=crop&w=700&q=80', // pink rose bouquet
+  'https://images.unsplash.com/photo-1548094990-c16ca90f1f0d?auto=format&fit=crop&w=700&q=80', // red roses
+  'https://images.unsplash.com/photo-1546842931-886c185b4c8c?auto=format&fit=crop&w=700&q=80', // yellow flower field
+  'https://images.unsplash.com/photo-1533616688419-b7a585564566?auto=format&fit=crop&w=700&q=80', // mixed bouquet
 ];
-// Gambar reveal — wire/crafted flower, berbeda dari header hero
+// Gambar reveal — craft/wire flower aesthetic, semua verified 200 OK, beda dari hero
 $wire_images = [
-  'https://images.unsplash.com/photo-1595351298020-038700609878?auto=format&fit=crop&w=700&q=80', // dried wire pampas
-  'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=700&q=80', // colourful craft flowers
-  'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80', // pink tulip close
-  'https://images.unsplash.com/photo-1477039181047-efb4432d0d27?auto=format&fit=crop&w=700&q=80', // white daisy bouquet
+  'https://images.unsplash.com/photo-1471086569966-db3eebc25a59?auto=format&fit=crop&w=700&q=80', // dried flowers arrangement
+  'https://images.unsplash.com/photo-1596438459194-f275f413d6ff?auto=format&fit=crop&w=700&q=80', // colourful craft bouquet
+  'https://images.unsplash.com/photo-1592890288564-76628a30a657?auto=format&fit=crop&w=700&q=80', // pastel flowers close
+  'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=700&q=80', // pink peonies bouquet
 ];
 $shown = array_slice($kategori ?? [], 0, 4);
 if (empty($shown)) {
