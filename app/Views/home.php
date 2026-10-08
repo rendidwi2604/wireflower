@@ -1,10 +1,18 @@
 
 <?php
+// Gambar bunga asli (natural)
 $cat_images = [
   'https://images.unsplash.com/photo-1477039181047-efb4432d0d27?auto=format&fit=crop&w=700&q=80',
   'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=700&q=80',
   'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=700&q=80',
   'https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=700&q=80',
+];
+// Gambar bunga kawat bulu (wire flower) — sesuai posisi kategori
+$wire_images = [
+  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=700&q=80',
+  'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=700&q=80',
+  'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=700&q=80',
+  'https://images.unsplash.com/photo-1487530811015-780eddf6e9a6?auto=format&fit=crop&w=700&q=80',
 ];
 $shown = array_slice($kategori ?? [], 0, 4);
 if (empty($shown)) {
@@ -201,6 +209,37 @@ if (empty($shown)) {
 }
 .wf-cat-card:hover .wf-cat-card__arrow { opacity:1; transform:translate(0,0); }
 
+/* Wire flower reveal layer */
+.wf-cat-card__reveal {
+  position:absolute; inset:0; z-index:1;
+  clip-path:circle(0% at 50% 50%);
+  transition:clip-path .65s cubic-bezier(.25,.46,.45,.94);
+}
+.wf-cat-card__reveal img {
+  width:100%; height:100%; object-fit:cover; transition:none;
+}
+.wf-cat-card:hover .wf-cat-card__reveal {
+  clip-path:circle(75% at 50% 50%);
+}
+/* label wire flower */
+.wf-cat-card__wire-tag {
+  position:absolute; top:.75rem; left:.75rem; z-index:3;
+  font-size:.62rem; font-weight:800; letter-spacing:.1em;
+  text-transform:uppercase; color:#fff;
+  background:rgba(201,81,111,.75); backdrop-filter:blur(6px);
+  padding:.25rem .65rem; border-radius:50px;
+  opacity:0; transform:translateY(-6px);
+  transition:opacity .3s .2s, transform .3s .2s;
+}
+.wf-cat-card:hover .wf-cat-card__wire-tag { opacity:1; transform:translateY(0); }
+/* overlay on top of reveal */
+.wf-cat-card__reveal-overlay {
+  position:absolute; inset:0; z-index:2;
+  background:linear-gradient(to top, rgba(20,8,10,.7) 0%, rgba(20,8,10,.05) 55%, transparent 100%);
+  opacity:0; transition:opacity .4s;
+}
+.wf-cat-card:hover .wf-cat-card__reveal-overlay { opacity:1; }
+
 /* ── PRODUCT GRID ── */
 .wf-prod-grid {
   display:grid;
@@ -324,6 +363,13 @@ if (empty($shown)) {
 .gs-fade-in  { opacity:0; }
 .gs-fade-left{ opacity:0; transform:translateX(-30px); }
 .gs-scale    { opacity:0; transform:scale(.94); }
+
+/* Hero elements NOT use gs- classes — animated directly by GSAP */
+.wf-hero__tag,
+.wf-hero__title,
+.wf-hero__sub,
+.wf-hero__actions,
+.wf-stat-card { opacity:0; }
 </style>
 
 <!-- ══════════════ HERO ══════════════ -->
@@ -334,16 +380,16 @@ if (empty($shown)) {
   <div class="wf-hero__noise"></div>
 
   <div class="wf-hero__content">
-    <div class="wf-hero__tag gs-fade-up">
+    <div class="wf-hero__tag">
       <i class="bi bi-stars"></i> Handmade Wire Flower
     </div>
-    <h1 class="wf-hero__title gs-fade-up">
+    <h1 class="wf-hero__title">
       Bunga yang<br><em>Tak Pernah Layu.</em>
     </h1>
-    <p class="wf-hero__sub gs-fade-up">
+    <p class="wf-hero__sub">
       Dibuat satu per satu dengan kawat bulu premium — hadiah abadi yang selalu memesona.
     </p>
-    <div class="wf-hero__actions gs-fade-up">
+    <div class="wf-hero__actions">
       <a href="<?= site_url('kategori.php') ?>" class="wf-btn-primary">
         <i class="bi bi-bag-heart"></i> Shop Now
       </a>
@@ -354,14 +400,14 @@ if (empty($shown)) {
   </div>
 
   <div class="wf-hero__stats">
-    <div class="wf-stat-card gs-fade-left">
+    <div class="wf-stat-card">
       <div class="wf-stat-icon"><i class="bi bi-heart-fill"></i></div>
       <div>
         <div class="wf-stat-num">1.2K+</div>
         <div class="wf-stat-lbl">Happy Customers</div>
       </div>
     </div>
-    <div class="wf-stat-card gs-fade-left">
+    <div class="wf-stat-card">
       <div class="wf-stat-icon"><i class="bi bi-star-fill"></i></div>
       <div>
         <div class="wf-stat-num">4.9</div>
@@ -393,14 +439,24 @@ if (empty($shown)) {
 
     <div class="wf-cat-grid">
       <?php foreach ($shown as $i => $k):
-        $img = $cat_images[$i % count($cat_images)];
+        $img      = $cat_images[$i % count($cat_images)];
+        $wireImg  = $wire_images[$i % count($wire_images)];
       ?>
       <a class="wf-cat-card gs-scale"
          href="<?= site_url('kategori.php?slug=' . ($k['slug'] ?? '')) ?>">
+        <?php /* Base image (natural flower) */ ?>
         <img src="<?= $img ?>" alt="<?= e($k['name']) ?>">
         <div class="wf-cat-card__overlay"></div>
+
+        <?php /* Wire flower reveal layer */ ?>
+        <div class="wf-cat-card__reveal">
+          <img src="<?= $wireImg ?>" alt="Wire <?= e($k['name']) ?>">
+        </div>
+        <div class="wf-cat-card__reveal-overlay"></div>
+        <span class="wf-cat-card__wire-tag">Wire Flower</span>
+
         <span class="wf-cat-card__arrow"><i class="bi bi-arrow-up-right"></i></span>
-        <div class="wf-cat-card__body">
+        <div class="wf-cat-card__body" style="z-index:4;position:relative;">
           <p class="wf-cat-card__name"><?= e($k['name']) ?></p>
           <?php if (!empty($k['description'])): ?>
             <p class="wf-cat-card__desc"><?= e($k['description']) ?></p>
@@ -582,97 +638,95 @@ if (empty($shown)) {
 (function () {
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ── Hero entrance (stagger) ── */
-  gsap.from('#wf-hero .wf-hero__tag', {
-    opacity:0, y:30, duration:.7, ease:'power3.out', delay:.1
-  });
-  gsap.from('#wf-hero .wf-hero__title', {
-    opacity:0, y:40, duration:.8, ease:'power3.out', delay:.25
-  });
-  gsap.from('#wf-hero .wf-hero__sub', {
-    opacity:0, y:30, duration:.7, ease:'power3.out', delay:.42
-  });
-  gsap.from('#wf-hero .wf-hero__actions', {
-    opacity:0, y:25, duration:.6, ease:'power3.out', delay:.58
-  });
-  gsap.from('#wf-hero .wf-stat-card', {
-    opacity:0, x:40, duration:.7, ease:'power3.out', stagger:.15, delay:.7
-  });
+  /* ══ HERO entrance — langsung animate ke opacity:1
+        TIDAK pakai gs- class agar tidak ada konflik ══ */
+  var heroTl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  heroTl
+    .to('.wf-hero__tag',     { opacity:1, y:0, duration:.7 }, .15)
+    .to('.wf-hero__title',   { opacity:1, y:0, duration:.8 }, .28)
+    .to('.wf-hero__sub',     { opacity:1, y:0, duration:.7 }, .45)
+    .to('.wf-hero__actions', { opacity:1, y:0, duration:.6 }, .60)
+    .to('.wf-stat-card',     { opacity:1, x:0, duration:.6, stagger:.15 }, .72);
 
-  /* ── Subtle parallax on hero bg ── */
+  /* Set dari state */
+  gsap.set('.wf-hero__tag',     { y:30 });
+  gsap.set('.wf-hero__title',   { y:40 });
+  gsap.set('.wf-hero__sub',     { y:30 });
+  gsap.set('.wf-hero__actions', { y:25 });
+  gsap.set('.wf-stat-card',     { x:40 });
+
+  /* ── Parallax hero bg ── */
   gsap.to('#wf-hero .wf-hero__bg', {
-    yPercent: 20,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '#wf-hero',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    }
+    yPercent:20, ease:'none',
+    scrollTrigger:{ trigger:'#wf-hero', start:'top top', end:'bottom top', scrub:true }
   });
 
-  /* ── Scroll-triggered fade-up ── */
+  /* ══ ScrollTrigger: gs-fade-up ══ */
   gsap.utils.toArray('.gs-fade-up').forEach(function(el) {
     gsap.to(el, {
       opacity:1, y:0, duration:.7, ease:'power3.out',
-      scrollTrigger: {
-        trigger: el, start: 'top 88%', toggleActions: 'play none none none'
-      }
+      scrollTrigger:{ trigger:el, start:'top 88%', toggleActions:'play none none none' }
     });
   });
 
-  /* ── Scroll-triggered fade-in ── */
+  /* ══ ScrollTrigger: gs-fade-in ══ */
   gsap.utils.toArray('.gs-fade-in').forEach(function(el) {
     gsap.to(el, {
       opacity:1, duration:.6, ease:'power2.out',
-      scrollTrigger: {
-        trigger: el, start: 'top 90%', toggleActions: 'play none none none'
-      }
+      scrollTrigger:{ trigger:el, start:'top 90%', toggleActions:'play none none none' }
     });
   });
 
-  /* ── Scroll-triggered scale ── */
+  /* ══ ScrollTrigger: gs-scale (stagger per row) ══ */
   gsap.utils.toArray('.gs-scale').forEach(function(el, i) {
     gsap.to(el, {
-      opacity:1, scale:1, duration:.65,
-      ease:'power3.out',
-      delay: (i % 4) * 0.08,
-      scrollTrigger: {
-        trigger: el, start: 'top 90%', toggleActions: 'play none none none'
-      }
+      opacity:1, scale:1, duration:.65, ease:'power3.out',
+      delay:(i % 4) * .08,
+      scrollTrigger:{ trigger:el, start:'top 90%', toggleActions:'play none none none' }
     });
   });
 
-  /* ── Micro: product card hover counter (stagger add-to-cart) ── */
+  /* ══ Benefit stagger ══ */
+  gsap.utils.toArray('.wf-benefit.gs-fade-up').forEach(function(el, i) {
+    gsap.to(el, {
+      opacity:1, y:0, duration:.6, ease:'power3.out', delay:i * .1,
+      scrollTrigger:{ trigger:el, start:'top 90%', toggleActions:'play none none none' }
+    });
+  });
+
+  /* ══ Micro: add-to-cart elastic ══ */
   document.querySelectorAll('.wf-prod-card__add').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      gsap.fromTo(btn, {scale:1.3}, {scale:1, duration:.35, ease:'elastic.out(1,.5)'});
+      gsap.fromTo(btn, { scale:1.35 }, { scale:1, duration:.4, ease:'elastic.out(1,.5)' });
     });
   });
 
-  /* ── Micro: wishlist heart ── */
+  /* ══ Micro: wishlist heart ══ */
   document.querySelectorAll('.wf-prod-card__wish').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var icon = btn.querySelector('i');
-      if (icon.classList.contains('bi-heart-fill')) {
-        icon.classList.replace('bi-heart-fill','bi-heart');
-        gsap.to(btn, {color:'', duration:.2});
-      } else {
-        icon.classList.replace('bi-heart','bi-heart-fill');
-        gsap.fromTo(btn, {scale:.8},{scale:1, duration:.4, ease:'elastic.out(1,.4)'});
-        gsap.to(btn, {color:'#c9516f', duration:.2});
-      }
+      var filled = icon.classList.contains('bi-heart-fill');
+      icon.classList.toggle('bi-heart-fill', !filled);
+      icon.classList.toggle('bi-heart', filled);
+      gsap.fromTo(btn,
+        { scale: filled ? 1 : .75 },
+        { scale:1, duration:.45, ease:'elastic.out(1,.4)' }
+      );
+      gsap.to(btn, { color: filled ? '' : '#c9516f', duration:.2 });
     });
   });
 
-  /* ── Benefit cards stagger ── */
-  gsap.utils.toArray('.wf-benefit.gs-fade-up').forEach(function(el, i) {
-    gsap.to(el, {
-      opacity:1, y:0, duration:.6, ease:'power3.out',
-      delay: i * 0.1,
-      scrollTrigger: {
-        trigger: el, start: 'top 90%', toggleActions: 'play none none none'
-      }
+  /* ══ Category reveal — GSAP enhance (tidak wajib, CSS sudah handle) ══
+     Tambah GSAP untuk overlay teks saat hover lebih smooth */
+  document.querySelectorAll('.wf-cat-card').forEach(function(card) {
+    var name = card.querySelector('.wf-cat-card__name');
+    var desc = card.querySelector('.wf-cat-card__desc');
+
+    card.addEventListener('mouseenter', function() {
+      gsap.to([name, desc], { y:-4, duration:.3, ease:'power2.out', stagger:.05 });
+    });
+    card.addEventListener('mouseleave', function() {
+      gsap.to([name, desc], { y:0, duration:.25, ease:'power2.in', stagger:.03 });
     });
   });
 
