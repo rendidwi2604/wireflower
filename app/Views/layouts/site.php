@@ -419,6 +419,50 @@ if (toggler && navLinks) {
 setTimeout(() => {
   document.querySelectorAll('.flash').forEach(el => el.remove());
 }, 5000);
+
+// ══ LOGIN PROMPT MODAL ══
+(function () {
+  var modal    = document.getElementById('wf-login-modal');
+  var backdrop = document.getElementById('wf-modal-backdrop');
+  var cancelBtn = document.getElementById('wf-modal-cancel');
+  if (!modal) return;
+
+  function showModal() {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function hideModal() {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  if (cancelBtn)  cancelBtn.addEventListener('click',  hideModal);
+  if (backdrop)   backdrop.addEventListener('click',   hideModal);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') hideModal();
+  });
+
+  // Intercept ANY add-to-cart form submit when not logged in
+  if (!WF_LOGGED_IN) {
+    document.addEventListener('submit', function (e) {
+      var form = e.target;
+      // Check if it's a cart action form
+      var actionInput = form.querySelector('input[name="action"]');
+      if (!actionInput) return;
+      if (actionInput.value !== 'add' && actionInput.value !== 'buy') return;
+      e.preventDefault();
+      showModal();
+    }, true); // capture phase
+
+    // Also intercept anchor/button clicks with data-require-login
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-require-login]');
+      if (!el) return;
+      e.preventDefault();
+      showModal();
+    });
+  }
+})();
 </script>
 </body>
 </html>
