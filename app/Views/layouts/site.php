@@ -183,13 +183,35 @@
 // Mobile nav toggle
 const toggler = document.getElementById('navToggler');
 const navLinks = document.getElementById('navLinks');
+
+function closeNav() {
+  if (!navLinks) return;
+  navLinks.classList.remove('open');
+  const icon = toggler ? toggler.querySelector('i') : null;
+  if (icon) icon.className = 'bi bi-list';
+}
+
 if (toggler && navLinks) {
-  toggler.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
+  toggler.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = navLinks.classList.toggle('open');
     const icon = toggler.querySelector('i');
-    icon.className = navLinks.classList.contains('open') ? 'bi bi-x' : 'bi bi-list';
+    icon.className = isOpen ? 'bi bi-x' : 'bi bi-list';
+  });
+
+  // Close when any nav link is clicked (mobile)
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => closeNav());
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!navLinks.contains(e.target) && !toggler.contains(e.target)) {
+      closeNav();
+    }
   });
 }
+
 // Auto-dismiss flash
 setTimeout(() => {
   document.querySelectorAll('.flash').forEach(el => el.remove());
