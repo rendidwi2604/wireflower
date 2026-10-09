@@ -11,7 +11,9 @@ use App\Models\UserModel;
 
 class CheckoutController extends Controller
 {
-    private const SHIPPING_FLAT = 15000;
+    // Tarif ongkir per zona — harus sinkron dengan JS di checkout.php
+    private const SHIPPING_ZONES = [15000, 20000, 25000, 35000, 45000];
+    private const SHIPPING_DEFAULT = 15000;
 
     public function index(): void
     {
@@ -45,21 +47,19 @@ class CheckoutController extends Controller
         foreach ($items as $it) {
             $subtotal += $it['price'] * $it['quantity'];
         }
-        $shipping = self::SHIPPING_FLAT;
 
         // Simpan sementara di session untuk diproses setelah submit alamat
-        $_SESSION['checkout_items'] = $items;
+        $_SESSION['checkout_items']    = $items;
         $_SESSION['checkout_subtotal'] = $subtotal;
-        $_SESSION['checkout_shipping'] = $shipping;
-        $_SESSION['checkout_mode'] = $mode;
+        $_SESSION['checkout_mode']     = $mode;
 
         $this->render('checkout', [
-            'page_title' => 'Checkout',
-            'items' => $items,
-            'subtotal' => $subtotal,
-            'shipping_cost' => $shipping,
-            'total' => $subtotal + $shipping,
-            'addresses' => $this->model(UserModel::class)->addresses($userId),
+            'page_title'    => 'Checkout',
+            'items'         => $items,
+            'subtotal'      => $subtotal,
+            'shipping_cost' => 0, // ongkir 0 dulu, berubah setelah user pilih provinsi via JS
+            'total'         => $subtotal,
+            'addresses'     => $this->model(UserModel::class)->addresses($userId),
         ]);
     }
 
@@ -72,32 +72,38 @@ class CheckoutController extends Controller
         if (empty($items)) {
             redirect('keranjang.php');
         }
+
         $subtotal = (float) ($_SESSION['checkout_subtotal'] ?? 0);
-        $shipping = (float) ($_SESSION['checkout_shipping'] ?? 0);
-        $mode = $_SESSION['checkout_mode'] ?? 'cart';
+        $mode     = $_SESSION['checkout_mode'] ?? 'cart';
+
+        // Ambil ongkir dari POST, validasi hanya nilai yang diizinkan per zona
+        $shippingRaw = (int) ($_POST['shipping_cost'] ?? 0);
+        $shipping = in_array($shippingRaw, self::SHIPPING_ZONES, true)
+            ? $shippingRaw
+            : self::SHIPPING_DEFAULT;
 
         $addressId = $_POST['address_id'] ?? null;
         if (!$addressId || $addressId === 'new') {
             $addressId = $this->model(UserModel::class)->addAddress($userId, [
-                'label' => 'Alamat Baru',
+                'label'          => 'Alamat Baru',
                 'recipient_name' => $_POST['recipient_name'] ?? '',
-                'phone' => $_POST['phone'] ?? '',
-                'full_address' => $_POST['full_address'] ?? '',
-                'city' => $_POST['city'] ?? '',
-                'province' => $_POST['province'] ?? '',
-                'postal_code' => $_POST['postal_code'] ?? '',
+                'phone'          => $_POST['phone'] ?? '',
+                'full_address'   => $_POST['full_address'] ?? '',
+                'city'           => $_POST['city'] ?? '',
+                'province'       => $_POST['province'] ?? '',
+                'postal_code'    => $_POST['postal_code'] ?? '',
             ]);
         }
 
         try {
             $orderId = $this->model(OrderModel::class)->checkout($userId, [
-                'address_id' => $addressId,
-                'items' => $items,
-                'subtotal' => $subtotal,
+                'address_id'    => $addressId,
+                'items'         => $items,
+                'subtotal'      => $subtotal,
                 'shipping_cost' => $shipping,
-                'total' => $subtotal + $shipping,
-                'note' => $_POST['note'] ?? '',
-                'mode' => $mode,
+                'total'         => $subtotal + $shipping,
+                'note'          => $_POST['note'] ?? '',
+                'mode'          => $mode,
             ]);
         } catch (\Exception $e) {
             die('Gagal memproses pesanan: ' . $e->getMessage());
@@ -111,7 +117,11 @@ class CheckoutController extends Controller
             'order_created'
         );
 
-        unset($_SESSION['checkout_items'], $_SESSION['checkout_subtotal'], $_SESSION['checkout_shipping'], $_SESSION['checkout_mode']);
+        unset(
+            $_SESSION['checkout_items'],
+            $_SESSION['checkout_subtotal'],
+            $_SESSION['checkout_mode']
+        );
 
         redirect('pembayaran.php?order_id=' . $orderId);
     }
