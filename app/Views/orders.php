@@ -24,10 +24,10 @@ $status_class = [
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:2rem;">
     <?php
     $summary = [
-      ['icon'=>'bi-receipt',      'val'=>$order_counts[''],           'label'=>'Total Pesanan'],
-      ['icon'=>'bi-credit-card',  'val'=>$order_counts['belum_bayar'],'label'=>'Belum Bayar'],
-      ['icon'=>'bi-box-seam',     'val'=>$order_counts['dikemas']+$order_counts['dikirim'],'label'=>'Dalam Proses'],
-      ['icon'=>'bi-check2-circle','val'=>$order_counts['selesai'],     'label'=>'Selesai'],
+      ['icon'=>'bi-receipt',      'val'=>$order_counts[''],                                      'label'=>'Total Pesanan'],
+      ['icon'=>'bi-credit-card',  'val'=>$order_counts['belum_bayar'],                           'label'=>'Belum Bayar'],
+      ['icon'=>'bi-box-seam',     'val'=>$order_counts['dikemas'] + $order_counts['dikirim'],    'label'=>'Dalam Proses'],
+      ['icon'=>'bi-check2-circle','val'=>$order_counts['selesai'],                               'label'=>'Selesai'],
     ];
     foreach ($summary as $s): ?>
     <div style="display:flex;align-items:center;gap:.75rem;padding:1rem;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--white);">
@@ -60,8 +60,13 @@ $status_class = [
     </div>
   <?php endif; ?>
 
-  <?php foreach ($orders as $o): ?>
+  <?php foreach ($orders as $o):
+    $payment    = $o['payment'] ?? null;
+    $isTransfer = $payment && str_starts_with(strtolower($payment['method'] ?? ''), 'transfer');
+    $hasProof   = $payment && !empty($payment['transfer_proof']);
+  ?>
   <div class="card-wf">
+    <!-- Header -->
     <div class="card-wf-header">
       <div>
         <strong style="font-size:.9rem;">#<?= e($o['order_code']) ?></strong>
@@ -82,13 +87,27 @@ $status_class = [
       </div>
     <?php endforeach; ?>
 
-    <div style="height:1px;background:var(--border);margin:.75rem 0;"></div>
+    <!-- Breakdown harga -->
+    <div style="height:1px;background:var(--border);margin:.75rem 0 .6rem;"></div>
+    <div style="font-size:.82rem;color:var(--text-muted);display:flex;flex-direction:column;gap:.2rem;">
+      <div style="display:flex;justify-content:space-between;">
+        <span>Subtotal produk</span>
+        <span><?= rupiah($o['subtotal']) ?></span>
+      </div>
+      <div style="display:flex;justify-content:space-between;">
+        <span>Ongkos kirim</span>
+        <span><?= $o['shipping_cost'] > 0 ? rupiah($o['shipping_cost']) : '<span style="color:#1a6b3a;">Gratis</span>' ?></span>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.6rem 0 .75rem;"></div>
 
+    <!-- Total + actions -->
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
       <div style="font-weight:700;font-size:.95rem;">
         Total: <?= rupiah($o['total']) ?>
       </div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+
         <?php if ($o['status'] === 'belum_bayar'): ?>
           <a href="<?= site_url('pembayaran.php?order_id=' . $o['id']) ?>"
              class="btn btn-primary btn-sm">Bayar Sekarang</a>
@@ -97,6 +116,14 @@ $status_class = [
                   onclick="document.getElementById('cancelModal<?= $o['id'] ?>').style.display='flex'">
             Batalkan
           </button>
+
+        <?php elseif ($o['status'] === 'dikemas'): ?>
+          <button type="button" class="btn btn-sm"
+                  style="border:1px solid #e0a0a0;color:#c0392b;background:transparent;border-radius:50px;"
+                  onclick="document.getElementById('cancelModal<?= $o['id'] ?>').style.display='flex'">
+            <i class="bi bi-x-circle"></i> Batalkan Pesanan
+          </button>
+
         <?php elseif ($o['status'] === 'dikirim'): ?>
           <form method="POST">
             <input type="hidden" name="complete_order_id" value="<?= $o['id'] ?>">
@@ -104,6 +131,7 @@ $status_class = [
               <i class="bi bi-check2"></i> Pesanan Diterima
             </button>
           </form>
+
         <?php elseif ($o['status'] === 'selesai'): ?>
           <?php foreach ($o['order_items'] as $it): ?>
             <a href="<?= site_url('ulasan.php?order_item_id=' . $it['id'] . '&product_id=' . $it['product_id']) ?>"
@@ -112,16 +140,62 @@ $status_class = [
             </a>
           <?php endforeach; ?>
         <?php endif; ?>
+
       </div>
     </div>
-  </div>
 
-  <!-- Cancel modal (no-Bootstrap version) -->
-  <?php if ($o['status'] === 'belum_bayar'): ?>
+    <!-- Bukti transfer — hanya untuk pembayaran transfer yang pending -->
+    <?php if ($o['status'] === 'belum_bayar' && $isTransfer): ?>
+    <div style="margin-top:.85rem;background:#fffbea;border:1px solid #f0d070;border-radius:var(--radius-sm);padding:.9rem 1rem;font-size:.85rem;">
+      <?php if ($hasProof): ?>
+        <div style="display:flex;align-items:center;gap:.6rem;color:#1a6b3a;">
+          <i class="bi bi-check-circle-fill" style="font-size:1.1rem;"></i>
+          <span><strong>Bukti transfer sudah dikirim.</strong> Menunggu verifikasi admin.</span>
+          <a href="<?= e($payment['transfer_proof']) ?>" target="_blank"
+             style="margin-left:auto;font-size:.78rem;color:var(--pink-deep);text-decoration:underline;">
+            Lihat bukti
+          </a>
+        </div>
+      <?php else: ?>
+        <div style="font-weight:600;margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;">
+          <i class="bi bi-upload" style="color:#c07a00;"></i>
+          Upload Bukti Transfer
+        </div>
+        <p style="color:#666;margin:0 0 .65rem;font-size:.78rem;line-height:1.5;">
+          Sudah transfer? Upload bukti pembayaran agar admin dapat memverifikasi lebih cepat.
+          Format: JPG, PNG, WebP, atau PDF. Maks 5 MB.
+        </p>
+        <form method="POST" enctype="multipart/form-data" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+          <input type="hidden" name="proof_order_id" value="<?= $o['id'] ?>">
+          <input type="file" name="transfer_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"
+                 required
+                 style="font-size:.8rem;border:1px solid #ddc;border-radius:6px;padding:.3rem .5rem;background:#fff;flex:1;min-width:0;">
+          <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">
+            <i class="bi bi-upload"></i> Kirim Bukti
+          </button>
+        </form>
+      <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
+  </div><!-- end .card-wf -->
+
+  <!-- Cancel modal — untuk belum_bayar DAN dikemas -->
+  <?php if (in_array($o['status'], ['belum_bayar', 'dikemas'])): ?>
   <div id="cancelModal<?= $o['id'] ?>"
        style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);align-items:center;justify-content:center;">
     <div style="background:var(--white);border-radius:var(--radius-lg);padding:1.75rem;max-width:440px;width:calc(100% - 2rem);box-shadow:0 20px 60px rgba(0,0,0,.18);">
-      <h4 style="font-family:Georgia,serif;margin-bottom:1rem;">Batalkan Pesanan</h4>
+      <h4 style="font-family:Georgia,serif;margin-bottom:.4rem;">Batalkan Pesanan</h4>
+      <?php if ($o['status'] === 'dikemas'): ?>
+        <p style="font-size:.82rem;color:#c0392b;margin-bottom:1rem;">
+          <i class="bi bi-exclamation-triangle"></i>
+          Pesanan sudah dalam proses pengemasan. Pembatalan mungkin tidak selalu bisa diproses.
+        </p>
+      <?php else: ?>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">
+          Pesanan akan dibatalkan dan tidak dapat dikembalikan ke status sebelumnya.
+        </p>
+      <?php endif; ?>
       <form method="POST">
         <input type="hidden" name="cancel_order_id" value="<?= $o['id'] ?>">
         <div class="form-group">
@@ -134,7 +208,9 @@ $status_class = [
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Catatan tambahan <span style="font-weight:400;color:var(--text-muted);">(opsional)</span></label>
+          <label class="form-label">Catatan tambahan
+            <span style="font-weight:400;color:var(--text-muted);">(opsional)</span>
+          </label>
           <textarea name="cancel_details" class="form-input" rows="3"
                     style="resize:vertical;" placeholder="Tulis keterangan jika diperlukan..."></textarea>
         </div>
@@ -153,6 +229,7 @@ $status_class = [
     </div>
   </div>
   <?php endif; ?>
+
   <?php endforeach; ?>
 
 </div>
