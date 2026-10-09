@@ -23,6 +23,14 @@ class PaymentModel extends Model
         );
     }
 
+    public function saveTransferProof(int $paymentId, string $proofUrl): void
+    {
+        $this->run(
+            'UPDATE payments SET transfer_proof = $1 WHERE id = $2',
+            [$proofUrl, $paymentId]
+        );
+    }
+
     // ---- Admin ----
 
     public function allWithOrder(): array
