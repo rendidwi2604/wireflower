@@ -75,7 +75,7 @@ function require_admin()
 
 function login_user(array $user)
 {
-    session_regenerate_id(true);
+    session_regenerate_id(false);
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['name'] = $user['name'];
     $_SESSION['role'] = $user['role'];
