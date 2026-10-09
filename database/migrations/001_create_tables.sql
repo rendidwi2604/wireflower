@@ -104,8 +104,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 CREATE TABLE IF NOT EXISTS payments (
     id          SERIAL PRIMARY KEY,
     order_id    INT           NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    method      VARCHAR(20)   NOT NULL DEFAULT 'transfer_bank'
-                    CHECK (method IN ('transfer_bank','e_wallet','cod')),
+    method      VARCHAR(50)   NOT NULL DEFAULT 'transfer_bank',
     amount      NUMERIC(12,2) NOT NULL,
     status      VARCHAR(10)   NOT NULL DEFAULT 'pending'
                     CHECK (status IN ('pending','success','failed')),
