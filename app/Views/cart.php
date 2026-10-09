@@ -78,8 +78,8 @@
       <div class="order-summary-box" style="position:sticky;top:90px;">
         <h4>Ringkasan Pesanan</h4>
         <div class="order-summary-row">
-          <span>Subtotal (<?= $item_count ?> item)</span>
-          <span><?= rupiah($total) ?></span>
+          <span id="summary-label">Subtotal (0 item dipilih)</span>
+          <span id="summary-subtotal">Rp 0</span>
         </div>
         <div class="order-summary-row">
           <span>Ongkos kirim</span>
@@ -87,11 +87,13 @@
         </div>
         <div class="order-summary-row total">
           <span>Total</span>
-          <span><?= rupiah($total) ?></span>
+          <span id="summary-total">Rp 0</span>
         </div>
         <button type="submit" form="checkoutForm"
+                id="btnCheckout"
                 class="btn btn-primary"
-                style="width:100%;justify-content:center;margin-top:1rem;border-radius:var(--radius-sm);">
+                style="width:100%;justify-content:center;margin-top:1rem;border-radius:var(--radius-sm);opacity:.5;cursor:not-allowed;"
+                disabled>
           Checkout Item Terpilih
         </button>
         <a href="<?= site_url('kategori.php') ?>"
