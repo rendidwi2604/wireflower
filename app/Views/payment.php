@@ -307,13 +307,21 @@ var selectedBank = null;
     item.className = 'bank-dd-item';
     item.dataset.name = b.name;
 
-    // Coba load logo, fallback ke icon jika gagal
+    // Logo dengan fallback inisial jika SVG gagal dimuat
     var img = document.createElement('img');
     img.src = b.logo;
     img.alt = b.short;
     img.width  = 32;
     img.height = 32;
     img.style.cssText = 'object-fit:contain;flex-shrink:0;border-radius:5px;background:#f5f5f5;padding:2px;border:1px solid #eee;';
+    img.onerror = function() {
+      var fb = document.createElement('div');
+      fb.style.cssText = 'width:32px;height:32px;flex-shrink:0;border-radius:5px;background:#fdf0f3;' +
+        'display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;' +
+        'color:#c2185b;border:1px solid #eee;text-align:center;line-height:1;';
+      fb.textContent = b.short.substring(0, 3).toUpperCase();
+      if (img.parentNode) img.parentNode.replaceChild(fb, img);
+    };
 
     var lbl = document.createElement('span');
     lbl.textContent = b.name;
