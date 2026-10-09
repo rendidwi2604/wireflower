@@ -142,10 +142,20 @@ class ProductModel extends Model
     public function save(?int $id, array $data, ?string $image): int
     {
         // Cast boolean dengan benar untuk PostgreSQL + PDO emulate prepares
+        $baseSlug = slugify($data['name']);
+        
+        // Generate unique slug — tambah suffix jika sudah ada
+        $slug = $baseSlug;
+        $suffix = 1;
+        while ($this->slugExists($slug, $id)) {
+            $slug = $baseSlug . '-' . $suffix;
+            $suffix++;
+        }
+        
         $fields = [
             'category_id' => (int)   $data['category_id'],
             'name'        =>          $data['name'],
-            'slug'        => slugify($data['name']),
+            'slug'        => $slug,
             'description' =>          $data['description'],
             'price'       => (float)  $data['price'],
             'stock'       => (int)    $data['stock'],
@@ -180,6 +190,20 @@ class ProductModel extends Model
         return (int) $this->fetchValue(
             "INSERT INTO products ({$cols}) VALUES ({$placeholders}) RETURNING id",
             array_values($fields)
+        );
+    }
+    
+    private function slugExists(string $slug, ?int $excludeId): bool
+    {
+        if ($excludeId) {
+            return (bool) $this->fetchValue(
+                'SELECT 1 FROM products WHERE slug = $1 AND id != $2',
+                [$slug, $excludeId]
+            );
+        }
+        return (bool) $this->fetchValue(
+            'SELECT 1 FROM products WHERE slug = $1',
+            [$slug]
         );
     }
 
