@@ -348,9 +348,6 @@ if (empty($shown)) {
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; object-position:center;
 }
-.wf-hero__reveal-img--bg {
-  opacity:.55; /* bungatangan.png — background paling bawah */
-}
 .wf-hero__reveal-img--1 { opacity:.55; } /* header1.png — layer depan, selalu terlihat */
 .wf-hero__reveal-img--2 {
   opacity:.55;
