@@ -22,12 +22,20 @@ spl_autoload_register(function (string $class) {
 });
 
 if (session_status() === PHP_SESSION_NONE) {
-    // Pastikan session stabil di XAMPP Windows
-    ini_set('session.cookie_path', '/');
+    // Session tahan lama — 30 hari
+    $lifetime = 60 * 60 * 24 * 30; // 30 hari dalam detik
+    ini_set('session.cookie_path',     '/');
     ini_set('session.cookie_httponly', '1');
     ini_set('session.use_strict_mode', '1');
-    ini_set('session.gc_maxlifetime', '7200'); // 2 jam
-    ini_set('session.cookie_lifetime', '0');   // sampai browser ditutup
+    ini_set('session.gc_maxlifetime',  (string) $lifetime);
+    ini_set('session.gc_probability',  '1');
+    ini_set('session.gc_divisor',      '100');
+    session_set_cookie_params([
+        'lifetime' => $lifetime, // cookie persist 30 hari
+        'path'     => '/',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
     session_start();
 }
 
