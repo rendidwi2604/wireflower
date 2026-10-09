@@ -60,7 +60,7 @@ if (empty($shown)) {
 .wf-hero__bg {
   position:absolute; inset:0; width:100%; height:100%;
   object-fit:cover; object-position:60% center;
-  opacity:.45; transform:scale(1.08);
+  opacity:.65; transform:scale(1.08);
 }
 .wf-hero__noise {
   position:absolute; inset:0;
