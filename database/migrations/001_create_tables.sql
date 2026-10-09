@@ -171,3 +171,14 @@ CREATE INDEX IF NOT EXISTS idx_orders_status       ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_cart_user           ON cart_items(user_id);
 CREATE INDEX IF NOT EXISTS idx_notif_user          ON notifications(user_id);
 CREATE INDEX IF NOT EXISTS idx_reviews_product     ON reviews(product_id);
+
+-- ============================================================
+-- TABEL sessions (database session handler)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS sessions (
+    id         VARCHAR(128)  NOT NULL PRIMARY KEY,
+    data       TEXT          NOT NULL DEFAULT '',
+    last_active BIGINT       NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_last_active ON sessions (last_active);
