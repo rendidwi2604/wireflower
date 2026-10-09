@@ -2,12 +2,22 @@
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.2"
+    },
+    "api/bank-logo.php": {
+      "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [
     {
       "src": "/assets/(.*)",
-      "dest": "/assets/$1"
+      "dest": "/assets/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/api/bank-logo\\.php",
+      "dest": "/api/bank-logo.php"
     },
     {
       "src": "/(.*)",
