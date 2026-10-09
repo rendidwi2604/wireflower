@@ -143,8 +143,10 @@ class OrderModel extends Model
 
     public function cancel(int $orderId, int $userId, string $reason, string $details): ?string
     {
+        // Bisa dibatalkan dari status belum_bayar ATAU dikemas
         $order = $this->fetchOne(
-            "SELECT order_code, note FROM orders WHERE id = $1 AND user_id = $2 AND status = 'belum_bayar'",
+            "SELECT order_code, note, status FROM orders
+             WHERE id = $1 AND user_id = $2 AND status IN ('belum_bayar','dikemas')",
             [$orderId, $userId]
         );
         if (!$order) {
@@ -155,10 +157,19 @@ class OrderModel extends Model
         $note       = trim(($order['note'] ?? '') . ($order['note'] ? "\n" : '') . $cancelNote);
 
         $this->run(
-            "UPDATE orders SET status = 'dibatalkan', note = $1 WHERE id = $2 AND user_id = $3 AND status = 'belum_bayar'",
+            "UPDATE orders SET status = 'dibatalkan', note = $1
+             WHERE id = $2 AND user_id = $3 AND status IN ('belum_bayar','dikemas')",
             [$note, $orderId, $userId]
         );
         return $order['order_code'];
+    }
+
+    public function latestPaymentForOrder(int $orderId): ?array
+    {
+        return $this->fetchOne(
+            'SELECT * FROM payments WHERE order_id = $1 ORDER BY id DESC LIMIT 1',
+            [$orderId]
+        );
     }
 
     // ---- Admin ----
