@@ -325,4 +325,118 @@
   }
 
 })();
+
+/* ══════════════════════════════════════════
+   ONGKIR — flat rate per zona provinsi
+   ══════════════════════════════════════════ */
+(function () {
+  // Zona ongkir berdasarkan nama provinsi (lowercase, partial match)
+  var ZONA = [
+    {
+      nama  : 'Jabodetabek',
+      tarif : 15000,
+      label : 'Reguler · Jabodetabek',
+      match : ['dki jakarta','jawa barat','banten']   // juga ditangani kota di bawah
+    },
+    {
+      nama  : 'Jawa',
+      tarif : 20000,
+      label : 'Reguler · Pulau Jawa',
+      match : ['jawa','yogyakarta','di yogyakarta']
+    },
+    {
+      nama  : 'Sumatera / Bali / NTB',
+      tarif : 25000,
+      label : 'Reguler · Sumatera & Bali',
+      match : ['sumatera','sumatra','aceh','riau','jambi','bengkulu','lampung',
+               'bangka','belitung','kepulauan riau','bali','nusa tenggara barat','ntb']
+    },
+    {
+      nama  : 'Kalimantan / Sulawesi / NTT',
+      tarif : 35000,
+      label : 'Reguler · Kalimantan & Sulawesi',
+      match : ['kalimantan','sulawesi','nusa tenggara timur','ntt','gorontalo']
+    },
+    {
+      nama  : 'Maluku / Papua',
+      tarif : 45000,
+      label : 'Reguler · Maluku & Papua',
+      match : ['maluku','papua']
+    },
+  ];
+
+  // Kota-kota Jabodetabek untuk deteksi lebih presisi
+  var JABODETABEK_CITY = ['jakarta','bogor','depok','tangerang','bekasi'];
+
+  function getZona(provName, cityName) {
+    var p = (provName  || '').toLowerCase();
+    var c = (cityName  || '').toLowerCase();
+
+    // Cek Jabodetabek dulu (lebih spesifik dari "Jawa Barat" umum)
+    if (p.indexOf('dki jakarta') !== -1) return ZONA[0];
+    for (var j = 0; j < JABODETABEK_CITY.length; j++) {
+      if (c.indexOf(JABODETABEK_CITY[j]) !== -1) return ZONA[0];
+    }
+
+    for (var i = 0; i < ZONA.length; i++) {
+      for (var k = 0; k < ZONA[i].match.length; k++) {
+        if (p.indexOf(ZONA[i].match[k]) !== -1) return ZONA[i];
+      }
+    }
+    return null; // belum bisa ditentukan
+  }
+
+  function toRupiah(n) {
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  function updateSummary(zona) {
+    var shippingEl  = document.getElementById('co-shipping');
+    var infoEl      = document.getElementById('co-shipping-info');
+    var totalEl     = document.getElementById('co-total');
+    var subtotalEl  = document.getElementById('co-subtotal');
+    var inpShipping = document.getElementById('inp-shipping-cost');
+
+    if (!shippingEl) return;
+
+    var subtotal = parseInt((subtotalEl ? subtotalEl.dataset.raw : 0)) || <?= (int)$subtotal ?>;
+
+    if (!zona) {
+      shippingEl.innerHTML = '<span style="font-size:.8rem;color:var(--text-muted);">Pilih provinsi dulu</span>';
+      if (infoEl)      { infoEl.style.display = 'none'; infoEl.textContent = ''; }
+      if (totalEl)     totalEl.textContent = toRupiah(subtotal);
+      if (inpShipping) inpShipping.value = 0;
+      return;
+    }
+
+    shippingEl.textContent = toRupiah(zona.tarif);
+    if (infoEl) {
+      infoEl.textContent = zona.label;
+      infoEl.style.display = 'block';
+    }
+    if (totalEl)     totalEl.textContent = toRupiah(subtotal + zona.tarif);
+    if (inpShipping) inpShipping.value = zona.tarif;
+  }
+
+  // Simpan subtotal raw di element biar mudah dibaca JS
+  var subtotalEl = document.getElementById('co-subtotal');
+  if (subtotalEl) subtotalEl.dataset.raw = <?= (int)$subtotal ?>;
+
+  // Listen perubahan provinsi & kota
+  var selProv = document.getElementById('sel_province');
+  var selCity = document.getElementById('sel_city');
+
+  function onLocationChange() {
+    var prov = selProv ? selProv.value : '';
+    var city = selCity ? selCity.value : '';
+    var zona = getZona(prov, city);
+    updateSummary(zona);
+  }
+
+  if (selProv) selProv.addEventListener('change', onLocationChange);
+  if (selCity) selCity.addEventListener('change', onLocationChange);
+
+  // Inisialisasi awal (jika sudah ada nilai dari alamat tersimpan)
+  onLocationChange();
+})();
 </script>
