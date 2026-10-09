@@ -123,16 +123,23 @@
 
         <div class="order-summary-row">
           <span>Subtotal</span>
-          <span><?= rupiah($subtotal) ?></span>
+          <span id="co-subtotal"><?= rupiah($subtotal) ?></span>
         </div>
         <div class="order-summary-row">
           <span>Ongkos kirim</span>
-          <span><?= rupiah($shipping_cost) ?></span>
+          <span id="co-shipping">
+            <?= $shipping_cost > 0 ? rupiah($shipping_cost) : '<span style="font-size:.8rem;color:var(--text-muted);">Pilih provinsi dulu</span>' ?>
+          </span>
         </div>
+        <!-- Info zona ongkir -->
+        <div id="co-shipping-info" style="font-size:.75rem;color:var(--text-muted);text-align:right;margin-top:.2rem;display:none;"></div>
         <div class="order-summary-row total">
           <span>Total</span>
-          <span><?= rupiah($total) ?></span>
+          <span id="co-total"><?= rupiah($total) ?></span>
         </div>
+
+        <!-- Hidden input ongkir — dikirim ke server -->
+        <input type="hidden" name="shipping_cost" id="inp-shipping-cost" value="<?= (int)$shipping_cost ?>">
 
         <button type="submit"
                 class="btn btn-primary"
