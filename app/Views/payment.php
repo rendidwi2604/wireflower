@@ -254,33 +254,34 @@
 </style>
 
 <script>
-/* ══ DATA BANK — logo dari assets lokal (sudah terverifikasi 200 OK di Vercel) ══ */
+/* ══ DATA BANK — logo assets lokal via site_url (sudah terverifikasi 200 OK) ══ */
+var LOGO = function(s){ return '<?= site_url("assets/img/banks/") ?>' + s + '.svg'; };
 var BANKS = [
   /* Bank Pemerintah */
-  { group:'Bank Pemerintah', name:'Bank BRI',        short:'BRI',       logo: 'https://wireflower.vercel.app/assets/img/banks/bri.svg' },
-  { group:'Bank Pemerintah', name:'Bank BNI',        short:'BNI',       logo: 'https://wireflower.vercel.app/assets/img/banks/bni.svg' },
-  { group:'Bank Pemerintah', name:'Bank Mandiri',    short:'Mandiri',   logo: 'https://wireflower.vercel.app/assets/img/banks/mandiri.svg' },
-  { group:'Bank Pemerintah', name:'Bank BTN',        short:'BTN',       logo: 'https://wireflower.vercel.app/assets/img/banks/btn.svg' },
-  { group:'Bank Pemerintah', name:'Bank BSI',        short:'BSI',       logo: 'https://wireflower.vercel.app/assets/img/banks/bsi.svg' },
+  { group:'Bank Pemerintah', name:'Bank BRI',        short:'BRI',       logo: LOGO('bri') },
+  { group:'Bank Pemerintah', name:'Bank BNI',        short:'BNI',       logo: LOGO('bni') },
+  { group:'Bank Pemerintah', name:'Bank Mandiri',    short:'Mandiri',   logo: LOGO('mandiri') },
+  { group:'Bank Pemerintah', name:'Bank BTN',        short:'BTN',       logo: LOGO('btn') },
+  { group:'Bank Pemerintah', name:'Bank BSI',        short:'BSI',       logo: LOGO('bsi') },
   /* Bank Swasta */
-  { group:'Bank Swasta',     name:'Bank BCA',        short:'BCA',       logo: 'https://wireflower.vercel.app/assets/img/banks/bca.svg' },
-  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',      logo: 'https://wireflower.vercel.app/assets/img/banks/cimb.svg' },
-  { group:'Bank Swasta',     name:'Bank Danamon',    short:'Danamon',   logo: 'https://wireflower.vercel.app/assets/img/banks/danamon.svg' },
-  { group:'Bank Swasta',     name:'Bank Permata',    short:'Permata',   logo: 'https://wireflower.vercel.app/assets/img/banks/permata.svg' },
-  { group:'Bank Swasta',     name:'Bank Maybank',    short:'Maybank',   logo: 'https://wireflower.vercel.app/assets/img/banks/maybank.svg' },
-  { group:'Bank Swasta',     name:'Bank OCBC NISP',  short:'OCBC',      logo: 'https://wireflower.vercel.app/assets/img/banks/ocbc.svg' },
-  { group:'Bank Swasta',     name:'Bank Mega',       short:'Mega',      logo: 'https://wireflower.vercel.app/assets/img/banks/mega.svg' },
+  { group:'Bank Swasta',     name:'Bank BCA',        short:'BCA',       logo: LOGO('bca') },
+  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',      logo: LOGO('cimb') },
+  { group:'Bank Swasta',     name:'Bank Danamon',    short:'Danamon',   logo: LOGO('danamon') },
+  { group:'Bank Swasta',     name:'Bank Permata',    short:'Permata',   logo: LOGO('permata') },
+  { group:'Bank Swasta',     name:'Bank Maybank',    short:'Maybank',   logo: LOGO('maybank') },
+  { group:'Bank Swasta',     name:'Bank OCBC NISP',  short:'OCBC',      logo: LOGO('ocbc') },
+  { group:'Bank Swasta',     name:'Bank Mega',       short:'Mega',      logo: LOGO('mega') },
   /* Bank Digital */
-  { group:'Bank Digital',    name:'Jenius (BTPN)',   short:'Jenius',    logo: 'https://wireflower.vercel.app/assets/img/banks/jenius.svg' },
-  { group:'Bank Digital',    name:'Bank Jago',       short:'Jago',      logo: 'https://wireflower.vercel.app/assets/img/banks/jago.svg' },
-  { group:'Bank Digital',    name:'Seabank',         short:'Seabank',   logo: 'https://wireflower.vercel.app/assets/img/banks/seabank.svg' },
-  { group:'Bank Digital',    name:'Allo Bank',       short:'Allo',      logo: 'https://wireflower.vercel.app/assets/img/banks/allo.svg' },
+  { group:'Bank Digital',    name:'Jenius (BTPN)',   short:'Jenius',    logo: LOGO('jenius') },
+  { group:'Bank Digital',    name:'Bank Jago',       short:'Jago',      logo: LOGO('jago') },
+  { group:'Bank Digital',    name:'Seabank',         short:'Seabank',   logo: LOGO('seabank') },
+  { group:'Bank Digital',    name:'Allo Bank',       short:'Allo',      logo: LOGO('allo') },
   /* Dompet Digital */
-  { group:'Dompet Digital',  name:'GoPay',           short:'GoPay',     logo: 'https://wireflower.vercel.app/assets/img/banks/gopay.svg' },
-  { group:'Dompet Digital',  name:'OVO',             short:'OVO',       logo: 'https://wireflower.vercel.app/assets/img/banks/ovo.svg' },
-  { group:'Dompet Digital',  name:'DANA',            short:'DANA',      logo: 'https://wireflower.vercel.app/assets/img/banks/dana.svg' },
-  { group:'Dompet Digital',  name:'ShopeePay',       short:'ShopeePay', logo: 'https://wireflower.vercel.app/assets/img/banks/shopeepay.svg' },
-  { group:'Dompet Digital',  name:'LinkAja',         short:'LinkAja',   logo: 'https://wireflower.vercel.app/assets/img/banks/linkaja.svg' },
+  { group:'Dompet Digital',  name:'GoPay',           short:'GoPay',     logo: LOGO('gopay') },
+  { group:'Dompet Digital',  name:'OVO',             short:'OVO',       logo: LOGO('ovo') },
+  { group:'Dompet Digital',  name:'DANA',            short:'DANA',      logo: LOGO('dana') },
+  { group:'Dompet Digital',  name:'ShopeePay',       short:'ShopeePay', logo: LOGO('shopeepay') },
+  { group:'Dompet Digital',  name:'LinkAja',         short:'LinkAja',   logo: LOGO('linkaja') },
 ];
 
 var NOREK = '901757779319';
