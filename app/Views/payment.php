@@ -310,13 +310,9 @@ var selectedBank = null;
     var img = document.createElement('img');
     img.src = b.logo;
     img.alt = b.short;
-    img.onerror = function() {
-      this.style.display = 'none';
-      var ic = document.createElement('div');
-      ic.className = 'bank-fallback-icon';
-      ic.innerHTML = '<i class="bi bi-bank"></i>';
-      item.insertBefore(ic, item.firstChild);
-    };
+    img.width  = 32;
+    img.height = 32;
+    img.style.cssText = 'object-fit:contain;flex-shrink:0;border-radius:5px;background:#f5f5f5;padding:2px;border:1px solid #eee;';
 
     var lbl = document.createElement('span');
     lbl.textContent = b.name;
