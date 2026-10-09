@@ -108,16 +108,64 @@
 </div>
 
 <script>
-// Select all
-const selectAll = document.getElementById('selectAllItems');
-const itemChecks = document.querySelectorAll('.cart-item-check');
-if (selectAll) {
-  selectAll.addEventListener('change', () => itemChecks.forEach(c => c.checked = selectAll.checked));
-  itemChecks.forEach(c => c.addEventListener('change', () => {
-    selectAll.checked = [...itemChecks].every(c => c.checked);
-  }));
+// ── Rupiah formatter ──
+function toRupiah(n) {
+  return 'Rp ' + n.toLocaleString('id-ID');
 }
-// Qty buttons
+
+// ── Hitung ulang ringkasan berdasarkan item tercentang ──
+function recalcSummary() {
+  const checks  = document.querySelectorAll('.cart-item-check');
+  const lblEl   = document.getElementById('summary-label');
+  const subEl   = document.getElementById('summary-subtotal');
+  const totEl   = document.getElementById('summary-total');
+  const btnEl   = document.getElementById('btnCheckout');
+
+  let subtotal = 0;
+  let count    = 0;
+
+  checks.forEach(function(c) {
+    if (c.checked) {
+      const price = parseInt(c.dataset.price) || 0;
+      const qty   = parseInt(c.dataset.qty)   || 1;
+      subtotal += price * qty;
+      count++;
+    }
+  });
+
+  if (lblEl) lblEl.textContent = 'Subtotal (' + count + ' item dipilih)';
+  if (subEl) subEl.textContent = toRupiah(subtotal);
+  if (totEl) totEl.textContent = toRupiah(subtotal);
+
+  // Aktifkan tombol hanya jika ada yang dipilih
+  if (btnEl) {
+    btnEl.disabled = count === 0;
+    btnEl.style.opacity  = count === 0 ? '.5'  : '1';
+    btnEl.style.cursor   = count === 0 ? 'not-allowed' : 'pointer';
+  }
+}
+
+// ── Select all ──
+const selectAll  = document.getElementById('selectAllItems');
+const itemChecks = document.querySelectorAll('.cart-item-check');
+
+if (selectAll) {
+  selectAll.addEventListener('change', function() {
+    itemChecks.forEach(c => c.checked = selectAll.checked);
+    recalcSummary();
+  });
+  itemChecks.forEach(function(c) {
+    c.addEventListener('change', function() {
+      selectAll.checked = [...itemChecks].every(c => c.checked);
+      recalcSummary();
+    });
+  });
+}
+
+// Hitung awal saat halaman load
+recalcSummary();
+
+// ── Qty buttons ──
 function changeCartQty(btn, delta, max) {
   const input = btn.parentElement.querySelector('.qty-input');
   let val = parseInt(input.value) + delta;
