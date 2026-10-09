@@ -254,33 +254,34 @@
 </style>
 
 <script>
-/* ══ DATA BANK — logo dari Wikipedia SVG (paling stabil) ══ */
+/* ══ DATA BANK — logo dari idn-finlogos via jsDelivr CDN (semua verified 200) ══ */
+var CDN = 'https://cdn.jsdelivr.net/npm/idn-finlogos@2/dist/icons/';
 var BANKS = [
   /* Bank Pemerintah */
-  { group:'Bank Pemerintah', name:'Bank BRI',     short:'BRI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/120px-BANK_BRI_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'Bank BNI',     short:'BNI',        logo:'https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/120px-BNI_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'Bank Mandiri', short:'Mandiri',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/120px-Bank_Mandiri_logo_2016.svg.png' },
-  { group:'Bank Pemerintah', name:'Bank BTN',     short:'BTN',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Bank_tabungan_negara_logo.svg/120px-Bank_tabungan_negara_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'Bank BSI',     short:'BSI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bank_Syariah_Indonesia.svg/120px-Bank_Syariah_Indonesia.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank BRI',        short:'BRI',       logo: CDN+'bri.svg' },
+  { group:'Bank Pemerintah', name:'Bank BNI',        short:'BNI',       logo: CDN+'bni.svg' },
+  { group:'Bank Pemerintah', name:'Bank Mandiri',    short:'Mandiri',   logo: CDN+'mandiri.svg' },
+  { group:'Bank Pemerintah', name:'Bank BTN',        short:'BTN',       logo: CDN+'btn.svg' },
+  { group:'Bank Pemerintah', name:'Bank BSI',        short:'BSI',       logo: CDN+'bsi.svg' },
   /* Bank Swasta */
-  { group:'Bank Swasta',     name:'Bank BCA',     short:'BCA',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/120px-Bank_Central_Asia.svg.png' },
-  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',   logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/CIMB_Niaga.svg/120px-CIMB_Niaga.svg.png' },
-  { group:'Bank Swasta',     name:'Bank Danamon', short:'Danamon',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bank_Danamon.svg/120px-Bank_Danamon.svg.png' },
-  { group:'Bank Swasta',     name:'Bank Permata', short:'Permata',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Bank_Permata_logo.svg/120px-Bank_Permata_logo.svg.png' },
-  { group:'Bank Swasta',     name:'Bank Maybank', short:'Maybank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Maybank_logo.svg/120px-Maybank_logo.svg.png' },
-  { group:'Bank Swasta',     name:'Bank OCBC NISP', short:'OCBC',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/OCBC_NISP.svg/120px-OCBC_NISP.svg.png' },
-  { group:'Bank Swasta',     name:'Bank Mega',    short:'Mega',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Bank_Mega_logo.svg/120px-Bank_Mega_logo.svg.png' },
+  { group:'Bank Swasta',     name:'Bank BCA',        short:'BCA',       logo: CDN+'bca.svg' },
+  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',      logo: CDN+'cimb-niaga.svg' },
+  { group:'Bank Swasta',     name:'Bank Danamon',    short:'Danamon',   logo: CDN+'danamon.svg' },
+  { group:'Bank Swasta',     name:'Bank Permata',    short:'Permata',   logo: CDN+'permata.svg' },
+  { group:'Bank Swasta',     name:'Bank Maybank',    short:'Maybank',   logo: CDN+'maybank.svg' },
+  { group:'Bank Swasta',     name:'Bank OCBC NISP',  short:'OCBC',      logo: CDN+'ocbc-nisp.svg' },
+  { group:'Bank Swasta',     name:'Bank Mega',       short:'Mega',      logo: CDN+'bank-mega.svg' },
   /* Bank Digital */
-  { group:'Bank Digital',    name:'Jenius (BTPN)', short:'Jenius',   logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Jenius_logo.svg/120px-Jenius_logo.svg.png' },
-  { group:'Bank Digital',    name:'Bank Jago',    short:'Jago',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Bank_Jago_Logo.svg/120px-Bank_Jago_Logo.svg.png' },
-  { group:'Bank Digital',    name:'Seabank',      short:'Seabank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/SeaBank_Logo.svg/120px-SeaBank_Logo.svg.png' },
-  { group:'Bank Digital',    name:'Allo Bank',    short:'Allo',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Allo_Bank_logo.svg/120px-Allo_Bank_logo.svg.png' },
+  { group:'Bank Digital',    name:'Jenius (BTPN)',   short:'Jenius',    logo: CDN+'jenius.svg' },
+  { group:'Bank Digital',    name:'Bank Jago',       short:'Jago',      logo: CDN+'bank-jago.svg' },
+  { group:'Bank Digital',    name:'Seabank',         short:'Seabank',   logo: CDN+'seabank.svg' },
+  { group:'Bank Digital',    name:'Allo Bank',       short:'Allo',      logo: CDN+'allo.svg' },
   /* Dompet Digital */
-  { group:'Dompet Digital',  name:'GoPay',        short:'GoPay',      logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/120px-Gopay_logo.svg.png' },
-  { group:'Dompet Digital',  name:'OVO',          short:'OVO',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/120px-Logo_ovo_purple.svg.png' },
-  { group:'Dompet Digital',  name:'DANA',         short:'DANA',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/120px-Logo_dana_blue.svg.png' },
-  { group:'Dompet Digital',  name:'ShopeePay',    short:'ShopeePay',  logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/ShopeePay_logo.svg/120px-ShopeePay_logo.svg.png' },
-  { group:'Dompet Digital',  name:'LinkAja',      short:'LinkAja',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/120px-LinkAja.svg.png' },
+  { group:'Dompet Digital',  name:'GoPay',           short:'GoPay',     logo: CDN+'gopay.svg' },
+  { group:'Dompet Digital',  name:'OVO',             short:'OVO',       logo: CDN+'ovo.svg' },
+  { group:'Dompet Digital',  name:'DANA',            short:'DANA',      logo: CDN+'dana.svg' },
+  { group:'Dompet Digital',  name:'ShopeePay',       short:'ShopeePay', logo: CDN+'shopeepay.svg' },
+  { group:'Dompet Digital',  name:'LinkAja',         short:'LinkAja',   logo: CDN+'linkaja.svg' },
 ];
 
 var NOREK = '901757779319';
