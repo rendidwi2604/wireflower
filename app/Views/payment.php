@@ -1,4 +1,4 @@
-<div class="container" style="max-width:600px;margin:0 auto;padding:2rem 1.5rem;">
+<div class="container" style="max-width:560px;margin:0 auto;padding:2rem 1.5rem;">
 
   <div class="page-title-bar">
     <h1>Pembayaran</h1>
@@ -27,47 +27,54 @@
       <div class="form-group" style="margin-bottom:1.25rem;">
         <label class="form-label" style="margin-bottom:.65rem;">Metode Pembayaran</label>
         <div style="display:flex;flex-direction:column;gap:.5rem;">
-
           <label class="pay-method-label" data-target="detail-transfer">
-            <input type="radio" name="method" value="transfer_bank" checked
-                   style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
+            <input type="radio" name="method" value="transfer_bank" checked style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
             <i class="bi bi-bank" style="font-size:1.15rem;color:var(--pink-deep);"></i>
             <span style="font-weight:500;font-size:.9rem;">Transfer Bank</span>
           </label>
-
           <label class="pay-method-label" data-target="detail-cod">
-            <input type="radio" name="method" value="cod"
-                   style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
+            <input type="radio" name="method" value="cod" style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
             <i class="bi bi-cash-coin" style="font-size:1.15rem;color:var(--pink-deep);"></i>
             <span style="font-weight:500;font-size:.9rem;">COD (Bayar di Tempat)</span>
           </label>
-
           <label class="pay-method-label" data-target="detail-qris">
-            <input type="radio" name="method" value="qris"
-                   style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
+            <input type="radio" name="method" value="qris" style="accent-color:var(--pink-deep);" onchange="switchMethod(this)">
             <i class="bi bi-qr-code" style="font-size:1.15rem;color:var(--pink-deep);"></i>
             <span style="font-weight:500;font-size:.9rem;">QRIS</span>
           </label>
-
         </div>
       </div>
 
       <!-- ── Detail Transfer Bank ── -->
       <div id="detail-transfer" class="pay-detail" style="margin-bottom:1.25rem;">
 
-        <label class="form-label" style="display:block;margin-bottom:.65rem;">Pilih Bank</label>
+        <label class="form-label" style="display:block;margin-bottom:.5rem;">Pilih Bank Tujuan</label>
 
-        <!-- Hidden input — nilai bank terpilih -->
+        <!-- Hidden input nilai bank -->
         <input type="hidden" name="bank_name" id="inp-bank-name" value="">
 
-        <!-- Grid bank cards -->
-        <div id="bank-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-bottom:1rem;">
+        <!-- Custom dropdown with logo -->
+        <div class="bank-dropdown" id="bankDropdown">
+          <!-- Trigger -->
+          <div class="bank-dd-trigger" id="bankTrigger" onclick="toggleDropdown()">
+            <span class="bank-dd-placeholder" id="bankPlaceholder">
+              <span style="color:#aaa;">— Pilih Bank —</span>
+            </span>
+            <i class="bi bi-chevron-down bank-dd-arrow" id="bankArrow"></i>
+          </div>
+          <!-- Menu -->
+          <div class="bank-dd-menu" id="bankMenu">
+            <!-- diisi JS -->
+          </div>
         </div>
 
-        <!-- Info rekening tujuan — muncul setelah bank dipilih -->
-        <div id="rekening-info" style="display:none;background:#f0faf5;border:1px solid #b7e4cc;border-radius:var(--radius-sm);padding:1rem 1.1rem;font-size:.875rem;">
+        <!-- Info rekening tujuan -->
+        <div id="rekening-info" style="display:none;background:#f0faf5;border:1px solid #b7e4cc;
+             border-radius:var(--radius-sm);padding:1rem 1.1rem;font-size:.875rem;margin-top:.85rem;">
           <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem;">
-            <img id="rek-logo" src="" alt="" style="width:36px;height:36px;object-fit:contain;border-radius:6px;background:#fff;padding:2px;border:1px solid #dde;">
+            <img id="rek-logo" src="" alt=""
+                 style="width:38px;height:38px;object-fit:contain;border-radius:6px;
+                        background:#fff;padding:3px;border:1px solid #dde;flex-shrink:0;">
             <div>
               <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1a6b3a;">Rekening Tujuan</div>
               <div style="font-weight:700;font-size:.92rem;color:#1e1212;" id="rek-bank-name">—</div>
@@ -75,35 +82,35 @@
           </div>
           <table style="width:100%;border-collapse:collapse;">
             <tr>
-              <td style="color:#555;padding:.2rem 0;width:38%;font-size:.83rem;">No. Rekening</td>
+              <td style="color:#555;padding:.25rem 0;width:40%;font-size:.83rem;">No. Rekening</td>
               <td>
-                <span style="font-weight:700;font-size:1rem;color:#1e1212;letter-spacing:.06em;" id="rek-norek">901757779319</span>
+                <span style="font-weight:700;font-size:1rem;color:#1e1212;letter-spacing:.06em;">901757779319</span>
                 <button type="button" onclick="copyRek()" title="Salin"
-                        style="background:none;border:none;cursor:pointer;color:var(--pink-deep);font-size:.85rem;margin-left:.35rem;vertical-align:middle;">
+                        style="background:none;border:none;cursor:pointer;color:var(--pink-deep);
+                               font-size:.85rem;margin-left:.35rem;vertical-align:middle;">
                   <i class="bi bi-copy" id="copy-icon"></i>
                 </button>
               </td>
             </tr>
             <tr>
-              <td style="color:#555;padding:.2rem 0;font-size:.83rem;">Atas Nama</td>
-              <td style="font-weight:600;color:#1e1212;font-size:.875rem;">WireFlower</td>
+              <td style="color:#555;padding:.25rem 0;font-size:.83rem;">Atas Nama</td>
+              <td style="font-weight:600;color:#1e1212;">WireFlower</td>
             </tr>
             <tr>
-              <td style="color:#555;padding:.2rem 0;font-size:.83rem;">Jumlah Transfer</td>
+              <td style="color:#555;padding:.25rem 0;font-size:.83rem;">Jumlah Transfer</td>
               <td style="font-weight:700;color:var(--pink-deep);"><?= rupiah($order['total']) ?></td>
             </tr>
           </table>
-          <div style="margin-top:.75rem;font-size:.75rem;color:#555;line-height:1.5;">
+          <div style="margin-top:.75rem;font-size:.75rem;color:#666;line-height:1.5;">
             <i class="bi bi-exclamation-triangle" style="color:#e67e22;"></i>
             Transfer tepat sesuai jumlah di atas. Pesanan dikonfirmasi setelah admin memverifikasi.
           </div>
         </div>
 
-        <!-- Catatan transfer -->
+        <!-- Catatan -->
         <div class="form-group" style="margin-top:.85rem;margin-bottom:0;">
           <label class="form-label">Nama Pengirim / Catatan <span style="color:var(--text-muted);font-weight:400;">(opsional)</span></label>
-          <input type="text" name="transfer_note" class="form-input"
-                 placeholder="Mis: Budi Santoso / WF-20261009">
+          <input type="text" name="transfer_note" class="form-input" placeholder="Mis: Budi Santoso / WF-20261009">
         </div>
       </div>
 
@@ -121,13 +128,14 @@
 
       <!-- ── Detail QRIS ── -->
       <div id="detail-qris" class="pay-detail" style="display:none;margin-bottom:1.25rem;">
-        <div style="background:#f5f0ff;border:1px solid #c9b8f0;border-radius:var(--radius-sm);padding:1.25rem 1.1rem;text-align:center;font-size:.875rem;">
+        <div style="background:#f5f0ff;border:1px solid #c9b8f0;border-radius:var(--radius-sm);
+             padding:1.25rem 1.1rem;text-align:center;font-size:.875rem;">
           <div style="font-weight:700;margin-bottom:.75rem;color:#5a3ea0;font-size:.95rem;">
             <i class="bi bi-qr-code-scan"></i> Scan QRIS
           </div>
           <div style="width:190px;height:190px;margin:0 auto .85rem;background:#fff;border-radius:12px;
-                      display:flex;align-items:center;justify-content:center;color:#5a3ea0;font-size:3.5rem;
-                      border:2px solid #c9b8f0;">
+               display:flex;align-items:center;justify-content:center;color:#5a3ea0;font-size:3.5rem;
+               border:2px solid #c9b8f0;">
             <i class="bi bi-qr-code"></i>
           </div>
           <div style="color:#666;font-size:.8rem;line-height:1.65;">
@@ -137,7 +145,7 @@
         </div>
       </div>
 
-      <button type="submit" id="btn-confirm" class="btn btn-primary"
+      <button type="submit" class="btn btn-primary"
               style="width:100%;justify-content:center;border-radius:var(--radius-sm);">
         <i class="bi bi-check2-circle"></i> Konfirmasi Pembayaran
       </button>
@@ -155,8 +163,7 @@
           Metode: <strong><?= e($payment['method']) ?></strong>
         </p>
         <?php endif; ?>
-        <a href="<?= site_url('pesanan.php') ?>" class="btn btn-primary"
-           style="border-radius:var(--radius-sm);">
+        <a href="<?= site_url('pesanan.php') ?>" class="btn btn-primary" style="border-radius:var(--radius-sm);">
           <i class="bi bi-receipt"></i> Lihat Pesanan Saya
         </a>
       </div>
@@ -173,138 +180,195 @@
   cursor:pointer; transition:border-color .15s, background .15s;
 }
 .pay-method-label:hover { border-color:var(--pink); }
-.pay-method-label:has(input:checked) {
-  border-color:var(--pink-deep);
-  background:var(--pink-soft);
-}
+.pay-method-label:has(input:checked) { border-color:var(--pink-deep); background:var(--pink-soft); }
 
-/* Bank card grid */
-.bank-card {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:.4rem; padding:.6rem .4rem;
-  border:1.5px solid var(--border); border-radius:10px;
-  cursor:pointer; background:#fff;
-  transition:border-color .15s, box-shadow .15s, background .15s;
-  min-height:72px;
-}
-.bank-card:hover { border-color:var(--pink); box-shadow:0 2px 8px rgba(201,81,111,.12); }
-.bank-card.selected {
-  border-color:var(--pink-deep);
-  background:var(--pink-soft);
-  box-shadow:0 2px 10px rgba(201,81,111,.18);
-}
-.bank-card img {
-  width:38px; height:38px; object-fit:contain;
-  border-radius:6px;
-}
-.bank-card span {
-  font-size:.65rem; font-weight:600; color:var(--text-muted);
-  text-align:center; line-height:1.3;
-}
+/* Custom bank dropdown */
+.bank-dropdown { position:relative; user-select:none; }
 
-/* Group label */
-.bank-group-label {
-  font-size:.7rem; font-weight:700; letter-spacing:.1em;
+.bank-dd-trigger {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.65rem .9rem;
+  border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  background:#fff; cursor:pointer;
+  transition:border-color .15s;
+  min-height:46px;
+}
+.bank-dd-trigger:hover { border-color:var(--pink); }
+.bank-dd-trigger.open  { border-color:var(--pink-deep); border-radius:var(--radius-sm) var(--radius-sm) 0 0; }
+
+.bank-dd-arrow { font-size:.75rem; color:var(--text-muted); transition:transform .2s; }
+.bank-dd-trigger.open .bank-dd-arrow { transform:rotate(180deg); }
+
+.bank-dd-menu {
+  display:none;
+  position:absolute; left:0; right:0; top:100%; z-index:200;
+  background:#fff;
+  border:1.5px solid var(--pink-deep); border-top:none;
+  border-radius:0 0 var(--radius-sm) var(--radius-sm);
+  max-height:300px; overflow-y:auto;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+}
+.bank-dd-menu.open { display:block; }
+
+.bank-dd-group {
+  font-size:.68rem; font-weight:800; letter-spacing:.1em;
   text-transform:uppercase; color:var(--text-muted);
-  margin:.85rem 0 .4rem;
+  padding:.55rem 1rem .3rem; background:#faf8f5;
+  border-bottom:1px solid var(--border);
 }
+
+.bank-dd-item {
+  display:flex; align-items:center; gap:.75rem;
+  padding:.55rem .9rem; cursor:pointer;
+  transition:background .12s;
+  border-bottom:1px solid #f5f0f0;
+}
+.bank-dd-item:last-child { border-bottom:none; }
+.bank-dd-item:hover { background:var(--pink-soft); }
+.bank-dd-item.selected { background:var(--pink-soft); }
+
+.bank-dd-item img {
+  width:32px; height:32px; object-fit:contain;
+  flex-shrink:0; border-radius:5px;
+  background:#f5f5f5; padding:2px;
+  border:1px solid #eee;
+}
+.bank-dd-item .bank-fallback-icon {
+  width:32px; height:32px; flex-shrink:0; border-radius:5px;
+  background:var(--pink-soft); display:flex; align-items:center;
+  justify-content:center; font-size:1rem; color:var(--pink-deep);
+  border:1px solid var(--border);
+}
+.bank-dd-item span { font-size:.875rem; font-weight:500; color:var(--text); }
+
+/* Selected preview in trigger */
+.bank-dd-selected {
+  display:flex; align-items:center; gap:.65rem;
+}
+.bank-dd-selected img {
+  width:26px; height:26px; object-fit:contain;
+  border-radius:4px; background:#f5f5f5; padding:1px;
+  border:1px solid #eee; flex-shrink:0;
+}
+.bank-dd-selected span { font-size:.875rem; font-weight:600; color:var(--text); }
 </style>
 
 <script>
-/* ══ DATA BANK ══ */
+/* ══ DATA BANK — logo dari Wikipedia SVG (paling stabil) ══ */
 var BANKS = [
   /* Bank Pemerintah */
-  { group:'Bank Pemerintah', name:'BRI',     label:'BRI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/320px-BANK_BRI_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'BNI',     label:'BNI',        logo:'https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/320px-BNI_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'Mandiri', label:'Mandiri',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/320px-Bank_Mandiri_logo_2016.svg.png' },
-  { group:'Bank Pemerintah', name:'BTN',     label:'BTN',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Bank_tabungan_negara_logo.svg/320px-Bank_tabungan_negara_logo.svg.png' },
-  { group:'Bank Pemerintah', name:'BSI',     label:'BSI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bank_Syariah_Indonesia.svg/320px-Bank_Syariah_Indonesia.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank BRI',     short:'BRI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/120px-BANK_BRI_logo.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank BNI',     short:'BNI',        logo:'https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/120px-BNI_logo.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank Mandiri', short:'Mandiri',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/120px-Bank_Mandiri_logo_2016.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank BTN',     short:'BTN',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Bank_tabungan_negara_logo.svg/120px-Bank_tabungan_negara_logo.svg.png' },
+  { group:'Bank Pemerintah', name:'Bank BSI',     short:'BSI',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bank_Syariah_Indonesia.svg/120px-Bank_Syariah_Indonesia.svg.png' },
   /* Bank Swasta */
-  { group:'Bank Swasta',     name:'BCA',     label:'BCA',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/320px-Bank_Central_Asia.svg.png' },
-  { group:'Bank Swasta',     name:'CIMB',    label:'CIMB Niaga', logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/CIMB_Niaga.svg/320px-CIMB_Niaga.svg.png' },
-  { group:'Bank Swasta',     name:'Danamon', label:'Danamon',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bank_Danamon.svg/320px-Bank_Danamon.svg.png' },
-  { group:'Bank Swasta',     name:'Permata', label:'Permata',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Bank_Permata_logo.svg/320px-Bank_Permata_logo.svg.png' },
-  { group:'Bank Swasta',     name:'Maybank', label:'Maybank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Maybank_logo.svg/320px-Maybank_logo.svg.png' },
-  { group:'Bank Swasta',     name:'OCBC',    label:'OCBC NISP',  logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/OCBC_NISP.svg/320px-OCBC_NISP.svg.png' },
-  { group:'Bank Swasta',     name:'Mega',    label:'Mega',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Bank_Mega_logo.svg/320px-Bank_Mega_logo.svg.png' },
+  { group:'Bank Swasta',     name:'Bank BCA',     short:'BCA',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/120px-Bank_Central_Asia.svg.png' },
+  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',   logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/CIMB_Niaga.svg/120px-CIMB_Niaga.svg.png' },
+  { group:'Bank Swasta',     name:'Bank Danamon', short:'Danamon',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bank_Danamon.svg/120px-Bank_Danamon.svg.png' },
+  { group:'Bank Swasta',     name:'Bank Permata', short:'Permata',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Bank_Permata_logo.svg/120px-Bank_Permata_logo.svg.png' },
+  { group:'Bank Swasta',     name:'Bank Maybank', short:'Maybank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Maybank_logo.svg/120px-Maybank_logo.svg.png' },
+  { group:'Bank Swasta',     name:'Bank OCBC NISP', short:'OCBC',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/OCBC_NISP.svg/120px-OCBC_NISP.svg.png' },
+  { group:'Bank Swasta',     name:'Bank Mega',    short:'Mega',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Bank_Mega_logo.svg/120px-Bank_Mega_logo.svg.png' },
   /* Bank Digital */
-  { group:'Bank Digital',    name:'Jenius',  label:'Jenius',     logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Jenius_logo.svg/320px-Jenius_logo.svg.png' },
-  { group:'Bank Digital',    name:'Jago',    label:'Bank Jago',  logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Bank_Jago_Logo.svg/320px-Bank_Jago_Logo.svg.png' },
-  { group:'Bank Digital',    name:'Seabank', label:'Seabank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/SeaBank_Logo.svg/320px-SeaBank_Logo.svg.png' },
+  { group:'Bank Digital',    name:'Jenius (BTPN)', short:'Jenius',   logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Jenius_logo.svg/120px-Jenius_logo.svg.png' },
+  { group:'Bank Digital',    name:'Bank Jago',    short:'Jago',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Bank_Jago_Logo.svg/120px-Bank_Jago_Logo.svg.png' },
+  { group:'Bank Digital',    name:'Seabank',      short:'Seabank',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/SeaBank_Logo.svg/120px-SeaBank_Logo.svg.png' },
+  { group:'Bank Digital',    name:'Allo Bank',    short:'Allo',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Allo_Bank_logo.svg/120px-Allo_Bank_logo.svg.png' },
   /* Dompet Digital */
-  { group:'Dompet Digital',  name:'GoPay',      label:'GoPay',      logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/320px-Gopay_logo.svg.png' },
-  { group:'Dompet Digital',  name:'OVO',        label:'OVO',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/320px-Logo_ovo_purple.svg.png' },
-  { group:'Dompet Digital',  name:'Dana',       label:'DANA',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/320px-Logo_dana_blue.svg.png' },
-  { group:'Dompet Digital',  name:'ShopeePay',  label:'ShopeePay',  logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/ShopeePay_logo.svg/320px-ShopeePay_logo.svg.png' },
-  { group:'Dompet Digital',  name:'LinkAja',    label:'LinkAja',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/320px-LinkAja.svg.png' },
+  { group:'Dompet Digital',  name:'GoPay',        short:'GoPay',      logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Gopay_logo.svg/120px-Gopay_logo.svg.png' },
+  { group:'Dompet Digital',  name:'OVO',          short:'OVO',        logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Logo_ovo_purple.svg/120px-Logo_ovo_purple.svg.png' },
+  { group:'Dompet Digital',  name:'DANA',         short:'DANA',       logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/120px-Logo_dana_blue.svg.png' },
+  { group:'Dompet Digital',  name:'ShopeePay',    short:'ShopeePay',  logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/ShopeePay_logo.svg/120px-ShopeePay_logo.svg.png' },
+  { group:'Dompet Digital',  name:'LinkAja',      short:'LinkAja',    logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/LinkAja.svg/120px-LinkAja.svg.png' },
 ];
 
-var NOREK        = '901757779319';
+var NOREK = '901757779319';
 var selectedBank = null;
 
-/* ── Build bank grid ── */
-(function buildGrid() {
-  var grid = document.getElementById('bank-grid');
-  if (!grid) return;
+/* ── Build dropdown menu ── */
+(function buildMenu() {
+  var menu = document.getElementById('bankMenu');
+  if (!menu) return;
 
   var lastGroup = null;
-  var wrapper   = null;
-  var groupEl   = null;
-
-  // Clear grid, buat struktur per group
-  grid.innerHTML = '';
-
   BANKS.forEach(function(b) {
     if (b.group !== lastGroup) {
-      // Label grup
-      var lbl = document.createElement('div');
-      lbl.className = 'bank-group-label';
-      lbl.textContent = b.group;
-      lbl.style.gridColumn = '1 / -1';
-      grid.appendChild(lbl);
+      var grp = document.createElement('div');
+      grp.className = 'bank-dd-group';
+      grp.textContent = b.group;
+      menu.appendChild(grp);
       lastGroup = b.group;
     }
 
-    var card = document.createElement('div');
-    card.className   = 'bank-card';
-    card.dataset.name = b.name;
-    card.dataset.logo = b.logo;
+    var item = document.createElement('div');
+    item.className = 'bank-dd-item';
+    item.dataset.name = b.name;
 
+    // Coba load logo, fallback ke icon jika gagal
     var img = document.createElement('img');
-    img.src   = b.logo;
-    img.alt   = b.label;
+    img.src = b.logo;
+    img.alt = b.short;
     img.onerror = function() {
-      // Fallback jika logo tidak load
       this.style.display = 'none';
-      card.style.justifyContent = 'center';
+      var ic = document.createElement('div');
+      ic.className = 'bank-fallback-icon';
+      ic.innerHTML = '<i class="bi bi-bank"></i>';
+      item.insertBefore(ic, item.firstChild);
     };
 
-    var span = document.createElement('span');
-    span.textContent = b.label;
+    var lbl = document.createElement('span');
+    lbl.textContent = b.name;
 
-    card.appendChild(img);
-    card.appendChild(span);
-    card.addEventListener('click', function() { selectBank(b); });
-    grid.appendChild(card);
+    item.appendChild(img);
+    item.appendChild(lbl);
+    item.addEventListener('click', function() { pickBank(b); });
+    menu.appendChild(item);
   });
 })();
 
-function selectBank(b) {
-  // Highlight card terpilih
-  document.querySelectorAll('.bank-card').forEach(function(c) {
-    c.classList.remove('selected');
-    if (c.dataset.name === b.name) c.classList.add('selected');
+function toggleDropdown() {
+  var trigger = document.getElementById('bankTrigger');
+  var menu    = document.getElementById('bankMenu');
+  var open    = menu.classList.toggle('open');
+  trigger.classList.toggle('open', open);
+}
+
+function pickBank(b) {
+  selectedBank = b;
+  document.getElementById('inp-bank-name').value = b.name;
+
+  // Update trigger display
+  var trigger = document.getElementById('bankTrigger');
+  trigger.querySelector('#bankPlaceholder').innerHTML =
+    '<div class="bank-dd-selected">' +
+      '<img src="' + b.logo + '" alt="' + b.short + '" onerror="this.style.display=\'none\'">' +
+      '<span>' + b.name + '</span>' +
+    '</div>';
+
+  // Highlight item terpilih
+  document.querySelectorAll('.bank-dd-item').forEach(function(el) {
+    el.classList.toggle('selected', el.dataset.name === b.name);
   });
 
-  selectedBank = b;
-  document.getElementById('inp-bank-name').value = 'Bank ' + b.name;
+  // Tutup dropdown
+  document.getElementById('bankMenu').classList.remove('open');
+  trigger.classList.remove('open');
 
   // Update info rekening
-  document.getElementById('rek-bank-name').textContent = 'Bank ' + b.name;
   document.getElementById('rek-logo').src = b.logo;
-  document.getElementById('rek-norek').textContent = NOREK;
+  document.getElementById('rek-bank-name').textContent = b.name;
   document.getElementById('rekening-info').style.display = 'block';
 }
+
+// Tutup dropdown saat klik di luar
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('bankDropdown');
+  if (dd && !dd.contains(e.target)) {
+    document.getElementById('bankMenu').classList.remove('open');
+    document.getElementById('bankTrigger').classList.remove('open');
+  }
+});
 
 function copyRek() {
   navigator.clipboard.writeText(NOREK).then(function() {
@@ -314,7 +378,6 @@ function copyRek() {
   });
 }
 
-/* ── Switch metode ── */
 function switchMethod(radio) {
   document.querySelectorAll('.pay-detail').forEach(function(el) {
     el.style.display = 'none';
@@ -326,17 +389,20 @@ function switchMethod(radio) {
   }
 }
 
-/* ── Validasi: wajib pilih bank jika Transfer ── */
-document.getElementById('payForm') && document.getElementById('payForm').addEventListener('submit', function(e) {
-  var method = document.querySelector('input[name="method"]:checked');
-  if (method && method.value === 'transfer_bank' && !selectedBank) {
-    e.preventDefault();
-    alert('Pilih bank tujuan terlebih dahulu.');
-    document.getElementById('bank-grid').scrollIntoView({ behavior:'smooth', block:'center' });
-  }
-});
+// Validasi bank wajib dipilih
+var payForm = document.getElementById('payForm');
+if (payForm) {
+  payForm.addEventListener('submit', function(e) {
+    var method = document.querySelector('input[name="method"]:checked');
+    if (method && method.value === 'transfer_bank' && !selectedBank) {
+      e.preventDefault();
+      alert('Pilih bank tujuan terlebih dahulu.');
+      document.getElementById('bankDropdown').scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+  });
+}
 
-/* ── Init ── */
+// Init
 document.addEventListener('DOMContentLoaded', function() {
   var checked = document.querySelector('input[name="method"]:checked');
   if (checked) switchMethod(checked);
