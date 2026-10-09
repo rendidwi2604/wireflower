@@ -58,9 +58,7 @@ if (empty($shown)) {
   overflow:hidden; background:#1a0d0f;
 }
 .wf-hero__bg {
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; object-position:60% center;
-  opacity:.65; transform:scale(1.08);
+  display:none;
 }
 .wf-hero__noise {
   position:absolute; inset:0;
