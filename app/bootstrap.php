@@ -17,6 +17,12 @@ spl_autoload_register(function (string $class) {
 });
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Pastikan session stabil di XAMPP Windows
+    ini_set('session.cookie_path', '/');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.gc_maxlifetime', '7200'); // 2 jam
+    ini_set('session.cookie_lifetime', '0');   // sampai browser ditutup
     session_start();
 }
 
