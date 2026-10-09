@@ -392,11 +392,8 @@ if (empty($shown)) {
 <section class="wf-hero" id="wf-hero">
   <div class="wf-hero__noise"></div>
 
-  <!-- Reveal layer: bungatangan = bg, header1 = depan, header2 = cursor reveal -->
+  <!-- Reveal layer: header1 always visible softly, header2 follows cursor -->
   <div class="wf-hero__reveal-layer" id="heroRevealLayer">
-    <img class="wf-hero__reveal-img wf-hero__reveal-img--bg"
-         src="<?= site_url('assets/img/bungatangan.png') ?>"
-         alt="">
     <img class="wf-hero__reveal-img wf-hero__reveal-img--1"
          src="<?= site_url('assets/img/header1.png') ?>"
          alt="">
