@@ -36,6 +36,8 @@
         <div class="cart-item" style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.1rem 1.25rem;margin-bottom:.75rem;">
           <input class="cart-item-check" type="checkbox" name="selected_items[]"
                  value="<?= $it['id'] ?>" form="checkoutForm"
+                 data-price="<?= (int)$it['price'] ?>"
+                 data-qty="<?= (int)$it['quantity'] ?>"
                  aria-label="Pilih <?= e($it['name']) ?>"
                  style="accent-color:var(--pink-deep);width:18px;height:18px;flex-shrink:0;margin-top:.15rem;">
           <img class="cart-item-img" src="<?= $img ?>" alt="<?= e($it['name']) ?>">
