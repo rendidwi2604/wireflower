@@ -254,34 +254,34 @@
 </style>
 
 <script>
-/* ══ DATA BANK — logo lokal dari assets/img/banks/ ══ */
-var BASE_LOGO = '<?= site_url("assets/img/banks/") ?>';
+/* ══ DATA BANK — logo via PHP endpoint (MIME type SVG dijamin benar) ══ */
+var BASE_LOGO = '<?= site_url("api/bank-logo.php?name=") ?>';
 var BANKS = [
   /* Bank Pemerintah */
-  { group:'Bank Pemerintah', name:'Bank BRI',        short:'BRI',       logo: BASE_LOGO+'bri.svg' },
-  { group:'Bank Pemerintah', name:'Bank BNI',        short:'BNI',       logo: BASE_LOGO+'bni.svg' },
-  { group:'Bank Pemerintah', name:'Bank Mandiri',    short:'Mandiri',   logo: BASE_LOGO+'mandiri.svg' },
-  { group:'Bank Pemerintah', name:'Bank BTN',        short:'BTN',       logo: BASE_LOGO+'btn.svg' },
-  { group:'Bank Pemerintah', name:'Bank BSI',        short:'BSI',       logo: BASE_LOGO+'bsi.svg' },
+  { group:'Bank Pemerintah', name:'Bank BRI',        short:'BRI',       logo: BASE_LOGO+'bri' },
+  { group:'Bank Pemerintah', name:'Bank BNI',        short:'BNI',       logo: BASE_LOGO+'bni' },
+  { group:'Bank Pemerintah', name:'Bank Mandiri',    short:'Mandiri',   logo: BASE_LOGO+'mandiri' },
+  { group:'Bank Pemerintah', name:'Bank BTN',        short:'BTN',       logo: BASE_LOGO+'btn' },
+  { group:'Bank Pemerintah', name:'Bank BSI',        short:'BSI',       logo: BASE_LOGO+'bsi' },
   /* Bank Swasta */
-  { group:'Bank Swasta',     name:'Bank BCA',        short:'BCA',       logo: BASE_LOGO+'bca.svg' },
-  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',      logo: BASE_LOGO+'cimb.svg' },
-  { group:'Bank Swasta',     name:'Bank Danamon',    short:'Danamon',   logo: BASE_LOGO+'danamon.svg' },
-  { group:'Bank Swasta',     name:'Bank Permata',    short:'Permata',   logo: BASE_LOGO+'permata.svg' },
-  { group:'Bank Swasta',     name:'Bank Maybank',    short:'Maybank',   logo: BASE_LOGO+'maybank.svg' },
-  { group:'Bank Swasta',     name:'Bank OCBC NISP',  short:'OCBC',      logo: BASE_LOGO+'ocbc.svg' },
-  { group:'Bank Swasta',     name:'Bank Mega',       short:'Mega',      logo: BASE_LOGO+'mega.svg' },
+  { group:'Bank Swasta',     name:'Bank BCA',        short:'BCA',       logo: BASE_LOGO+'bca' },
+  { group:'Bank Swasta',     name:'Bank CIMB Niaga', short:'CIMB',      logo: BASE_LOGO+'cimb' },
+  { group:'Bank Swasta',     name:'Bank Danamon',    short:'Danamon',   logo: BASE_LOGO+'danamon' },
+  { group:'Bank Swasta',     name:'Bank Permata',    short:'Permata',   logo: BASE_LOGO+'permata' },
+  { group:'Bank Swasta',     name:'Bank Maybank',    short:'Maybank',   logo: BASE_LOGO+'maybank' },
+  { group:'Bank Swasta',     name:'Bank OCBC NISP',  short:'OCBC',      logo: BASE_LOGO+'ocbc' },
+  { group:'Bank Swasta',     name:'Bank Mega',       short:'Mega',      logo: BASE_LOGO+'mega' },
   /* Bank Digital */
-  { group:'Bank Digital',    name:'Jenius (BTPN)',   short:'Jenius',    logo: BASE_LOGO+'jenius.svg' },
-  { group:'Bank Digital',    name:'Bank Jago',       short:'Jago',      logo: BASE_LOGO+'jago.svg' },
-  { group:'Bank Digital',    name:'Seabank',         short:'Seabank',   logo: BASE_LOGO+'seabank.svg' },
-  { group:'Bank Digital',    name:'Allo Bank',       short:'Allo',      logo: BASE_LOGO+'allo.svg' },
+  { group:'Bank Digital',    name:'Jenius (BTPN)',   short:'Jenius',    logo: BASE_LOGO+'jenius' },
+  { group:'Bank Digital',    name:'Bank Jago',       short:'Jago',      logo: BASE_LOGO+'jago' },
+  { group:'Bank Digital',    name:'Seabank',         short:'Seabank',   logo: BASE_LOGO+'seabank' },
+  { group:'Bank Digital',    name:'Allo Bank',       short:'Allo',      logo: BASE_LOGO+'allo' },
   /* Dompet Digital */
-  { group:'Dompet Digital',  name:'GoPay',           short:'GoPay',     logo: BASE_LOGO+'gopay.svg' },
-  { group:'Dompet Digital',  name:'OVO',             short:'OVO',       logo: BASE_LOGO+'ovo.svg' },
-  { group:'Dompet Digital',  name:'DANA',            short:'DANA',      logo: BASE_LOGO+'dana.svg' },
-  { group:'Dompet Digital',  name:'ShopeePay',       short:'ShopeePay', logo: BASE_LOGO+'shopeepay.svg' },
-  { group:'Dompet Digital',  name:'LinkAja',         short:'LinkAja',   logo: BASE_LOGO+'linkaja.svg' },
+  { group:'Dompet Digital',  name:'GoPay',           short:'GoPay',     logo: BASE_LOGO+'gopay' },
+  { group:'Dompet Digital',  name:'OVO',             short:'OVO',       logo: BASE_LOGO+'ovo' },
+  { group:'Dompet Digital',  name:'DANA',            short:'DANA',      logo: BASE_LOGO+'dana' },
+  { group:'Dompet Digital',  name:'ShopeePay',       short:'ShopeePay', logo: BASE_LOGO+'shopeepay' },
+  { group:'Dompet Digital',  name:'LinkAja',         short:'LinkAja',   logo: BASE_LOGO+'linkaja' },
 ];
 
 var NOREK = '901757779319';
