@@ -22,20 +22,32 @@ spl_autoload_register(function (string $class) {
 });
 
 if (session_status() === PHP_SESSION_NONE) {
-    // Session tahan lama — 30 hari
     $lifetime = 60 * 60 * 24 * 30; // 30 hari dalam detik
-    ini_set('session.cookie_path',     '/');
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.use_strict_mode', '1');
-    ini_set('session.gc_maxlifetime',  (string) $lifetime);
-    ini_set('session.gc_probability',  '1');
-    ini_set('session.gc_divisor',      '100');
+
+    // Konfigurasi cookie session
+    ini_set('session.cookie_path',    '/');
+    ini_set('session.cookie_httponly','1');
+    ini_set('session.use_strict_mode','1');
+    ini_set('session.gc_maxlifetime', (string) $lifetime);
+    ini_set('session.gc_probability', '1');
+    ini_set('session.gc_divisor',     '100');
     session_set_cookie_params([
-        'lifetime' => $lifetime, // cookie persist 30 hari
+        'lifetime' => $lifetime, // cookie persist 30 hari (tidak hilang saat browser ditutup)
         'path'     => '/',
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
+
+    // Gunakan database session handler agar session tersimpan di PostgreSQL,
+    // bukan di file lokal yang bisa hilang kapan saja (terutama di Vercel/stateless server)
+    try {
+        require_once APP_PATH . '/helpers.php'; // load dulu agar db() tersedia
+        $handler = new App\Core\DatabaseSessionHandler(db(), $lifetime);
+        session_set_save_handler($handler, true);
+    } catch (\Throwable $e) {
+        // Fallback ke file session jika DB belum siap
+    }
+
     session_start();
 }
 
