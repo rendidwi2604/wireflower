@@ -342,7 +342,19 @@ if (empty($shown)) {
 
 /* ── HERO SPOTLIGHT REVEAL ── */
 .wf-hero__reveal-layer {
-  display:none;
+  position:absolute; inset:0; z-index:1;
+  pointer-events:none;
+  /* two images stacked — header1 base, header2 on top */
+}
+.wf-hero__reveal-img {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center;
+}
+.wf-hero__reveal-img--1 { opacity:.38; }
+.wf-hero__reveal-img--2 {
+  opacity:.45;
+  clip-path:circle(0px at 50% 50%);
+  will-change:clip-path;
 }
 
 /* ── Responsive ── */
