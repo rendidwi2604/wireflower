@@ -40,8 +40,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
     // Gunakan database session handler agar session tersimpan di PostgreSQL,
     // bukan di file lokal yang bisa hilang kapan saja (terutama di Vercel/stateless server)
+    require_once APP_PATH . '/helpers.php'; // selalu load helpers
     try {
-        require_once APP_PATH . '/helpers.php'; // load dulu agar db() tersedia
         $handler = new App\Core\DatabaseSessionHandler(db(), $lifetime);
         session_set_save_handler($handler, true);
     } catch (\Throwable $e) {
