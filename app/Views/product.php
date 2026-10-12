@@ -82,8 +82,16 @@
           <div class="qty-control">
             <button type="button" class="qty-btn" onclick="changeQty(-1)"><i class="bi bi-dash"></i></button>
             <input class="qty-input" type="number" name="quantity" id="qty"
-                   value="1" min="1" max="<?= $product['stock'] ?>">
+                   value="1" min="1" max="<?= $product['stock'] ?>"
+                   oninput="updateTotal()">
             <button type="button" class="qty-btn" onclick="changeQty(1)"><i class="bi bi-plus"></i></button>
+          </div>
+          <!-- Harga total dinamis -->
+          <div style="margin-top:.6rem;display:flex;align-items:center;justify-content:space-between;font-size:.85rem;">
+            <span style="color:var(--text-muted);">Total harga:</span>
+            <span id="totalPrice" style="font-weight:700;font-size:1rem;color:var(--pink-deep);">
+              <?= rupiah($product['price']) ?>
+            </span>
           </div>
         </div>
 
