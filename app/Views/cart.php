@@ -174,10 +174,18 @@ function changeCartQty(btn, delta, max) {
   if (val < 1) val = 1;
   if (val > max) val = max;
   input.value = val;
-  // Update data-qty di checkbox untuk recalc
+
+  // Update data-qty di checkbox untuk recalc ringkasan
   const cartId = btn.closest('.cart-qty-form').dataset.cartId;
   const check  = document.querySelector('.cart-item-check[value="' + cartId + '"]');
   if (check) check.dataset.qty = val;
+
+  // Update subtotal di sebelah kanan nama produk
+  const price    = parseInt(input.dataset.price) || 0;
+  const cartItem = btn.closest('.cart-item');
+  const subEl    = cartItem ? cartItem.querySelector('.cart-item-subtotal') : null;
+  if (subEl) subEl.textContent = toRupiah(price * val);
+
   recalcSummary();
   submitQtyAjax(btn.closest('.cart-qty-form'));
 }
