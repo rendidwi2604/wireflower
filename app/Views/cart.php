@@ -174,6 +174,38 @@ function changeCartQty(btn, delta, max) {
   if (val < 1) val = 1;
   if (val > max) val = max;
   input.value = val;
-  input.form.submit();
+  // Update data-qty di checkbox untuk recalc
+  const cartId = btn.closest('.cart-qty-form').dataset.cartId;
+  const check  = document.querySelector('.cart-item-check[value="' + cartId + '"]');
+  if (check) check.dataset.qty = val;
+  recalcSummary();
+  submitQtyAjax(btn.closest('.cart-qty-form'));
+}
+
+// ── AJAX submit qty — tidak full reload, tidak menyebabkan session loss ──
+var _qtyTimers = {};
+function submitQtyAjax(form) {
+  const cartId = form.dataset.cartId;
+  // Debounce 300ms agar tidak spam request saat klik cepat
+  clearTimeout(_qtyTimers[cartId]);
+  _qtyTimers[cartId] = setTimeout(function() {
+    const data = new FormData(form);
+    data.set('action', 'update');
+    fetch(form.action, {
+      method:  'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body:    data,
+    })
+    .then(r => r.json())
+    .then(function(res) {
+      if (!res.ok) {
+        // Session hilang — redirect ke login
+        window.location.href = '/auth/login.php';
+      }
+    })
+    .catch(function() {
+      // Network error — ignore, data sudah di-update di UI
+    });
+  }, 300);
 }
 </script>
