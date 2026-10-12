@@ -170,6 +170,17 @@
 </div>
 
 <script>
+var PRODUCT_PRICE = <?= (int)$product['price'] ?>;
+
+function updateTotal() {
+  const input = document.getElementById('qty');
+  const totalEl = document.getElementById('totalPrice');
+  if (!input || !totalEl) return;
+  const qty = Math.max(1, parseInt(input.value) || 1);
+  const total = qty * PRODUCT_PRICE;
+  totalEl.textContent = 'Rp ' + total.toLocaleString('id-ID');
+}
+
 function changeQty(delta) {
   const input = document.getElementById('qty');
   if (!input) return;
@@ -177,5 +188,6 @@ function changeQty(delta) {
   if (val < 1) val = 1;
   if (val > parseInt(input.max)) val = parseInt(input.max);
   input.value = val;
+  updateTotal();
 }
 </script>
