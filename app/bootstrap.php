@@ -24,23 +24,31 @@ spl_autoload_register(function (string $class) {
 if (session_status() === PHP_SESSION_NONE) {
     $lifetime = 60 * 60 * 24 * 30; // 30 hari dalam detik
 
-    // Konfigurasi cookie session
-    ini_set('session.cookie_path',    '/');
-    ini_set('session.cookie_httponly','1');
-    ini_set('session.use_strict_mode','1');
-    ini_set('session.gc_maxlifetime', (string) $lifetime);
-    ini_set('session.gc_probability', '1');
-    ini_set('session.gc_divisor',     '100');
+    // Deteksi environment
+    $isVercel = !empty($_SERVER['VERCEL']) || !empty(getenv('VERCEL'));
+    $isHttps  = $isVercel
+                || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+
+    // Konfigurasi session
+    ini_set('session.cookie_path',     '/');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.gc_maxlifetime',  (string) $lifetime);
+    ini_set('session.gc_probability',  '1');
+    ini_set('session.gc_divisor',      '100');
+
+    // Di Vercel (HTTPS) pakai SameSite=None;Secure agar cookie tidak di-block
     session_set_cookie_params([
-        'lifetime' => $lifetime, // cookie persist 30 hari (tidak hilang saat browser ditutup)
+        'lifetime' => $lifetime,
         'path'     => '/',
+        'secure'   => $isHttps,
         'httponly' => true,
-        'samesite' => 'Lax',
+        'samesite' => $isHttps ? 'None' : 'Lax',
     ]);
 
-    // Gunakan database session handler agar session tersimpan di PostgreSQL,
-    // bukan di file lokal yang bisa hilang kapan saja (terutama di Vercel/stateless server)
-    require_once APP_PATH . '/helpers.php'; // selalu load helpers
+    // Database session handler — session tersimpan di PostgreSQL Supabase
+    require_once APP_PATH . '/helpers.php';
     try {
         $handler = new App\Core\DatabaseSessionHandler(db(), $lifetime);
         session_set_save_handler($handler, true);
@@ -49,4 +57,19 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 
     session_start();
+
+    // Perpanjang cookie setiap request agar tidak expired
+    if (!empty($_COOKIE[session_name()])) {
+        setcookie(
+            session_name(),
+            session_id(),
+            [
+                'expires'  => time() + $lifetime,
+                'path'     => '/',
+                'secure'   => $isHttps,
+                'httponly' => true,
+                'samesite' => $isHttps ? 'None' : 'Lax',
+            ]
+        );
+    }
 }
