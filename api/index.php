@@ -5,9 +5,10 @@
  */
 
 // BASE_PATH menunjuk ke root project (satu level di atas api/)
-define('BASE_PATH', dirname(__DIR__));
-define('APP_PATH',  BASE_PATH . '/app');
-define('VIEW_PATH', APP_PATH . '/Views');
+// Definisikan hanya jika belum ada (bootstrap.php juga mendefinisikan ini)
+if (!defined('BASE_PATH')) define('BASE_PATH', dirname(__DIR__));
+if (!defined('APP_PATH'))  define('APP_PATH',  BASE_PATH . '/app');
+if (!defined('VIEW_PATH')) define('VIEW_PATH', APP_PATH . '/Views');
 
 // Bootstrap — setup autoload, session handler (DB), helpers
 require_once APP_PATH . '/bootstrap.php';
