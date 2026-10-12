@@ -32,22 +32,44 @@ class CartController extends Controller
         require_login();
 
         $action = $_POST['action'] ?? '';
-        $cart = $this->model(CartModel::class);
+        $cart   = $this->model(CartModel::class);
         $userId = $this->userId();
 
         if ($action === 'add') {
             $cart->add($userId, (int) $_POST['product_id'], max(1, (int) $_POST['quantity']));
+            // Jika AJAX request, return JSON
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => true]);
+                exit;
+            }
             flash('success', 'Produk ditambahkan ke keranjang.');
             redirect($this->refererOr('keranjang.php'));
         }
 
         if ($action === 'update') {
             $cart->updateQty((int) $_POST['cart_id'], max(1, (int) $_POST['quantity']), $userId);
+            // AJAX update — return JSON dengan data terbaru
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+                header('Content-Type: application/json');
+                $items = $cart->items($userId);
+                $total = 0;
+                foreach ($items as $it) {
+                    $total += $it['price'] * $it['quantity'];
+                }
+                echo json_encode(['ok' => true, 'total' => $total]);
+                exit;
+            }
             redirect('keranjang.php');
         }
 
         if ($action === 'delete') {
             $cart->remove((int) $_POST['cart_id'], $userId);
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+                header('Content-Type: application/json');
+                echo json_encode(['ok' => true]);
+                exit;
+            }
             flash('info', 'Produk dihapus dari keranjang.');
         }
 
