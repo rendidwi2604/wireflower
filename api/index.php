@@ -9,25 +9,8 @@ define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH',  BASE_PATH . '/app');
 define('VIEW_PATH', APP_PATH . '/Views');
 
-// Autoload & session
-spl_autoload_register(function (string $class) {
-    if (strncmp($class, 'App\\', 4) !== 0) return;
-    $file = APP_PATH . '/' . str_replace('\\', '/', substr($class, 4)) . '.php';
-    if (is_file($file)) require $file;
-});
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once APP_PATH . '/helpers.php';
-
-// Ubah site_url agar tidak pakai prefix /wireflower di Vercel (root domain)
-// Override fungsi site_url untuk Vercel
-function site_url_vercel($path = '') {
-    $path = ltrim((string)$path, '/');
-    return '/' . $path;
-}
+// Bootstrap — setup autoload, session handler (DB), helpers
+require_once APP_PATH . '/bootstrap.php';
 
 // ── Router ──────────────────────────────────────────────────────────────────
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
