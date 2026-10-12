@@ -48,14 +48,16 @@
             </a>
             <div class="cart-item-price"><?= rupiah($it['price']) ?> / pcs</div>
             <!-- Qty control -->
-            <form method="POST" action="<?= site_url('cart_actions.php') ?>" style="margin-top:.65rem;display:inline-block;">
+            <form method="POST" action="<?= site_url('cart_actions.php') ?>"
+                  class="cart-qty-form" data-cart-id="<?= $it['id'] ?>" style="margin-top:.65rem;display:inline-block;">
               <input type="hidden" name="action"  value="update">
               <input type="hidden" name="cart_id" value="<?= $it['id'] ?>">
               <div class="qty-control">
                 <button type="button" class="qty-btn" onclick="changeCartQty(this,-1,<?= $it['stock'] ?>)"><i class="bi bi-dash"></i></button>
                 <input class="qty-input" type="number" name="quantity"
                        value="<?= $it['quantity'] ?>" min="1" max="<?= $it['stock'] ?>"
-                       onchange="this.form.submit()">
+                       data-price="<?= (int)$it['price'] ?>"
+                       onchange="submitQtyAjax(this.form)">
                 <button type="button" class="qty-btn" onclick="changeCartQty(this,1,<?= $it['stock'] ?>)"><i class="bi bi-plus"></i></button>
               </div>
             </form>
