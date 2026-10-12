@@ -75,10 +75,12 @@ function require_admin()
 
 function login_user(array $user)
 {
-    session_regenerate_id(false);
+    // Jangan regenerate ID di Vercel stateless — menyebabkan session loss
+    // session_regenerate_id(false);
     $_SESSION['user_id'] = $user['id'];
-    $_SESSION['name'] = $user['name'];
-    $_SESSION['role'] = $user['role'];
+    $_SESSION['name']    = $user['name'];
+    $_SESSION['role']    = $user['role'];
+    $_SESSION['logged_at'] = time();
 }
 
 function flash(string $type, string $message)
