@@ -2,9 +2,11 @@
 // =====================================================
 // BOOTSTRAP APLIKASI - dipanggil setiap entry script
 // =====================================================
-define('BASE_PATH', dirname(__DIR__));
-define('APP_PATH', BASE_PATH . '/app');
-define('VIEW_PATH', APP_PATH . '/Views');
+
+// Guard: cegah define ulang jika sudah didefinisikan oleh entry point
+if (!defined('BASE_PATH')) define('BASE_PATH', dirname(__DIR__));
+if (!defined('APP_PATH'))  define('APP_PATH',  BASE_PATH . '/app');
+if (!defined('VIEW_PATH')) define('VIEW_PATH', APP_PATH . '/Views');
 
 // Aktifkan output buffering agar header/session selalu bisa dikirim
 if (!ob_get_level()) {
