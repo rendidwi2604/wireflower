@@ -51,8 +51,9 @@ $routes = [
     '/admin/pesanan.php'     => ['App\\Controllers\\Admin\\OrderController',      'index'],
     '/admin/pembayaran.php'  => ['App\\Controllers\\Admin\\PaymentController',    'index'],
     '/admin/pengguna.php'    => ['App\\Controllers\\Admin\\UserController',       'index'],
-    '/admin/ulasan.php'      => ['App\\Controllers\\Admin\\ReviewController',     'index'],
-    '/admin/laporan.php'     => ['App\\Controllers\\Admin\\ReportController',     'index'],
+    '/admin/ulasan.php'      => ['App\\Controllers\\Admin\\ReviewController',  'index'],
+    '/admin/laporan.php'     => ['App\\Controllers\\Admin\\ReportController',  'index'],
+    '/admin/voucher.php'     => ['App\\Controllers\\Admin\\VoucherController', 'index'],
 
     // API proxy wilayah
     '/api/wilayah.php'       => null, // handled below
