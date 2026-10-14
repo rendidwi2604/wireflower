@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/google-callback.php
+Disallow: /proses_checkout.php
+Disallow: /cart_actions.php
+
+Sitemap: https://wireflower.my.id/sitemap.xml
