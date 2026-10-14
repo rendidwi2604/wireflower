@@ -61,13 +61,16 @@ class PaymentController extends Controller
             $proofUrl = $this->uploadProof();
             if ($proofUrl) {
                 $payments->saveTransferProof((int) $payment['id'], $proofUrl);
+
+                $notifications->send($userId, 'Bukti Pembayaran Dikirim',
+                    "Bukti pembayaran untuk pesanan #$code sudah diterima. Menunggu verifikasi admin.",
+                    'payment_proof');
+
+                flash('success', 'Bukti pembayaran berhasil dikirim! Pesanan akan diproses setelah admin memverifikasi.');
+            } else {
+                flash('danger', 'Gagal mengunggah bukti pembayaran. Pastikan format dan ukuran file sesuai, lalu coba lagi.');
             }
 
-            $notifications->send($userId, 'Bukti Pembayaran Dikirim',
-                "Bukti pembayaran untuk pesanan #$code sudah diterima. Menunggu verifikasi admin.",
-                'payment_proof');
-
-            flash('success', 'Bukti pembayaran berhasil dikirim! Pesanan akan diproses setelah admin memverifikasi.');
             redirect('pembayaran.php?order_id=' . $order['id']);
         }
 
