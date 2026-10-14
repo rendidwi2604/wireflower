@@ -24,34 +24,50 @@ class PaymentController extends Controller
         }
         $payment = $payments->latestForOrder((int) $order['id']);
 
-        // Proses konfirmasi pembayaran
+        // ── Proses submit bukti/konfirmasi pembayaran ──
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $method   = in_array($_POST['method'] ?? '', self::METHODS, true)
                         ? $_POST['method'] : 'transfer_bank';
             $bankName = trim($_POST['bank_name'] ?? '');
 
-            // Gabungkan nama bank ke method jika transfer
-            $methodLabel = $method;
-            if ($method === 'transfer_bank' && $bankName !== '') {
-                $methodLabel = 'Transfer ' . $bankName;
-            } elseif ($method === 'qris') {
-                $methodLabel = 'QRIS';
-            } elseif ($method === 'cod') {
-                $methodLabel = 'COD';
-            }
-
-            $payments->pay((int) $payment['id'], $methodLabel);
-            $orders->updateStatus((int) $order['id'], 'dikemas');
+            // Bangun label metode
+            $methodLabel = match($method) {
+                'qris' => 'QRIS',
+                'cod'  => 'COD',
+                default => $bankName !== '' ? 'Transfer ' . $bankName : 'Transfer Bank',
+            };
 
             $notifications = $this->model(NotificationModel::class);
             $code = $order['order_code'];
-            $notifications->send($userId, 'Pembayaran Berhasil',
-                "Pembayaran untuk pesanan #$code berhasil dikonfirmasi. Pesanan sedang dikemas.",
-                'payment_success');
-            $notifications->send($userId, 'Pesanan Sedang Dikemas',
-                "Pesanan #$code sedang dikemas oleh WireFlower.",
-                'order_packing');
 
+            if ($method === 'cod') {
+                // COD: langsung success + order dikemas (tidak butuh bukti)
+                $payments->setMethod((int) $payment['id'], $methodLabel);
+                $payments->pay((int) $payment['id'], $methodLabel);
+                $orders->updateStatus((int) $order['id'], 'dikemas');
+
+                $notifications->send($userId, 'Pesanan Dikonfirmasi (COD)',
+                    "Pesanan #$code dikonfirmasi dengan COD. Pesanan sedang dikemas.",
+                    'payment_success');
+
+                flash('success', 'Pesanan dikonfirmasi! Pesanan sedang dikemas.');
+                redirect('pembayaran.php?order_id=' . $order['id']);
+            }
+
+            // Transfer / QRIS: simpan metode + upload bukti, status tetap pending
+            $payments->setMethod((int) $payment['id'], $methodLabel);
+
+            // Upload bukti pembayaran
+            $proofUrl = $this->uploadProof();
+            if ($proofUrl) {
+                $payments->saveTransferProof((int) $payment['id'], $proofUrl);
+            }
+
+            $notifications->send($userId, 'Bukti Pembayaran Dikirim',
+                "Bukti pembayaran untuk pesanan #$code sudah diterima. Menunggu verifikasi admin.",
+                'payment_proof');
+
+            flash('success', 'Bukti pembayaran berhasil dikirim! Pesanan akan diproses setelah admin memverifikasi.');
             redirect('pembayaran.php?order_id=' . $order['id']);
         }
 
@@ -60,5 +76,75 @@ class PaymentController extends Controller
             'order'      => $order,
             'payment'    => $payment,
         ]);
+    }
+
+    // ── Upload bukti ke Supabase Storage ──
+    private function uploadProof(): ?string
+    {
+        if (empty($_FILES['transfer_proof']['name']) ||
+            $_FILES['transfer_proof']['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
+        $ext     = strtolower(pathinfo($_FILES['transfer_proof']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
+        if (!in_array($ext, $allowed, true)) {
+            flash('danger', 'Format bukti tidak didukung. Gunakan JPG, PNG, WebP, atau PDF.');
+            return null;
+        }
+
+        if ($_FILES['transfer_proof']['size'] > 5 * 1024 * 1024) {
+            flash('danger', 'Ukuran file maksimal 5 MB.');
+            return null;
+        }
+
+        $filename    = 'proof_' . uniqid() . '.' . $ext;
+        $fileContent = file_get_contents($_FILES['transfer_proof']['tmp_name']);
+        $mimeType    = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+
+        // Supabase Storage
+        $supabaseUrl = $supabaseKey = '';
+        foreach (['SUPABASE_URL', 'supabase_url'] as $k) {
+            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
+            if ($v) { $supabaseUrl = $v; break; }
+        }
+        foreach (['SUPABASE_KEY', 'supabase_key'] as $k) {
+            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
+            if ($v) { $supabaseKey = $v; break; }
+        }
+
+        if ($supabaseUrl && $supabaseKey) {
+            $endpoint = rtrim($supabaseUrl, '/') . '/storage/v1/object/transfer-proofs/' . $filename;
+            $ch = curl_init($endpoint);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CUSTOMREQUEST  => 'POST',
+                CURLOPT_POSTFIELDS     => $fileContent,
+                CURLOPT_HTTPHEADER     => [
+                    'Authorization: Bearer ' . $supabaseKey,
+                    'Content-Type: ' . $mimeType,
+                    'x-upsert: true',
+                ],
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($httpCode === 200 || $httpCode === 201) {
+                return rtrim($supabaseUrl, '/') . '/storage/v1/object/public/transfer-proofs/' . $filename;
+            }
+            error_log('[PaymentController] Supabase upload HTTP ' . $httpCode . ': ' . $response);
+        }
+
+        // Fallback: filesystem lokal
+        $dir = BASE_PATH . '/assets/img/proofs/';
+        if (!is_dir($dir)) mkdir($dir, 0755, true);
+        $dest = $dir . $filename;
+        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dest)) {
+            return site_url('assets/img/proofs/' . $filename);
+        }
+
+        return null;
     }
 }
