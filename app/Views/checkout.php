@@ -473,7 +473,36 @@
   if (selProv) selProv.addEventListener('change', onLocationChange);
   if (selCity) selCity.addEventListener('change', onLocationChange);
 
-  // Inisialisasi awal (jika sudah ada nilai dari alamat tersimpan)
-  onLocationChange();
+  // ── Alamat tersimpan: baca province & city dari data-* lalu hitung ongkir ──
+  window.onSavedAddressChange = function(sel) {
+    // Toggle form alamat baru
+    var newForm = document.getElementById('newAddressForm');
+    if (newForm) newForm.style.display = sel.value === 'new' ? 'block' : 'none';
+
+    if (sel.value === 'new') {
+      // Pindah ke form baru — ongkir dikontrol oleh sel_province / sel_city
+      onLocationChange();
+      return;
+    }
+
+    var opt  = sel.options[sel.selectedIndex];
+    var prov = opt.dataset.province || '';
+    var city = opt.dataset.city     || '';
+    var zona = getZona(prov, city);
+    updateSummary(zona);
+  };
+
+  // Inisialisasi awal — hitung ongkir dari alamat yang sudah terpilih
+  (function initShipping() {
+    var savedSel = document.getElementById('sel_saved_address');
+    if (savedSel && savedSel.value && savedSel.value !== 'new') {
+      // Ada alamat tersimpan terpilih
+      window.onSavedAddressChange(savedSel);
+    } else {
+      // Tidak ada alamat tersimpan — coba dari form baru
+      onLocationChange();
+    }
+  })();
+
 })();
 </script>
