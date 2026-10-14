@@ -259,3 +259,51 @@ function orderStatusBadge(string $s, array $cfg): string {
   </div>
   <?php endif; ?>
 </div>
+
+<!-- ── Proof image lightbox modal ── -->
+<div id="proofModal"
+     style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);
+            align-items:center;justify-content:center;padding:1.5rem;"
+     onclick="closeProof(event)">
+  <div style="position:relative;max-width:90vw;max-height:90vh;background:#fff;
+              border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);"
+       onclick="event.stopPropagation()">
+    <button onclick="closeProof()"
+            style="position:absolute;top:.6rem;right:.6rem;z-index:1;background:rgba(0,0,0,.55);
+                   border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:1rem;
+                   cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">
+      <i class="bi bi-x"></i>
+    </button>
+    <img id="proofModalImg" src="" alt="Bukti Pembayaran"
+         style="display:block;max-width:80vw;max-height:80vh;object-fit:contain;">
+    <div style="padding:.6rem 1rem;background:#fdfbfb;border-top:1px solid #f0e8e8;
+                display:flex;align-items:center;justify-content:space-between;gap:.75rem;">
+      <span style="font-size:.8rem;color:#8a7070;">Bukti Pembayaran</span>
+      <a id="proofModalLink" href="#" target="_blank"
+         style="font-size:.8rem;font-weight:600;color:#c9516f;display:inline-flex;align-items:center;gap:.3rem;">
+        <i class="bi bi-box-arrow-up-right"></i> Buka di tab baru
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function openProof(url) {
+  var modal = document.getElementById('proofModal');
+  var img   = document.getElementById('proofModalImg');
+  var link  = document.getElementById('proofModalLink');
+  img.src          = url;
+  link.href        = url;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeProof(e) {
+  if (e && e.target !== document.getElementById('proofModal') && e.type === 'click') return;
+  document.getElementById('proofModal').style.display = 'none';
+  document.getElementById('proofModalImg').src = '';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProof();
+});
+</script>
