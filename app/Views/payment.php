@@ -427,8 +427,7 @@ function switchMethod(radio) {
   var proofTransfer = document.getElementById('proof-file-transfer');
   var proofQris     = document.getElementById('proof-file-qris');
   if (proofTransfer) proofTransfer.required = (method === 'transfer_bank');
-  if (proofQris)     proofQris.required     = (method === 'qris');
-}
+  if (proofQris)     proofQris.required     = (method === 'qris');}
 
 function previewProof(input, previewId) {
   var previewBox = document.getElementById(previewId);
