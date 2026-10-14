@@ -9,69 +9,57 @@ Kode Google OAuth sudah tersedia di project. Kamu hanya perlu membuat credential
 1. Buka [console.cloud.google.com](https://console.cloud.google.com)
 2. Klik dropdown project di atas → **New Project**
 3. Isi nama project: `WireFlower` → klik **Create**
-4. Pastikan project `WireFlower` sudah terpilih
+4. Pastikan project `WireFlower` sudah terpilih di dropdown atas
 
 ---
 
-## Step 2 — Aktifkan Google OAuth API
+## Step 2 — Buat OAuth Consent Screen (Branding)
 
-1. Di menu kiri → **APIs & Services** → **Library**
-2. Cari **"Google+ API"** atau **"Google Identity"**
-3. Klik **Google Identity Toolkit API** → **Enable**
-
----
-
-## Step 3 — Buat OAuth Consent Screen
-
-1. **APIs & Services** → **OAuth consent screen**
-2. Pilih **External** → klik **Create**
-3. Isi form:
+1. Di menu kiri → **Google Auth Platform** (atau cari di search bar)
+2. Klik **Get Started** jika baru pertama kali
+3. Isi form **App Information**:
    - **App name**: `WireFlower`
-   - **User support email**: email kamu
-   - **App logo**: upload logo WireFlower (opsional)
-   - **Application home page**: `https://wireflower.my.id`
-   - **Authorized domains**: tambahkan `wireflower.my.id`
-   - **Developer contact email**: email kamu
-4. Klik **Save and Continue**
-5. Di halaman **Scopes** → klik **Add or Remove Scopes** → centang:
-   - `openid`
-   - `email`
-   - `profile`
-6. Klik **Update** → **Save and Continue**
-7. Di halaman **Test users** → tambahkan email kamu untuk testing → **Save and Continue**
-8. Klik **Back to Dashboard**
+   - **User support email**: pilih email kamu
+4. Scroll ke bawah → **Audience**:
+   - Pilih **External** → klik **Next**
+5. Isi **Contact Information**:
+   - **Email addresses**: masukkan email kamu
+6. Centang persetujuan → klik **Create**
 
 ---
 
-## Step 4 — Buat OAuth 2.0 Credentials
+## Step 3 — Buat OAuth Client ID (Credentials)
 
-1. **APIs & Services** → **Credentials**
-2. Klik **+ Create Credentials** → **OAuth 2.0 Client IDs**
-3. Pilih **Application type**: `Web application`
-4. Isi **Name**: `WireFlower Web`
-5. Di **Authorized JavaScript origins**, tambahkan:
+1. Di menu kiri → **Clients**
+2. Klik **+ Create Client** (atau **Create OAuth client ID**)
+3. **Application type**: pilih `Web application`
+4. **Name**: isi `WireFlower Web`
+5. Di **Authorized JavaScript origins** → klik **+ Add URI**, tambahkan satu per satu:
    ```
    https://wireflower.my.id
    https://www.wireflower.my.id
    https://wireflower.vercel.app
    ```
-6. Di **Authorized redirect URIs**, tambahkan:
+6. Di **Authorized redirect URIs** → klik **+ Add URI**, tambahkan satu per satu:
    ```
    https://wireflower.my.id/auth/google-callback.php
    https://www.wireflower.my.id/auth/google-callback.php
    https://wireflower.vercel.app/auth/google-callback.php
    ```
 7. Klik **Create**
-8. Sebuah popup muncul dengan **Client ID** dan **Client Secret** — **SALIN KEDUANYA**
+8. Muncul popup **"OAuth client created"** berisi:
+   - **Client ID** — copy ini
+   - **Client Secret** — copy ini
+   - Atau klik **Download JSON** untuk simpan
 
 ---
 
-## Step 5 — Masukkan ke Vercel Environment Variables
+## Step 4 — Masukkan ke Vercel Environment Variables
 
 1. Buka [vercel.com/dashboard](https://vercel.com/dashboard)
 2. Pilih project **wireflower**
 3. Tab **Settings** → **Environment Variables**
-4. Tambahkan dua variable berikut:
+4. Tambahkan dua variable berikut (klik **Add** untuk masing-masing):
 
 | Key | Value |
 |-----|-------|
@@ -79,26 +67,25 @@ Kode Google OAuth sudah tersedia di project. Kamu hanya perlu membuat credential
 | `GOOGLE_CLIENT_SECRET` | `GOCSPX-xxxxxx` |
 
 5. Pastikan environment yang dicentang: ✅ Production ✅ Preview ✅ Development
-6. Klik **Save** untuk masing-masing variable
+6. Klik **Save**
 
 ---
 
-## Step 6 — Redeploy Vercel
+## Step 5 — Redeploy Vercel
 
-Setelah menambah environment variables, Vercel perlu di-redeploy agar variable terbaca:
+Setelah menambah environment variables, Vercel perlu di-redeploy:
 
 1. Tab **Deployments**
 2. Klik titik tiga (**⋯**) di deployment terbaru → **Redeploy**
-3. Tunggu ~1 menit
+3. Tunggu ~1 menit sampai status **Ready**
 
 ---
 
-## Step 7 — Test Google Login
+## Step 6 — Test Google Login
 
 1. Buka `https://wireflower.my.id/auth/login.php`
-2. Klik tombol **"Lanjutkan dengan Google"**
-3. Pilih akun Google kamu
-4. Seharusnya langsung masuk ke halaman utama
+2. Tombol **"Lanjutkan dengan Google"** seharusnya sudah aktif (tidak disabled)
+3. Klik → pilih akun Google → langsung masuk ke halaman utama ✅
 
 ---
 
@@ -108,11 +95,10 @@ Setelah menambah environment variables, Vercel perlu di-redeploy agar variable t
 - Environment variables belum terbaca → pastikan sudah redeploy setelah menambah variabel
 
 **Error "redirect_uri_mismatch":**
-- Cek kembali Authorized redirect URIs di Google Console — harus persis sama dengan URL callback
+- Cek Authorized redirect URIs di Google Console — harus persis sama, tidak boleh ada trailing slash
 
 **Error "Access blocked: This app's request is invalid":**
-- OAuth consent screen belum selesai dikonfigurasi
-- Pastikan domain `wireflower.my.id` sudah ditambahkan di Authorized domains
+- Ulangi Step 2 — pastikan OAuth consent screen sudah selesai dikonfigurasi
 
 **Akun Google tidak bisa login tapi email sudah terdaftar:**
 - Normal — akun yang dibuat via email/password tidak bisa login via Google
@@ -122,12 +108,10 @@ Setelah menambah environment variables, Vercel perlu di-redeploy agar variable t
 
 ## Catatan Teknis
 
-Implementasi sudah ada di:
-- `app/Controllers/AuthController.php` — method `googleLogin()` dan `googleCallback()`
-- `app/Views/auth/login.php` — tombol Google sudah ada (muncul otomatis jika config terisi)
+Tidak perlu ubah kode apapun. Implementasi sudah lengkap di:
+- `app/Controllers/AuthController.php` — `googleLogin()` dan `googleCallback()`
+- `app/Views/auth/login.php` — tombol Google aktif otomatis jika config terisi
 - `app/Views/auth/register.php` — tombol Google juga tersedia
 - `auth/google-login.php` — entry point
 - `auth/google-callback.php` — callback handler
-- `app/Models/UserModel.php` — method `createFromGoogle()`, `findByGoogle()`, `linkGoogle()`
-
-Tidak perlu mengubah kode apapun — hanya perlu mengisi environment variables di Vercel.
+- `app/Models/UserModel.php` — `createFromGoogle()`, `findByGoogle()`, `linkGoogle()`
