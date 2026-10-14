@@ -260,49 +260,103 @@ function orderStatusBadge(string $s, array $cfg): string {
   <?php endif; ?>
 </div>
 
-<!-- ── Proof image lightbox modal ── -->
+<!-- ── Proof image lightbox + verify modal ── -->
+
+<!-- Modal bukti pembayaran -->
 <div id="proofModal"
      style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);
             align-items:center;justify-content:center;padding:1.5rem;"
-     onclick="closeProof(event)">
-  <div style="position:relative;max-width:90vw;max-height:90vh;background:#fff;
-              border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);"
-       onclick="event.stopPropagation()">
+     onclick="if(event.target===this)closeProof()">
+  <div style="position:relative;max-width:520px;width:100%;background:#fff;
+              border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);">
+
+    <!-- Tombol tutup -->
     <button onclick="closeProof()"
-            style="position:absolute;top:.6rem;right:.6rem;z-index:1;background:rgba(0,0,0,.55);
+            style="position:absolute;top:.6rem;right:.6rem;z-index:10;background:rgba(0,0,0,.55);
                    border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:1rem;
                    cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">
       <i class="bi bi-x"></i>
     </button>
+
+    <!-- Gambar bukti -->
     <img id="proofModalImg" src="" alt="Bukti Pembayaran"
-         style="display:block;max-width:80vw;max-height:80vh;object-fit:contain;">
-    <div style="padding:.6rem 1rem;background:#fdfbfb;border-top:1px solid #f0e8e8;
-                display:flex;align-items:center;justify-content:space-between;gap:.75rem;">
-      <span style="font-size:.8rem;color:#8a7070;">Bukti Pembayaran</span>
-      <a id="proofModalLink" href="#" target="_blank"
-         style="font-size:.8rem;font-weight:600;color:#c9516f;display:inline-flex;align-items:center;gap:.3rem;">
-        <i class="bi bi-box-arrow-up-right"></i> Buka di tab baru
-      </a>
+         style="display:block;width:100%;max-height:65vh;object-fit:contain;background:#f5f5f5;">
+
+    <!-- Footer: info + aksi verifikasi -->
+    <div style="padding:.9rem 1.1rem;border-top:1px solid #f0e8e8;">
+      <div style="font-size:.82rem;color:#8a7070;margin-bottom:.75rem;">Bukti Pembayaran</div>
+
+      <!-- Panel verifikasi — hanya muncul jika status pending -->
+      <div id="proofVerifyPanel" style="display:none;">
+        <div style="background:#fffbea;border:1px solid #f0d070;border-radius:8px;
+                    padding:.75rem .9rem;margin-bottom:.75rem;font-size:.82rem;color:#7a5700;">
+          <i class="bi bi-exclamation-triangle" style="margin-right:.3rem;"></i>
+          Konfirmasi bahwa bukti pembayaran ini valid dan sesuai. Tindakan ini tidak bisa dibatalkan.
+        </div>
+        <form id="proofVerifyForm" method="POST" action="<?= site_url('admin/pesanan.php') ?>">
+          <input type="hidden" name="payment_id" id="proofVerifyPaymentId" value="">
+          <div style="display:flex;gap:.6rem;justify-content:flex-end;">
+            <button type="button" onclick="closeProof()"
+                    style="padding:.5rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;
+                           border:1.5px solid #eeddd9;background:#fff;color:#5a4040;cursor:pointer;">
+              Batal
+            </button>
+            <button type="submit" name="verify_payment"
+                    style="padding:.5rem 1.2rem;border-radius:8px;font-size:.82rem;font-weight:700;
+                           background:#10b981;color:#fff;border:none;cursor:pointer;
+                           display:inline-flex;align-items:center;gap:.4rem;">
+              <i class="bi bi-check-circle-fill"></i> Ya, Verifikasi Pembayaran
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sudah terverifikasi -->
+      <div id="proofVerifiedBadge" style="display:none;">
+        <span style="display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .8rem;
+                     border-radius:8px;font-size:.8rem;font-weight:700;
+                     background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0;">
+          <i class="bi bi-check-circle-fill"></i> Sudah Terverifikasi
+        </span>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
-function openProof(url) {
-  var modal = document.getElementById('proofModal');
-  var img   = document.getElementById('proofModalImg');
-  var link  = document.getElementById('proofModalLink');
-  img.src          = url;
-  link.href        = url;
+function openProof(url, paymentId, payStatus) {
+  var modal      = document.getElementById('proofModal');
+  var img        = document.getElementById('proofModalImg');
+  var verPanel   = document.getElementById('proofVerifyPanel');
+  var verBadge   = document.getElementById('proofVerifiedBadge');
+  var verPid     = document.getElementById('proofVerifyPaymentId');
+
+  img.src = url;
+
+  // Tampilkan panel sesuai status
+  if (payStatus === 'pending' && paymentId) {
+    verPanel.style.display  = 'block';
+    verBadge.style.display  = 'none';
+    if (verPid) verPid.value = paymentId;
+  } else if (payStatus === 'success') {
+    verPanel.style.display  = 'none';
+    verBadge.style.display  = 'block';
+  } else {
+    verPanel.style.display  = 'none';
+    verBadge.style.display  = 'none';
+  }
+
   modal.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
-function closeProof(e) {
-  if (e && e.target !== document.getElementById('proofModal') && e.type === 'click') return;
+
+function closeProof() {
   document.getElementById('proofModal').style.display = 'none';
   document.getElementById('proofModalImg').src = '';
   document.body.style.overflow = '';
 }
+
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeProof();
 });
