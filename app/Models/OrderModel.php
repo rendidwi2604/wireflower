@@ -24,6 +24,55 @@ class OrderModel extends Model
         return $this->fetchOne('SELECT * FROM orders WHERE id = $1', [$orderId]);
     }
 
+    /**
+     * Auto-migrate: tambahkan kolom voucher ke tabel orders jika belum ada.
+     * Dipanggil sekali saat checkout pertama kali setelah deploy.
+     */
+    private function ensureVoucherColumns(): void
+    {
+        static $checked = false;
+        if ($checked) return;
+        $checked = true;
+
+        $cols = $this->fetchAll(
+            "SELECT column_name FROM information_schema.columns
+             WHERE table_name = 'orders'
+               AND column_name IN ('discount_amount', 'voucher_code')"
+        );
+        $existing = array_column($cols, 'column_name');
+
+        if (!in_array('discount_amount', $existing)) {
+            $this->db->exec('ALTER TABLE orders ADD COLUMN discount_amount NUMERIC(12,2) NOT NULL DEFAULT 0');
+        }
+        if (!in_array('voucher_code', $existing)) {
+            $this->db->exec('ALTER TABLE orders ADD COLUMN voucher_code VARCHAR(50) DEFAULT NULL');
+        }
+    }
+
+    /**
+     * Auto-migrate: buat tabel vouchers jika belum ada.
+     */
+    public function ensureVouchersTable(): void
+    {
+        $this->db->exec("
+            CREATE TABLE IF NOT EXISTS vouchers (
+                id             SERIAL PRIMARY KEY,
+                code           VARCHAR(50)  NOT NULL UNIQUE,
+                type           VARCHAR(20)  NOT NULL DEFAULT 'fixed',
+                discount_value NUMERIC(12,2) NOT NULL DEFAULT 0,
+                max_discount   NUMERIC(12,2) DEFAULT NULL,
+                min_order      NUMERIC(12,2) DEFAULT NULL,
+                usage_limit    INT          DEFAULT NULL,
+                used_count     INT          NOT NULL DEFAULT 0,
+                valid_from     DATE         DEFAULT NULL,
+                valid_until    DATE         DEFAULT NULL,
+                is_active      BOOLEAN      NOT NULL DEFAULT TRUE,
+                description    TEXT         DEFAULT '',
+                created_at     TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
+    }
+
     public function checkout(int $userId, array $data): int
     {
         $this->db->beginTransaction();
