@@ -38,6 +38,11 @@ class PaymentModel extends Model
         );
     }
 
+    public function find(int $paymentId): ?array
+    {
+        return $this->fetchOne('SELECT * FROM payments WHERE id = $1', [$paymentId]);
+    }
+
     // ---- Admin ----
 
     public function allWithOrder(): array
