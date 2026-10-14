@@ -110,7 +110,9 @@ $status_class = [
 
         <?php if ($o['status'] === 'belum_bayar'): ?>
           <a href="<?= site_url('pembayaran.php?order_id=' . $o['id']) ?>"
-             class="btn btn-primary btn-sm">Bayar Sekarang</a>
+             class="btn btn-primary btn-sm">
+            <i class="bi bi-credit-card"></i> Bayar Sekarang
+          </a>
           <button type="button" class="btn btn-sm"
                   style="border:1px solid #e0a0a0;color:#c0392b;background:transparent;border-radius:50px;"
                   onclick="document.getElementById('cancelModal<?= $o['id'] ?>').style.display='flex'">
