@@ -44,9 +44,7 @@ class OrderController extends Controller
             }
             flash('success', 'Status pesanan diperbarui.');
             redirect('admin/pesanan.php');
-        }
-
-        $this->render('admin/orders', [
+        }        $this->render('admin/orders', [
             'page_title' => 'Kelola Pesanan',
             'status_filter' => $_GET['status'] ?? '',
             'statuses' => OrderModel::STATUSES,
