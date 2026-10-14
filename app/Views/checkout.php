@@ -21,14 +21,16 @@
           <?php else: ?>
             <div class="form-group">
               <label class="form-label">Pilih alamat tersimpan</label>
-              <select name="address_id" class="form-input" style="cursor:pointer;"
-                      onchange="document.getElementById('newAddressForm').style.display = this.value==='new' ? 'block':'none';">
+              <select name="address_id" id="sel_saved_address" class="form-input" style="cursor:pointer;"
+                      onchange="onSavedAddressChange(this)">
                 <?php foreach ($addresses as $a): ?>
-                  <option value="<?= $a['id'] ?>">
+                  <option value="<?= $a['id'] ?>"
+                          data-province="<?= e($a['province'] ?? '') ?>"
+                          data-city="<?= e($a['city'] ?? '') ?>">
                     <?= e($a['label']) ?> — <?= e($a['recipient_name']) ?>, <?= e($a['full_address']) ?>
                   </option>
                 <?php endforeach; ?>
-                <option value="new">+ Gunakan alamat baru</option>
+                <option value="new" data-province="" data-city="">+ Gunakan alamat baru</option>
               </select>
             </div>
           <?php endif; ?>
