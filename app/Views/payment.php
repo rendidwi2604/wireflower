@@ -225,7 +225,7 @@ $isSuccess  = $payment['status'] === 'success';
           <div style="font-weight:600;font-size:.85rem;margin-bottom:.45rem;display:flex;align-items:center;gap:.4rem;">
             <i class="bi bi-upload" style="color:var(--pink-deep);"></i> Upload Bukti Pembayaran QRIS <span style="color:#c0392b;">*</span>
           </div>
-          <input type="file" name="transfer_proof" id="proof-file-qris"
+          <input type="file" name="transfer_proof_qris" id="proof-file-qris"
                  accept=".jpg,.jpeg,.png,.webp,.pdf"
                  class="form-input" style="padding:.5rem;"
                  onchange="previewProof(this,'preview-qris')">
