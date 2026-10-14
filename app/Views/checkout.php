@@ -235,9 +235,388 @@
 </div>
 
 <script>
+/* ══════════════════════════════════════════════════════════════
+   CHECKOUT — Ongkir + Voucher (satu blok terpadu)
+   ══════════════════════════════════════════════════════════════ */
 (function () {
-  /* ── URL proxy lokal ── */
-  const PROXY = '<?= site_url('api/wilayah.php') ?>';
+
+  /* ── Helpers ── */
+  function toRupiah(n) {
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  }
+  function el(id) { return document.getElementById(id); }
+
+  /* ── State global ── */
+  var RAW_SUBTOTAL    = <?= (int)$subtotal ?>;
+  var _shipping       = 0;   // ongkir aktif (dari zona)
+  var _activeVoucher  = null; // hasil JSON dari API voucher
+
+  /* ─────────────────────────────────────────
+     1. WILAYAH CASCADE
+  ───────────────────────────────────────── */
+  var PROXY = '<?= site_url('api/wilayah.php') ?>';
+
+  var selProv = el('sel_province');
+  var selCity = el('sel_city');
+  var selDist = el('sel_district');
+  var selVill = el('sel_village');
+  var inpZip  = el('inp_postal');
+  var tagZip  = el('postal_auto_tag');
+
+  async function fetchWilayah(endpoint) {
+    try {
+      var r = await fetch(PROXY + '?type=wilayah&endpoint=' + encodeURIComponent(endpoint));
+      var j = await r.json();
+      return Array.isArray(j.data) ? j.data : [];
+    } catch(e) { return []; }
+  }
+
+  async function fetchKodePos(name) {
+    try {
+      var r = await fetch(PROXY + '?type=kodepos&q=' + encodeURIComponent(name));
+      var j = await r.json();
+      return j.data || [];
+    } catch(e) { return []; }
+  }
+
+  function fillSel(sel, items, ph) {
+    sel.innerHTML = '<option value="">' + ph + '</option>';
+    items.forEach(function(it) {
+      var o = document.createElement('option');
+      o.value = it.value; o.dataset.code = it.code; o.textContent = it.value;
+      sel.appendChild(o);
+    });
+    sel.disabled = false;
+  }
+
+  function resetBelow(list) {
+    var ph = ['-- Pilih Kota --','-- Pilih Kecamatan --','-- Pilih Kelurahan --'];
+    list.forEach(function(s, i) {
+      s.innerHTML = '<option value="">' + (ph[i]||'--') + '</option>';
+      s.disabled = true;
+    });
+    if (inpZip) { inpZip.value = ''; inpZip.removeAttribute('readonly'); inpZip.style.background = ''; inpZip.placeholder = 'Terisi otomatis saat memilih kelurahan'; }
+    if (tagZip) tagZip.style.display = 'none';
+  }
+
+  if (selProv) {
+    selProv.innerHTML = '<option value="">Memuat provinsi…</option>';
+    selProv.disabled  = true;
+    fetchWilayah('states').then(function(data) {
+      if (!data.length) { selProv.innerHTML = '<option value="">Gagal memuat</option>'; return; }
+      fillSel(selProv, data, '-- Pilih Provinsi --');
+    });
+
+    selProv.addEventListener('change', function() {
+      resetBelow([selCity, selDist, selVill]);
+      var code = this.options[this.selectedIndex].dataset.code;
+      if (!code) { onLocationChange(); return; }
+      selCity.innerHTML = '<option value="">Memuat kota…</option>';
+      fetchWilayah('states/' + code + '/cities').then(function(d) { fillSel(selCity, d, '-- Pilih Kota --'); });
+      onLocationChange();
+    });
+
+    selCity.addEventListener('change', function() {
+      resetBelow([selDist, selVill]);
+      var code = this.options[this.selectedIndex].dataset.code;
+      if (!code) { onLocationChange(); return; }
+      selDist.innerHTML = '<option value="">Memuat kecamatan…</option>';
+      fetchWilayah('cities/' + code + '/districts').then(function(d) { fillSel(selDist, d, '-- Pilih Kecamatan --'); });
+      onLocationChange();
+    });
+
+    selDist.addEventListener('change', function() {
+      resetBelow([selVill]);
+      if (inpZip) { inpZip.value = ''; } if (tagZip) tagZip.style.display = 'none';
+      var code = this.options[this.selectedIndex].dataset.code;
+      if (!code) return;
+      selVill.innerHTML = '<option value="">Memuat kelurahan…</option>';
+      fetchWilayah('districts/' + code + '/villages').then(function(d) { fillSel(selVill, d, '-- Pilih Kelurahan --'); });
+    });
+
+    selVill.addEventListener('change', function() {
+      if (inpZip) { inpZip.value = ''; inpZip.removeAttribute('readonly'); inpZip.style.background = ''; }
+      if (tagZip) tagZip.style.display = 'none';
+      var name = this.value; if (!name) return;
+      if (inpZip) inpZip.placeholder = 'Mencari kode pos…';
+      fetchKodePos(name).then(function(hits) {
+        if (hits.length && hits[0].code) {
+          if (inpZip) { inpZip.value = String(hits[0].code); inpZip.setAttribute('readonly','readonly'); inpZip.style.background = '#f0faf5'; inpZip.placeholder = ''; }
+          if (tagZip) tagZip.style.display = 'inline';
+        } else {
+          if (inpZip) inpZip.placeholder = 'Isi kode pos secara manual';
+        }
+      });
+    });
+
+    if (inpZip) {
+      inpZip.addEventListener('click', function() {
+        if (this.hasAttribute('readonly')) { this.removeAttribute('readonly'); this.style.background = ''; if (tagZip) tagZip.style.display = 'none'; }
+      });
+    }
+  }
+
+  /* Validasi submit */
+  var form = document.querySelector('form[action*="proses_checkout"]');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      var newAddr = el('newAddressForm');
+      if (!newAddr || newAddr.style.display === 'none') return;
+      var checks = [
+        [selProv, 'Pilih Provinsi terlebih dahulu.'],
+        [selCity, 'Pilih Kota / Kabupaten.'],
+        [selDist, 'Pilih Kecamatan.'],
+        [selVill, 'Pilih Kelurahan / Desa.'],
+      ];
+      for (var i = 0; i < checks.length; i++) {
+        if (checks[i][0] && !checks[i][0].value) {
+          e.preventDefault();
+          checks[i][0].scrollIntoView({behavior:'smooth', block:'center'});
+          checks[i][0].focus();
+          alert(checks[i][1]);
+          return;
+        }
+      }
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     2. ZONA ONGKIR
+  ───────────────────────────────────────── */
+  var ZONA = [
+    { tarif:15000, label:'Reguler · Jabodetabek',           match:['dki jakarta','jawa barat','banten'] },
+    { tarif:20000, label:'Reguler · Pulau Jawa',             match:['jawa','yogyakarta','di yogyakarta'] },
+    { tarif:25000, label:'Reguler · Sumatera & Bali',        match:['sumatera','sumatra','aceh','riau','jambi','bengkulu','lampung','bangka','belitung','kepulauan riau','bali','nusa tenggara barat','ntb'] },
+    { tarif:35000, label:'Reguler · Kalimantan & Sulawesi',  match:['kalimantan','sulawesi','nusa tenggara timur','ntt','gorontalo'] },
+    { tarif:45000, label:'Reguler · Maluku & Papua',         match:['maluku','papua'] },
+  ];
+  var JABODETABEK_CITY = ['jakarta','bogor','depok','tangerang','bekasi'];
+
+  function getZona(prov, city) {
+    var p = (prov||'').toLowerCase(), c = (city||'').toLowerCase();
+    if (p.indexOf('dki jakarta') !== -1) return ZONA[0];
+    for (var j = 0; j < JABODETABEK_CITY.length; j++) { if (c.indexOf(JABODETABEK_CITY[j]) !== -1) return ZONA[0]; }
+    for (var i = 0; i < ZONA.length; i++) { for (var k = 0; k < ZONA[i].match.length; k++) { if (p.indexOf(ZONA[i].match[k]) !== -1) return ZONA[i]; } }
+    return null;
+  }
+
+  function onLocationChange() {
+    var prov = selProv ? selProv.value : '';
+    var city = selCity ? selCity.value : '';
+    var zona = getZona(prov, city);
+    applyZona(zona);
+  }
+
+  function applyZona(zona) {
+    var shippingEl = el('co-shipping');
+    var infoEl     = el('co-shipping-info');
+    var inpShip    = el('inp-shipping-cost');
+    var mobShip    = el('mob-co-shipping');
+
+    if (!zona) {
+      _shipping = 0;
+      if (shippingEl) shippingEl.innerHTML = '<span style="font-size:.8rem;color:var(--text-muted);">Pilih provinsi dulu</span>';
+      if (mobShip)    mobShip.innerHTML    = '<span style="color:var(--text-muted);font-size:.75rem;">Pilih provinsi</span>';
+      if (infoEl)     { infoEl.style.display = 'none'; infoEl.textContent = ''; }
+      if (inpShip)    inpShip.value = 0;
+      recalcTotal();
+      return;
+    }
+
+    _shipping = zona.tarif;
+    if (shippingEl) shippingEl.textContent = toRupiah(zona.tarif);
+    if (mobShip)    mobShip.textContent    = toRupiah(zona.tarif);
+    if (infoEl)     { infoEl.textContent = zona.label; infoEl.style.display = 'block'; }
+    if (inpShip)    inpShip.value = zona.tarif;
+    recalcTotal();
+  }
+
+  /* Alamat tersimpan */
+  window.onSavedAddressChange = function(sel) {
+    var newForm = el('newAddressForm');
+    if (newForm) newForm.style.display = sel.value === 'new' ? 'block' : 'none';
+    if (sel.value === 'new') { onLocationChange(); return; }
+    var opt  = sel.options[sel.selectedIndex];
+    var zona = getZona(opt.dataset.province || '', opt.dataset.city || '');
+    applyZona(zona);
+  };
+
+  /* Init saat load */
+  (function() {
+    var savedSel = el('sel_saved_address');
+    if (savedSel && savedSel.value && savedSel.value !== 'new') {
+      window.onSavedAddressChange(savedSel);
+    } else {
+      onLocationChange();
+    }
+  })();
+
+  /* ─────────────────────────────────────────
+     3. KALKULASI TOTAL (ongkir + voucher)
+  ───────────────────────────────────────── */
+  function recalcTotal() {
+    var totalEl    = el('co-total');
+    var mobTotalEl = el('mob-co-total');
+    var discRow    = el('co-discount-row');
+    var discAmt    = el('co-discount-amount');
+    var discLbl    = el('co-discount-label');
+    var mobDiscRow = el('mob-discount-row');
+    var mobDiscEl  = el('mob-co-discount');
+    var inpDisc    = el('inp-discount-amount');
+    var inpShip    = el('inp-shipping-cost');
+    var shippingEl = el('co-shipping');
+    var mobShip    = el('mob-co-shipping');
+
+    var subtotal = RAW_SUBTOTAL;
+    var shipping = _shipping;
+    var discount = 0;
+    var finalShipping = shipping;
+
+    if (_activeVoucher) {
+      discount      = _activeVoucher.discount_amount;
+      finalShipping = _activeVoucher.shipping_cost;
+
+      // Update baris ongkir jika gratis ongkir
+      if (_activeVoucher.type === 'free_shipping') {
+        if (shippingEl) shippingEl.innerHTML =
+          '<span style="text-decoration:line-through;color:#aaa;font-size:.8rem;">' + toRupiah(shipping) + '</span> ' +
+          '<span style="color:#1a6b3a;font-weight:700;font-size:.8rem;">Gratis</span>';
+        if (mobShip) mobShip.innerHTML = '<span style="color:#1a6b3a;font-weight:700;">Gratis</span>';
+        if (inpShip) inpShip.value = 0;
+      }
+
+      // Tampilkan baris diskon
+      if (discRow) discRow.style.display = 'flex';
+      if (mobDiscRow) mobDiscRow.style.display = 'flex';
+      if (discAmt) discAmt.textContent = '- ' + toRupiah(discount);
+      if (mobDiscEl) mobDiscEl.textContent = '- ' + toRupiah(discount);
+      if (discLbl) discLbl.textContent = _activeVoucher.voucher_code + ' (' + _activeVoucher.type_label + ')';
+      if (inpDisc) inpDisc.value = discount;
+    } else {
+      // Tidak ada voucher
+      if (discRow)    discRow.style.display    = 'none';
+      if (mobDiscRow) mobDiscRow.style.display = 'none';
+      if (inpDisc)    inpDisc.value = 0;
+    }
+
+    var total = Math.max(0, subtotal + finalShipping - discount);
+    if (totalEl)    totalEl.textContent    = toRupiah(total);
+    if (mobTotalEl) mobTotalEl.textContent = toRupiah(total);
+  }
+
+  /* ─────────────────────────────────────────
+     4. VOUCHER
+  ───────────────────────────────────────── */
+  var VOUCHER_API = '<?= site_url('api/voucher.php') ?>';
+
+  function showFeedback(msg, isOk) {
+    var fb = el('voucher-feedback');
+    if (!fb) return;
+    fb.style.display = 'block';
+    fb.style.color   = isOk ? '#1a6b3a' : '#c0392b';
+    fb.innerHTML = (isOk
+      ? '<i class="bi bi-check-circle-fill"></i> '
+      : '<i class="bi bi-x-circle-fill"></i> ') + msg;
+  }
+
+  function clearFeedback() {
+    var fb = el('voucher-feedback');
+    if (fb) { fb.style.display = 'none'; fb.textContent = ''; }
+  }
+
+  window.applyVoucher = function() {
+    var codeEl = el('inp-voucher-code');
+    var code   = codeEl ? codeEl.value.trim() : '';
+    if (!code) { showFeedback('Masukkan kode voucher terlebih dahulu.', false); return; }
+
+    var btn = el('btn-apply-voucher');
+    if (btn) { btn.disabled = true; btn.textContent = 'Memeriksa…'; }
+
+    var fd = new FormData();
+    fd.append('code',     code);
+    fd.append('subtotal', RAW_SUBTOTAL);
+    fd.append('shipping', _shipping);
+
+    fetch(VOUCHER_API, { method:'POST', body:fd })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Pakai'; }
+
+        if (!res.ok) {
+          showFeedback(res.message, false);
+          return;
+        }
+
+        // Simpan state
+        _activeVoucher = res;
+
+        // Update hidden inputs
+        var inpId   = el('inp-voucher-id');
+        var inpCode = el('inp-voucher-code-val');
+        if (inpId)   inpId.value   = res.voucher_id;
+        if (inpCode) inpCode.value = res.voucher_code;
+
+        // Sembunyikan input & tombol, tampilkan badge
+        if (codeEl) codeEl.style.display = 'none';
+        if (btn)    btn.style.display    = 'none';
+
+        var badge = el('voucher-active-badge');
+        var bdLbl = el('voucher-badge-label');
+        if (badge) badge.style.display = 'flex';
+        if (bdLbl) bdLbl.textContent   = res.voucher_code + ' · ' + res.type_label;
+
+        clearFeedback();
+        showFeedback(res.message, true);
+
+        recalcTotal();
+      })
+      .catch(function() {
+        if (btn) { btn.disabled = false; btn.textContent = 'Pakai'; }
+        showFeedback('Terjadi kesalahan jaringan. Coba lagi.', false);
+      });
+  };
+
+  window.removeVoucher = function() {
+    _activeVoucher = null;
+
+    // Reset hidden inputs
+    var inpId   = el('inp-voucher-id');
+    var inpCode = el('inp-voucher-code-val');
+    var inpDisc = el('inp-discount-amount');
+    var inpShip = el('inp-shipping-cost');
+    if (inpId)   inpId.value   = '';
+    if (inpCode) inpCode.value = '';
+    if (inpDisc) inpDisc.value = 0;
+    if (inpShip) inpShip.value = _shipping;
+
+    // Restore tampilan ongkir (jika sebelumnya gratis ongkir)
+    var shippingEl = el('co-shipping');
+    var mobShip    = el('mob-co-shipping');
+    if (shippingEl) shippingEl.textContent = _shipping ? toRupiah(_shipping) : 'Pilih provinsi dulu';
+    if (mobShip)    mobShip.textContent    = _shipping ? toRupiah(_shipping) : 'Pilih provinsi';
+
+    // Sembunyikan badge, tampilkan input & tombol kembali
+    var badge  = el('voucher-active-badge');
+    var codeEl = el('inp-voucher-code');
+    var btn    = el('btn-apply-voucher');
+    if (badge)  badge.style.display  = 'none';
+    if (codeEl) { codeEl.style.display = ''; codeEl.value = ''; }
+    if (btn)    btn.style.display    = '';
+
+    clearFeedback();
+    recalcTotal();
+  };
+
+  // Enter key di input voucher
+  var codeInput = el('inp-voucher-code');
+  if (codeInput) {
+    codeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); window.applyVoucher(); }
+    });
+  }
+
+})();
+</script>
 
   const el = {
     prov : document.getElementById('sel_province'),
