@@ -459,7 +459,7 @@
   var subtotalEl = document.getElementById('co-subtotal');
   if (subtotalEl) subtotalEl.dataset.raw = <?= (int)$subtotal ?>;
 
-  // Listen perubahan provinsi & kota
+  // Listen perubahan provinsi & kota (form alamat baru)
   var selProv = document.getElementById('sel_province');
   var selCity = document.getElementById('sel_city');
 
