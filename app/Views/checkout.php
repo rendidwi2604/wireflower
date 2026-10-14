@@ -6,10 +6,10 @@
   </div>
 
   <form method="POST" action="<?= site_url('proses_checkout.php') ?>">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;">
+    <div class="checkout-layout">
 
       <!-- Left: Shipping & Note -->
-      <div>
+      <div class="checkout-main">
         <!-- Shipping address -->
         <div class="card-wf" style="margin-bottom:1rem;">
           <h4 style="font-family:Georgia,serif;margin-bottom:1.1rem;">Alamat Pengiriman</h4>
@@ -34,7 +34,7 @@
           <?php endif; ?>
 
           <div id="newAddressForm" style="<?= empty($addresses) ? '' : 'display:none;' ?>margin-top:.75rem;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div class="checkout-two-col">
               <div class="form-group">
                 <label class="form-label">Nama Penerima</label>
                 <input type="text" name="recipient_name" class="form-input" placeholder="Nama lengkap">
@@ -46,7 +46,7 @@
             </div>
 
             <!-- Cascade: Provinsi → Kota → Kecamatan → Kelurahan -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div class="checkout-two-col">
               <div class="form-group">
                 <label class="form-label">Provinsi</label>
                 <select name="province" id="sel_province" class="form-input" style="cursor:pointer;">
@@ -97,7 +97,7 @@
         </div>
 
         <!-- Order note -->
-        <div class="card-wf">
+        <div class="card-wf" style="margin-bottom:6rem;">
           <h4 style="font-family:Georgia,serif;margin-bottom:1rem;">Catatan Pesanan</h4>
           <div class="form-group" style="margin:0;">
             <textarea name="note" class="form-input" rows="3" style="resize:vertical;"
@@ -106,8 +106,8 @@
         </div>
       </div>
 
-      <!-- Right: Summary -->
-      <div class="order-summary-box" style="position:sticky;top:90px;">
+      <!-- Right: Summary (desktop only) -->
+      <div class="order-summary-box checkout-summary-sticky">
         <h4>Ringkasan Pesanan</h4>
 
         <?php foreach ($items as $it): ?>
@@ -149,6 +149,34 @@
       </div>
 
     </div>
+
+    <!-- ── Mobile sticky bar ── -->
+    <div class="checkout-mobile-bar">
+      <div class="checkout-mobile-bar-inner">
+        <div class="checkout-mobile-totals">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;">
+            <span style="font-size:.75rem;color:var(--text-muted);">Subtotal</span>
+            <span style="font-size:.82rem;font-weight:600;" id="mob-co-subtotal"><?= rupiah($subtotal) ?></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;">
+            <span style="font-size:.75rem;color:var(--text-muted);">Ongkir</span>
+            <span style="font-size:.82rem;" id="mob-co-shipping">
+              <?= $shipping_cost > 0 ? rupiah($shipping_cost) : '<span style="color:var(--text-muted);font-size:.75rem;">Pilih provinsi</span>' ?>
+            </span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:.3rem;">
+            <span style="font-size:.8rem;font-weight:700;">Total</span>
+            <span style="font-size:1rem;font-weight:800;color:var(--pink-deep);" id="mob-co-total"><?= rupiah($total) ?></span>
+          </div>
+        </div>
+        <button type="submit"
+                class="btn btn-primary"
+                style="border-radius:var(--radius-sm);padding:.7rem 1.25rem;font-size:.9rem;white-space:nowrap;flex-shrink:0;">
+          <i class="bi bi-check2-circle"></i> Pesan
+        </button>
+      </div>
+    </div>
+
   </form>
 
 </div>
