@@ -30,4 +30,9 @@ return [
 
     'google_client_id'     => _env('GOOGLE_CLIENT_ID',     ''),
     'google_client_secret' => _env('GOOGLE_CLIENT_SECRET', ''),
+
+    // --- Supabase Storage (untuk upload bukti pembayaran) ---
+    // Project ref diambil dari DB user: postgres.<ref>
+    'supabase_url'         => _env('SUPABASE_URL',         'https://hkirjjqocbhkxjdifpee.supabase.co'),
+    'supabase_service_key' => _env('SUPABASE_SERVICE_KEY', _env('SUPABASE_KEY', '')),
 ];
