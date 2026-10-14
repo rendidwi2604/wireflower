@@ -120,13 +120,15 @@ class CheckoutController extends Controller
 
         try {
             $orderId = $this->model(OrderModel::class)->checkout($userId, [
-                'address_id'    => $addressId,
-                'items'         => $items,
-                'subtotal'      => $subtotal,
-                'shipping_cost' => $shipping,
-                'total'         => $subtotal + $shipping,
-                'note'          => $_POST['note'] ?? '',
-                'mode'          => $mode,
+                'address_id'      => $addressId,
+                'items'           => $items,
+                'subtotal'        => $subtotal,
+                'shipping_cost'   => $shipping,
+                'discount_amount' => $discountAmount,
+                'voucher_code'    => $voucherCode,
+                'total'           => $subtotal + $shipping - $discountAmount,
+                'note'            => $_POST['note'] ?? '',
+                'mode'            => $mode,
             ]);
         } catch (\Exception $e) {
             die('Gagal memproses pesanan: ' . $e->getMessage());
