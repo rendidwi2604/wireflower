@@ -84,26 +84,30 @@ class PaymentController extends Controller
     // ── Upload bukti ke Supabase Storage ──
     private function uploadProof(): ?string
     {
-        if (empty($_FILES['transfer_proof']['name']) ||
-            $_FILES['transfer_proof']['error'] !== UPLOAD_ERR_OK) {
+        // Tentukan field name sesuai metode yang dipilih
+        $method    = $_POST['method'] ?? 'transfer_bank';
+        $fieldName = ($method === 'qris') ? 'transfer_proof_qris' : 'transfer_proof_bank';
+
+        if (empty($_FILES[$fieldName]['name']) ||
+            $_FILES[$fieldName]['error'] !== UPLOAD_ERR_OK) {
             return null;
         }
 
-        $ext     = strtolower(pathinfo($_FILES['transfer_proof']['name'], PATHINFO_EXTENSION));
+        $ext     = strtolower(pathinfo($_FILES[$fieldName]['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
         if (!in_array($ext, $allowed, true)) {
             flash('danger', 'Format bukti tidak didukung. Gunakan JPG, PNG, WebP, atau PDF.');
             return null;
         }
 
-        if ($_FILES['transfer_proof']['size'] > 5 * 1024 * 1024) {
+        if ($_FILES[$fieldName]['size'] > 5 * 1024 * 1024) {
             flash('danger', 'Ukuran file maksimal 5 MB.');
             return null;
         }
 
         $filename = 'proof_' . uniqid('', true) . '.' . $ext;
         $mimeType = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
-        $content  = file_get_contents($_FILES['transfer_proof']['tmp_name']);
+        $content  = file_get_contents($_FILES[$fieldName]['tmp_name']);
 
         // Coba Supabase Storage (helper di helpers.php)
         $url = supabase_upload('transfer-proofs', $filename, $content, $mimeType);
@@ -116,7 +120,7 @@ class PaymentController extends Controller
         if (!is_dir($dir)) {
             @mkdir($dir, 0755, true);
         }
-        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dir . $filename)) {
+        if (move_uploaded_file($_FILES[$fieldName]['tmp_name'], $dir . $filename)) {
             return site_url('assets/img/proofs/' . $filename);
         }
 
