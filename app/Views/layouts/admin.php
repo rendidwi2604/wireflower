@@ -16,8 +16,9 @@ function adminNavActive(string $path, string $currentUri): string {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e($page_title) ?> — Admin WireFlower</title>
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon"          type="image/svg+xml" href="<?= site_url('assets/img/favicon.svg') ?>">
 <link rel="icon"          type="image/png" sizes="32x32" href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="shortcut icon" type="image/png"               href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="shortcut icon" type="image/svg+xml"           href="<?= site_url('assets/img/favicon.svg') ?>">
 <meta name="theme-color"  content="#c9516f">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
