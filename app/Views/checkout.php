@@ -559,4 +559,184 @@
   })();
 
 })();
+
+/* ══════════════════════════════════════════
+   VOUCHER — AJAX validasi & kalkulasi
+   ══════════════════════════════════════════ */
+(function () {
+  var VOUCHER_API = '<?= site_url('api/voucher.php') ?>';
+  var RAW_SUBTOTAL = <?= (int)$subtotal ?>;
+
+  // State voucher aktif
+  window._activeVoucher = null;
+  window._currentShipping = 0;
+
+  /* Hitung ulang total dengan mempertimbangkan voucher aktif */
+  window.recalcWithVoucher = function(subtotal, shipping) {
+    var totalEl    = document.getElementById('co-total');
+    var mobTotalEl = document.getElementById('mob-co-total');
+    var discRow    = document.getElementById('co-discount-row');
+    var discAmt    = document.getElementById('co-discount-amount');
+    var mobDiscRow = document.getElementById('mob-discount-row');
+    var mobDiscEl  = document.getElementById('mob-co-discount');
+    var inpShip    = document.getElementById('inp-shipping-cost');
+    var inpDisc    = document.getElementById('inp-discount-amount');
+    var inpShipHidden = document.getElementById('inp-shipping-cost');
+    var shippingEl = document.getElementById('co-shipping');
+    var mobShip    = document.getElementById('mob-co-shipping');
+
+    if (!window._activeVoucher) {
+      // Tidak ada voucher — tampilkan total biasa
+      if (discRow) discRow.style.display = 'none';
+      if (mobDiscRow) mobDiscRow.style.display = 'none';
+      var total = subtotal + shipping;
+      if (totalEl)    totalEl.textContent    = toRupiah(total);
+      if (mobTotalEl) mobTotalEl.textContent = toRupiah(total);
+      if (inpDisc)    inpDisc.value          = 0;
+      return;
+    }
+
+    var v = window._activeVoucher;
+    var discount    = v.discount_amount;
+    var newShipping = v.shipping_cost;
+    var newTotal    = v.total;
+
+    // Update ongkir tampilan jika gratis ongkir
+    if (v.type === 'free_shipping') {
+      if (shippingEl) shippingEl.innerHTML = '<span style="text-decoration:line-through;color:#aaa;font-size:.8rem;">'+toRupiah(shipping)+'</span> <span style="color:#1a6b3a;font-weight:700;font-size:.8rem;">Gratis</span>';
+      if (mobShip)    mobShip.innerHTML    = '<span style="color:#1a6b3a;font-weight:700;">Gratis</span>';
+      if (inpShipHidden) inpShipHidden.value = 0;
+    }
+
+    // Tampilkan baris diskon
+    if (discRow)    discRow.style.display = 'flex';
+    if (mobDiscRow) mobDiscRow.style.display = 'flex';
+    if (discAmt)    discAmt.textContent    = '- ' + toRupiah(discount);
+    if (mobDiscEl)  mobDiscEl.textContent  = '- ' + toRupiah(discount);
+
+    // Update total
+    if (totalEl)    totalEl.textContent    = toRupiah(newTotal);
+    if (mobTotalEl) mobTotalEl.textContent = toRupiah(newTotal);
+
+    // Hidden inputs
+    if (inpDisc)         inpDisc.value          = discount;
+    if (inpShipHidden && v.type !== 'free_shipping') {
+      // Ongkir tidak berubah untuk tipe selain free_shipping
+    }
+  };
+
+  /* Tampilkan feedback di bawah input voucher */
+  function showFeedback(msg, isOk) {
+    var el = document.getElementById('voucher-feedback');
+    if (!el) return;
+    el.style.display  = 'block';
+    el.style.color    = isOk ? '#1a6b3a' : '#c0392b';
+    el.innerHTML = (isOk ? '<i class="bi bi-check-circle-fill"></i> ' : '<i class="bi bi-x-circle-fill"></i> ') + msg;
+  }
+
+  function clearFeedback() {
+    var el = document.getElementById('voucher-feedback');
+    if (el) { el.style.display = 'none'; el.textContent = ''; }
+  }
+
+  /* Terapkan voucher */
+  window.applyVoucher = function() {
+    var codeEl = document.getElementById('inp-voucher-code');
+    var code   = (codeEl ? codeEl.value : '').trim();
+    if (!code) { showFeedback('Masukkan kode voucher terlebih dahulu.', false); return; }
+
+    var btn = document.getElementById('btn-apply-voucher');
+    if (btn) { btn.disabled = true; btn.textContent = 'Memeriksa…'; }
+
+    var shipping = window._currentShipping || 0;
+
+    var fd = new FormData();
+    fd.append('code',     code);
+    fd.append('subtotal', RAW_SUBTOTAL);
+    fd.append('shipping', shipping);
+
+    fetch(VOUCHER_API, { method:'POST', body:fd })
+      .then(function(r) { return r.json(); })
+      .then(function(res) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Pakai'; }
+
+        if (!res.ok) {
+          showFeedback(res.message, false);
+          return;
+        }
+
+        // Simpan state voucher
+        window._activeVoucher = res;
+
+        // Update hidden inputs
+        var inpId   = document.getElementById('inp-voucher-id');
+        var inpCode = document.getElementById('inp-voucher-code-val');
+        if (inpId)   inpId.value   = res.voucher_id;
+        if (inpCode) inpCode.value = res.voucher_code;
+
+        // Tampilkan badge aktif
+        var badge = document.getElementById('voucher-active-badge');
+        var bdLbl = document.getElementById('voucher-badge-label');
+        if (badge) badge.style.display = 'flex';
+        if (bdLbl) bdLbl.textContent   = res.voucher_code + ' · ' + res.type_label;
+
+        // Sembunyikan input, tampilkan badge
+        if (codeEl)  codeEl.style.display  = 'none';
+        if (btn)     btn.style.display     = 'none';
+        clearFeedback();
+        showFeedback(res.message, true);
+
+        // Hapus label diskon di summary
+        var lblEl = document.getElementById('co-discount-label');
+        if (lblEl) lblEl.textContent = res.voucher_code + ' (' + res.type_label + ')';
+
+        recalcWithVoucher(RAW_SUBTOTAL, shipping);
+      })
+      .catch(function() {
+        if (btn) { btn.disabled = false; btn.textContent = 'Pakai'; }
+        showFeedback('Terjadi kesalahan. Coba lagi.', false);
+      });
+  };
+
+  /* Hapus voucher */
+  window.removeVoucher = function() {
+    window._activeVoucher = null;
+
+    // Reset hidden inputs
+    var inpId   = document.getElementById('inp-voucher-id');
+    var inpCode = document.getElementById('inp-voucher-code-val');
+    var inpDisc = document.getElementById('inp-discount-amount');
+    var inpShip = document.getElementById('inp-shipping-cost');
+    if (inpId)   inpId.value   = '';
+    if (inpCode) inpCode.value = '';
+    if (inpDisc) inpDisc.value = 0;
+
+    // Restore ongkir
+    var shipping = window._currentShipping || 0;
+    if (inpShip) inpShip.value = shipping;
+    var shippingEl = document.getElementById('co-shipping');
+    var mobShip    = document.getElementById('mob-co-shipping');
+    if (shippingEl) shippingEl.textContent = toRupiah(shipping);
+    if (mobShip)    mobShip.textContent    = toRupiah(shipping);
+
+    // Sembunyikan badge, tampilkan input
+    var badge  = document.getElementById('voucher-active-badge');
+    var codeEl = document.getElementById('inp-voucher-code');
+    var btn    = document.getElementById('btn-apply-voucher');
+    if (badge)  { badge.style.display  = 'none'; }
+    if (codeEl) { codeEl.style.display = ''; codeEl.value = ''; }
+    if (btn)    { btn.style.display    = ''; }
+
+    clearFeedback();
+    recalcWithVoucher(RAW_SUBTOTAL, shipping);
+  };
+
+  /* Enter key di input voucher */
+  var codeInput = document.getElementById('inp-voucher-code');
+  if (codeInput) {
+    codeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); window.applyVoucher(); }
+    });
+  }
+})();
 </script>
