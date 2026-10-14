@@ -231,6 +231,26 @@ button, input, select, textarea { font: inherit; }
 .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
 .cart-summary-sticky { position: sticky; top: 90px; }
 
+/* Checkout layout — desktop: 2 column, mobile: single column */
+.checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; align-items: start; }
+.checkout-summary-sticky { position: sticky; top: 90px; }
+.checkout-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+/* Checkout mobile sticky bar */
+.checkout-mobile-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+  background: #fff; border-top: 1px solid var(--border);
+  padding: .75rem 1.25rem;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.12);
+}
+.checkout-mobile-bar-inner {
+  display: flex; align-items: center; gap: 1rem;
+}
+.checkout-mobile-totals {
+  flex: 1; min-width: 0;
+}
+
 .cart-item { display: flex; align-items: flex-start; gap: 1rem; }
 .cart-item-img { width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; background: var(--cream-2); }
 .cart-item-info { flex: 1; min-width: 0; }
