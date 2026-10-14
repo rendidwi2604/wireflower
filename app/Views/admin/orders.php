@@ -201,28 +201,23 @@ function orderStatusBadge(string $s, array $cfg): string {
             <?php if (!empty($proof)): ?>
               <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start;">
                 <button type="button"
-                        onclick="openProof(<?= htmlspecialchars(json_encode($proof)) ?>)"
+                        onclick="openProof(<?= htmlspecialchars(json_encode($proof), ENT_QUOTES) ?>, <?= $pId ?>, '<?= e($pStat) ?>')"
                         style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;
                                border-radius:8px;font-size:.75rem;font-weight:600;
                                background:#fce8ef;color:#c9516f;border:1px solid #f0c0d0;cursor:pointer;">
                   <i class="bi bi-file-image"></i> Lihat Bukti
                 </button>
-                <?php if ($pStat === 'pending' && $pId): ?>
-                  <form method="POST" action="<?= site_url('admin/pesanan.php') ?>" style="margin:0;">
-                    <input type="hidden" name="payment_id" value="<?= $pId ?>">
-                    <button type="submit" name="verify_payment"
-                            style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;
-                                   border-radius:8px;font-size:.75rem;font-weight:600;
-                                   background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0;cursor:pointer;"
-                            onclick="return confirm('Konfirmasi pembayaran ini sebagai berhasil?')">
-                      <i class="bi bi-check-circle"></i> Verifikasi
-                    </button>
-                  </form>
-                <?php elseif ($pStat === 'success'): ?>
+                <?php if ($pStat === 'success'): ?>
                   <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;
                                border-radius:8px;font-size:.72rem;font-weight:700;
                                background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0;">
                     <i class="bi bi-check-circle-fill"></i> Terverifikasi
+                  </span>
+                <?php elseif ($pStat === 'pending' && $pId): ?>
+                  <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;
+                               border-radius:8px;font-size:.72rem;font-weight:700;
+                               background:#fff8e1;color:#b45309;border:1px solid #fde68a;">
+                    <i class="bi bi-hourglass-split"></i> Menunggu
                   </span>
                 <?php endif; ?>
               </div>
