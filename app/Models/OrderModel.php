@@ -179,11 +179,6 @@ class OrderModel extends Model
 
     // ---- Admin ----
 
-    public function find($id): ?array
-    {
-        return $this->fetchOne('SELECT * FROM orders WHERE id = $1', [$id]);
-    }
-
     public function allWithCustomer(string $status): array
     {
         $params = [];
