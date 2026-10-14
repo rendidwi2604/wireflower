@@ -491,6 +491,9 @@
       if (totalEl)     totalEl.textContent = toRupiah(subtotal);
       if (mobTotal)    mobTotal.textContent = toRupiah(subtotal);
       if (inpShipping) inpShipping.value = 0;
+      // Reset voucher jika ada (ongkir belum diketahui)
+      window._currentShipping = 0;
+      recalcWithVoucher(subtotal, 0);
       return;
     }
 
@@ -500,9 +503,10 @@
       infoEl.textContent = zona.label;
       infoEl.style.display = 'block';
     }
-    if (totalEl)     totalEl.textContent = toRupiah(subtotal + zona.tarif);
-    if (mobTotal)    mobTotal.textContent = toRupiah(subtotal + zona.tarif);
     if (inpShipping) inpShipping.value = zona.tarif;
+    // Simpan ongkir terkini supaya voucher bisa pakai nilai ini
+    window._currentShipping = zona.tarif;
+    recalcWithVoucher(subtotal, zona.tarif);
   }
 
   // Simpan subtotal raw di element biar mudah dibaca JS
