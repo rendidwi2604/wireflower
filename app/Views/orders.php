@@ -144,40 +144,6 @@ $status_class = [
       </div>
     </div>
 
-    <!-- Bukti transfer — hanya untuk pembayaran transfer yang pending -->
-    <?php if ($o['status'] === 'belum_bayar' && $isTransfer): ?>
-    <div style="margin-top:.85rem;background:#fffbea;border:1px solid #f0d070;border-radius:var(--radius-sm);padding:.9rem 1rem;font-size:.85rem;">
-      <?php if ($hasProof): ?>
-        <div style="display:flex;align-items:center;gap:.6rem;color:#1a6b3a;">
-          <i class="bi bi-check-circle-fill" style="font-size:1.1rem;"></i>
-          <span><strong>Bukti transfer sudah dikirim.</strong> Menunggu verifikasi admin.</span>
-          <a href="<?= e($payment['transfer_proof']) ?>" target="_blank"
-             style="margin-left:auto;font-size:.78rem;color:var(--pink-deep);text-decoration:underline;">
-            Lihat bukti
-          </a>
-        </div>
-      <?php else: ?>
-        <div style="font-weight:600;margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;">
-          <i class="bi bi-upload" style="color:#c07a00;"></i>
-          Upload Bukti Transfer
-        </div>
-        <p style="color:#666;margin:0 0 .65rem;font-size:.78rem;line-height:1.5;">
-          Sudah transfer? Upload bukti pembayaran agar admin dapat memverifikasi lebih cepat.
-          Format: JPG, PNG, WebP, atau PDF. Maks 5 MB.
-        </p>
-        <form method="POST" enctype="multipart/form-data" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
-          <input type="hidden" name="proof_order_id" value="<?= $o['id'] ?>">
-          <input type="file" name="transfer_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"
-                 required
-                 style="font-size:.8rem;border:1px solid #ddc;border-radius:6px;padding:.3rem .5rem;background:#fff;flex:1;min-width:0;">
-          <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">
-            <i class="bi bi-upload"></i> Kirim Bukti
-          </button>
-        </form>
-      <?php endif; ?>
-    </div>
-    <?php endif; ?>
-
   </div><!-- end .card-wf -->
 
   <!-- Cancel modal — untuk belum_bayar DAN dikemas -->
