@@ -165,6 +165,7 @@ function orderStatusBadge(string $s, array $cfg): string {
           <th>Kode Pesanan</th>
           <th>Pelanggan</th>
           <th>Total</th>
+          <th>Bukti Bayar</th>
           <th>Status</th>
           <th>Update Status</th>
         </tr>
@@ -188,6 +189,51 @@ function orderStatusBadge(string $s, array $cfg): string {
             <div class="order-total"><?= rupiah($o['total']) ?></div>
             <?php if (!empty($o['shipping_cost'])): ?>
               <div class="order-items-count">+<?= rupiah($o['shipping_cost']) ?> ongkir</div>
+            <?php endif; ?>
+          </td>
+          <td>
+            <?php
+              $proof  = $o['transfer_proof'] ?? '';
+              $pStat  = $o['payment_status'] ?? 'pending';
+              $pMethod = $o['payment_method'] ?? '';
+              $pId    = (int)($o['payment_id'] ?? 0);
+            ?>
+            <?php if (!empty($proof)): ?>
+              <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-start;">
+                <button type="button"
+                        onclick="openProof(<?= htmlspecialchars(json_encode($proof)) ?>)"
+                        style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;
+                               border-radius:8px;font-size:.75rem;font-weight:600;
+                               background:#fce8ef;color:#c9516f;border:1px solid #f0c0d0;cursor:pointer;">
+                  <i class="bi bi-file-image"></i> Lihat Bukti
+                </button>
+                <?php if ($pStat === 'pending' && $pId): ?>
+                  <form method="POST" action="<?= site_url('admin/pesanan.php') ?>" style="margin:0;">
+                    <input type="hidden" name="payment_id" value="<?= $pId ?>">
+                    <button type="submit" name="verify_payment"
+                            style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;
+                                   border-radius:8px;font-size:.75rem;font-weight:600;
+                                   background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0;cursor:pointer;"
+                            onclick="return confirm('Konfirmasi pembayaran ini sebagai berhasil?')">
+                      <i class="bi bi-check-circle"></i> Verifikasi
+                    </button>
+                  </form>
+                <?php elseif ($pStat === 'success'): ?>
+                  <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .6rem;
+                               border-radius:8px;font-size:.72rem;font-weight:700;
+                               background:#ecfdf5;color:#10b981;border:1px solid #a7f3d0;">
+                    <i class="bi bi-check-circle-fill"></i> Terverifikasi
+                  </span>
+                <?php endif; ?>
+              </div>
+            <?php elseif ($pMethod === 'cod'): ?>
+              <span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;
+                           border-radius:8px;font-size:.75rem;font-weight:600;
+                           background:#fff8e1;color:#b45309;border:1px solid #fde68a;">
+                <i class="bi bi-cash-coin"></i> COD
+              </span>
+            <?php else: ?>
+              <span style="color:#bbb;font-size:.75rem;">— Belum ada</span>
             <?php endif; ?>
           </td>
           <td><?= orderStatusBadge($o['status'], $statusCfg) ?></td>
