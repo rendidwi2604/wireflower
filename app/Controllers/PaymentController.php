@@ -68,7 +68,7 @@ class PaymentController extends Controller
 
                 flash('success', 'Bukti pembayaran berhasil dikirim! Pesanan akan diproses setelah admin memverifikasi.');
             } else {
-                flash('danger', 'Gagal mengunggah bukti pembayaran. Pastikan format dan ukuran file sesuai, lalu coba lagi.');
+                flash('danger', 'Gagal mengunggah bukti pembayaran. Pastikan format (JPG/PNG/PDF) dan ukuran file (maks 5 MB) sesuai, lalu coba lagi.');
             }
 
             redirect('pembayaran.php?order_id=' . $order['id']);
@@ -101,64 +101,25 @@ class PaymentController extends Controller
             return null;
         }
 
-        $filename    = 'proof_' . uniqid('', true) . '.' . $ext;
-        $fileContent = file_get_contents($_FILES['transfer_proof']['tmp_name']);
-        $mimeType    = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+        $filename = 'proof_' . uniqid('', true) . '.' . $ext;
+        $mimeType = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+        $content  = file_get_contents($_FILES['transfer_proof']['tmp_name']);
 
-        // ── Supabase Storage ──
-        // Coba semua kemungkinan nama env var
-        $supabaseUrl = _env('SUPABASE_URL', '');
-        $supabaseKey = _env('SUPABASE_SERVICE_KEY',
-                        _env('SUPABASE_KEY',
-                        _env('SUPABASE_ANON_KEY', '')));
-
-        // Fallback ke config/app.php jika env tidak tersedia
-        if (!$supabaseUrl || !$supabaseKey) {
-            $cfg = require BASE_PATH . '/config/app.php';
-            if (!$supabaseUrl) $supabaseUrl = $cfg['supabase_url'] ?? '';
-            if (!$supabaseKey) $supabaseKey = $cfg['supabase_service_key'] ?? '';
+        // Coba Supabase Storage (helper di helpers.php)
+        $url = supabase_upload('transfer-proofs', $filename, $content, $mimeType);
+        if ($url) {
+            return $url;
         }
 
-        if ($supabaseUrl && $supabaseKey) {
-            // Supabase Storage memakai PUT untuk upload
-            $endpoint = rtrim($supabaseUrl, '/') . '/storage/v1/object/transfer-proofs/' . $filename;
-            $ch = curl_init($endpoint);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST  => 'PUT',
-                CURLOPT_POSTFIELDS     => $fileContent,
-                CURLOPT_HTTPHEADER     => [
-                    'Authorization: Bearer ' . $supabaseKey,
-                    'Content-Type: ' . $mimeType,
-                    'x-upsert: true',
-                ],
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_TIMEOUT        => 30,
-            ]);
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlErr  = curl_error($ch);
-            curl_close($ch);
-
-            if ($httpCode === 200 || $httpCode === 201) {
-                return rtrim($supabaseUrl, '/') . '/storage/v1/object/public/transfer-proofs/' . $filename;
-            }
-            error_log('[PaymentController] Supabase upload HTTP ' . $httpCode . ' | curl: ' . $curlErr . ' | response: ' . $response);
-        } else {
-            error_log('[PaymentController] Supabase env vars not set. SUPABASE_URL=' . ($supabaseUrl ?: 'empty'));
-        }
-
-        // Fallback: filesystem lokal (hanya bekerja di non-Vercel / localhost)
+        // Fallback: filesystem lokal (hanya bekerja di localhost, Vercel read-only)
         $dir = BASE_PATH . '/assets/img/proofs/';
         if (!is_dir($dir)) {
             @mkdir($dir, 0755, true);
         }
-        $dest = $dir . $filename;
-        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dest)) {
+        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dir . $filename)) {
             return site_url('assets/img/proofs/' . $filename);
         }
 
-        error_log('[PaymentController] All upload methods failed for file: ' . $_FILES['transfer_proof']['name']);
         return null;
     }
 }
