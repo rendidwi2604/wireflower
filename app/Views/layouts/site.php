@@ -4,6 +4,80 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= isset($page_title) && $page_title !== '' ? e($page_title) . ' — WireFlower' : 'WireFlower — Bunga yang Tak Pernah Layu' ?></title>
+
+<?php
+// ── SEO Meta ──
+$seo_title       = isset($page_title) && $page_title !== ''
+                    ? e($page_title) . ' — WireFlower'
+                    : 'WireFlower — Bunga yang Tak Pernah Layu';
+$seo_desc        = $page_meta_desc
+                    ?? 'WireFlower — Toko bunga kawat bulu handmade premium. Dibuat satu per satu dengan penuh cinta. Tersedia single flower, bouquet, gift set & custom order. Pengiriman ke seluruh Indonesia.';
+$seo_keywords    = $page_meta_keywords
+                    ?? 'bunga kawat bulu, wire flower, handmade, bouquet, hadiah, kado, bunga artifisial, WireFlower';
+$seo_url         = 'https://wireflower.my.id' . ($_SERVER['REQUEST_URI'] ?? '/');
+$seo_image       = $page_og_image ?? 'https://wireflower.my.id/assets/img/logoWF.png';
+$seo_type        = $page_og_type  ?? 'website';
+$canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.id';
+?>
+
+<!-- ── Primary SEO ── -->
+<meta name="description"        content="<?= e($seo_desc) ?>">
+<meta name="keywords"           content="<?= e($seo_keywords) ?>">
+<meta name="author"             content="WireFlower">
+<meta name="robots"             content="index, follow">
+<link rel="canonical"           href="<?= e($canonical_url) ?>">
+
+<!-- ── Open Graph (Facebook, WhatsApp, Telegram) ── -->
+<meta property="og:type"        content="<?= e($seo_type) ?>">
+<meta property="og:title"       content="<?= e($seo_title) ?>">
+<meta property="og:description" content="<?= e($seo_desc) ?>">
+<meta property="og:url"         content="<?= e($canonical_url) ?>">
+<meta property="og:image"       content="<?= e($seo_image) ?>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height"content="630">
+<meta property="og:site_name"   content="WireFlower">
+<meta property="og:locale"      content="id_ID">
+
+<!-- ── Twitter Card ── -->
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="<?= e($seo_title) ?>">
+<meta name="twitter:description" content="<?= e($seo_desc) ?>">
+<meta name="twitter:image"       content="<?= e($seo_image) ?>">
+
+<!-- ── Favicon & App Icons ── -->
+<link rel="icon"             type="image/png" sizes="32x32" href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="icon"             type="image/png" sizes="16x16" href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="apple-touch-icon" sizes="180x180"               href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="shortcut icon"    type="image/png"               href="<?= site_url('assets/img/logoWF.png') ?>">
+<meta name="theme-color"     content="#c9516f">
+<meta name="msapplication-TileColor" content="#c9516f">
+
+<!-- ── Mobile / PWA ── -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="WireFlower">
+
+<!-- ── Schema.org Structured Data ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "OnlineStore",
+  "name": "WireFlower",
+  "url": "https://wireflower.my.id",
+  "logo": "https://wireflower.my.id/assets/img/logoWF.png",
+  "description": "Toko bunga kawat bulu handmade premium. Dibuat satu per satu dengan penuh cinta.",
+  "sameAs": [
+    "https://instagram.com/wireflower",
+    "https://tiktok.com/@wireflower"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "ID"
+  },
+  "priceRange": "Rp 35.000 - Rp 500.000"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="<?= site_url('assets/css/style.css') ?>">
