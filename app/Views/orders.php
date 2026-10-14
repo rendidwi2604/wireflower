@@ -148,6 +148,18 @@ $status_class = [
 
   </div><!-- end .card-wf -->
 
+  <!-- Info bukti sudah dikirim (muncul di bawah actions, bukan form upload lagi) -->
+  <?php if ($o['status'] === 'belum_bayar' && $hasProof): ?>
+  <div class="card-wf" style="margin-top:-.5rem;padding:.75rem 1rem;background:#f0faf5;border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:#1a6b3a;">
+    <i class="bi bi-hourglass-split"></i>
+    <span><strong>Bukti pembayaran sudah dikirim.</strong> Menunggu verifikasi admin.</span>
+    <a href="<?= e($payment['transfer_proof']) ?>" target="_blank"
+       style="margin-left:auto;font-size:.78rem;color:var(--pink-deep);text-decoration:underline;white-space:nowrap;">
+      Lihat bukti
+    </a>
+  </div>
+  <?php endif; ?>
+
   <!-- Cancel modal — untuk belum_bayar DAN dikemas -->
   <?php if (in_array($o['status'], ['belum_bayar', 'dikemas'])): ?>
   <div id="cancelModal<?= $o['id'] ?>"
