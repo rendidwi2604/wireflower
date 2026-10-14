@@ -17,7 +17,7 @@
   <?php else: ?>
     <form id="checkoutForm" method="POST" action="<?= site_url('checkout.php') ?>"></form>
 
-    <div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;">
+    <div class="cart-layout">
 
       <!-- Cart items -->
       <div>
