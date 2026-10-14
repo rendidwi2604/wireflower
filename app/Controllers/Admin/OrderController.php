@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Models\NotificationModel;
 use App\Models\OrderModel;
+use App\Models\PaymentModel;
 use App\Models\ProductModel;
 
 class OrderController extends Controller
