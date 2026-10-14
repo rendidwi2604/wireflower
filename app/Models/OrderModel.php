@@ -19,6 +19,11 @@ class OrderModel extends Model
 
     // ---- Checkout (satu transaksi) ----
 
+    public function find(int $orderId): ?array
+    {
+        return $this->fetchOne('SELECT * FROM orders WHERE id = $1', [$orderId]);
+    }
+
     public function checkout(int $userId, array $data): int
     {
         $this->db->beginTransaction();
