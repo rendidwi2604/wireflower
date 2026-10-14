@@ -208,10 +208,11 @@ $isSuccess  = $payment['status'] === 'success';
           <div style="font-weight:700;margin-bottom:.75rem;color:#5a3ea0;font-size:.95rem;">
             <i class="bi bi-qr-code-scan"></i> Scan QRIS
           </div>
-          <div style="width:190px;height:190px;margin:0 auto .85rem;background:#fff;border-radius:12px;
-               display:flex;align-items:center;justify-content:center;color:#5a3ea0;font-size:3.5rem;
-               border:2px solid #c9b8f0;">
-            <i class="bi bi-qr-code"></i>
+          <div style="width:220px;height:220px;margin:0 auto .85rem;background:#fff;border-radius:12px;
+               display:flex;align-items:center;justify-content:center;
+               border:2px solid #c9b8f0;overflow:hidden;">
+            <img src="<?= site_url('assets/img/qris.png') ?>" alt="QRIS WireFlower"
+                 style="width:100%;height:100%;object-fit:contain;padding:4px;">
           </div>
           <div style="color:#666;font-size:.8rem;line-height:1.65;">
             Scan dengan GoPay, OVO, Dana, ShopeePay, m-Banking, atau aplikasi QRIS lainnya
