@@ -112,6 +112,13 @@ class PaymentController extends Controller
                         _env('SUPABASE_KEY',
                         _env('SUPABASE_ANON_KEY', '')));
 
+        // Fallback ke config/app.php jika env tidak tersedia
+        if (!$supabaseUrl || !$supabaseKey) {
+            $cfg = require BASE_PATH . '/config/app.php';
+            if (!$supabaseUrl) $supabaseUrl = $cfg['supabase_url'] ?? '';
+            if (!$supabaseKey) $supabaseKey = $cfg['supabase_service_key'] ?? '';
+        }
+
         if ($supabaseUrl && $supabaseKey) {
             // Supabase Storage memakai PUT untuk upload
             $endpoint = rtrim($supabaseUrl, '/') . '/storage/v1/object/transfer-proofs/' . $filename;
