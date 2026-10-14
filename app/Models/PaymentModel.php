@@ -58,13 +58,18 @@ class PaymentModel extends Model
 
     public function updateStatus(int $paymentId, string $status): void
     {
-        // NULL jika bukan success, CURRENT_TIMESTAMP jika success
-        $this->run(
-            "UPDATE payments
-             SET status = $1,
-                 paid_at = CASE WHEN $1 = 'success' THEN CURRENT_TIMESTAMP ELSE NULL END
-             WHERE id = $2",
-            [$status, $paymentId]
-        );
+        // Use a parameter for status and a separate literal check to avoid
+        // repeating the same placeholder (which would create 3 ? after conversion)
+        if ($status === 'success') {
+            $this->run(
+                "UPDATE payments SET status = $1, paid_at = CURRENT_TIMESTAMP WHERE id = $2",
+                [$status, $paymentId]
+            );
+        } else {
+            $this->run(
+                "UPDATE payments SET status = $1, paid_at = NULL WHERE id = $2",
+                [$status, $paymentId]
+            );
+        }
     }
 }
