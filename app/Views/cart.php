@@ -142,6 +142,10 @@ function recalcSummary() {
   const subEl   = document.getElementById('summary-subtotal');
   const totEl   = document.getElementById('summary-total');
   const btnEl   = document.getElementById('btnCheckout');
+  // Mobile bar elements
+  const mobileLblEl = document.getElementById('mobile-summary-label');
+  const mobileTotEl = document.getElementById('mobile-summary-total');
+  const mobileBtnEl = document.getElementById('btnCheckoutMobile');
 
   let subtotal = 0;
   let count    = 0;
@@ -159,12 +163,18 @@ function recalcSummary() {
   if (subEl) subEl.textContent = toRupiah(subtotal);
   if (totEl) totEl.textContent = toRupiah(subtotal);
 
+  // Mobile bar
+  if (mobileLblEl) mobileLblEl.textContent = count + ' item dipilih';
+  if (mobileTotEl) mobileTotEl.textContent = toRupiah(subtotal);
+
   // Aktifkan tombol hanya jika ada yang dipilih
-  if (btnEl) {
-    btnEl.disabled = count === 0;
-    btnEl.style.opacity  = count === 0 ? '.5'  : '1';
-    btnEl.style.cursor   = count === 0 ? 'not-allowed' : 'pointer';
-  }
+  const isActive = count > 0;
+  [btnEl, mobileBtnEl].forEach(function(btn) {
+    if (!btn) return;
+    btn.disabled = !isActive;
+    btn.style.opacity  = isActive ? '1'           : '.5';
+    btn.style.cursor   = isActive ? 'pointer'     : 'not-allowed';
+  });
 }
 
 // ── Select all ──
