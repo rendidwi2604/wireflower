@@ -45,13 +45,14 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
 <meta name="twitter:image"       content="<?= e($seo_image) ?>">
 
 <!-- ── Favicon & App Icons ── -->
-<link rel="icon"             type="image/svg+xml"            href="<?= site_url('assets/img/favicon.svg') ?>">
 <link rel="icon"             type="image/png" sizes="32x32"  href="<?= site_url('assets/img/logoWF.png') ?>">
 <link rel="icon"             type="image/png" sizes="16x16"  href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="icon"             type="image/png" sizes="96x96"  href="<?= site_url('assets/img/logoWF.png') ?>">
 <link rel="apple-touch-icon" sizes="180x180"                 href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="shortcut icon"    type="image/svg+xml"            href="<?= site_url('assets/img/favicon.svg') ?>">
+<link rel="shortcut icon"    href="<?= site_url('assets/img/logoWF.png') ?>">
 <meta name="theme-color"     content="#c9516f">
 <meta name="msapplication-TileColor" content="#c9516f">
+<meta name="msapplication-TileImage" content="<?= site_url('assets/img/logoWF.png') ?>">
 
 <!-- ── Mobile / PWA ── -->
 <meta name="mobile-web-app-capable" content="yes">
