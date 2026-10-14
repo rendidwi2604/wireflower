@@ -211,6 +211,19 @@ $filtered = $activeFilter === '' ? $payments
           <td><span class="pay-amount"><?= rupiah($p['amount']) ?></span></td>
           <td><?= payStatusBadge($p['status'], $payStatusCfg) ?></td>
           <td>
+            <?php if (!empty($p['transfer_proof'])): ?>
+              <a href="<?= e($p['transfer_proof']) ?>" target="_blank"
+                 style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .7rem;
+                        border-radius:8px;font-size:.75rem;font-weight:600;
+                        background:#fce8ef;color:var(--pink-deep,#c9516f);border:1px solid #f0c0d0;
+                        text-decoration:none;white-space:nowrap;">
+                <i class="bi bi-file-image"></i> Lihat Bukti
+              </a>
+            <?php else: ?>
+              <span style="color:#bbb;font-size:.75rem;">— Belum ada</span>
+            <?php endif; ?>
+          </td>
+          <td>
             <?php if ($p['paid_at']): ?>
               <div class="pay-date">
                 <i class="bi bi-calendar3" style="font-size:.65rem;"></i>
