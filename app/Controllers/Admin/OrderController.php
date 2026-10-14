@@ -52,7 +52,9 @@ class OrderController extends Controller
             $this->model(PaymentModel::class)->updateStatus($paymentId, 'success');
             flash('success', 'Pembayaran berhasil diverifikasi.');
             redirect('admin/pesanan.php');
-        }        $this->render('admin/orders', [
+        }
+
+        $this->render('admin/orders', [
             'page_title' => 'Kelola Pesanan',
             'status_filter' => $_GET['status'] ?? '',
             'statuses' => OrderModel::STATUSES,
