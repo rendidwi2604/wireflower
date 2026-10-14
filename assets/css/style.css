@@ -226,6 +226,11 @@ button, input, select, textarea { font: inherit; }
 .cart-empty i { font-size: 3rem; color: var(--border); margin-bottom: 1rem; display: block; }
 .cart-empty h3 { font-family: Georgia, serif; margin-bottom: .5rem; }
 .cart-empty p { color: var(--text-muted); }
+
+/* Cart layout — desktop: 2 column, mobile: single column */
+.cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+.cart-summary-sticky { position: sticky; top: 90px; }
+
 .cart-item { display: flex; align-items: flex-start; gap: 1rem; }
 .cart-item-img { width: 80px; height: 80px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; background: var(--cream-2); }
 .cart-item-info { flex: 1; min-width: 0; }
@@ -234,6 +239,45 @@ button, input, select, textarea { font: inherit; }
 .cart-item-subtotal { font-weight: 700; font-size: .95rem; }
 .cart-item-remove { background: none; border: none; color: var(--text-muted); font-size: .8rem; cursor: pointer; padding: 0; transition: color .15s; display: flex; align-items: center; gap: .2rem; }
 .cart-item-remove:hover { color: #c0392b; }
+
+/* Mobile cart summary bar — fixed at bottom */
+.cart-mobile-bar {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+  background: #fff; border-top: 1px solid var(--border);
+  padding: .85rem 1.25rem;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.10);
+}
+.cart-mobile-bar-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.cart-mobile-bar-total { display: flex; flex-direction: column; }
+.cart-mobile-bar-total .label { font-size: .75rem; color: var(--text-muted); }
+.cart-mobile-bar-total .amount { font-weight: 700; font-size: 1.05rem; color: var(--pink-deep); }
+.cart-mobile-bar-btn { flex-shrink: 0; }
+
+@media (max-width: 700px) {
+  /* Stack layout vertically, summary goes above items */
+  .cart-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  /* Hide the desktop sidebar summary on mobile */
+  .cart-summary-sticky {
+    display: none;
+  }
+  /* Show mobile sticky bar */
+  .cart-mobile-bar {
+    display: block;
+  }
+  /* Add bottom padding so content doesn't hide behind the bar */
+  .cart-layout-items-col {
+    padding-bottom: 100px;
+  }
+  /* Smaller cart item image on mobile */
+  .cart-item-img { width: 64px; height: 64px; }
+  .cart-item-name { font-size: .85rem; }
+}
 
 /* --- Forms --- */
 .form-group { margin-bottom: 1.1rem; }
