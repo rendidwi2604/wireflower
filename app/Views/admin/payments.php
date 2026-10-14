@@ -185,6 +185,7 @@ $filtered = $activeFilter === '' ? $payments
           <th>Metode</th>
           <th>Jumlah</th>
           <th>Status</th>
+          <th>Bukti</th>
           <th>Tgl Bayar</th>
           <th>Update</th>
         </tr>
