@@ -105,6 +105,26 @@
       </div>
 
     </div>
+
+    <!-- ── Mobile sticky bar (checkout button) ── -->
+    <div class="cart-mobile-bar" id="cartMobileBar">
+      <div class="cart-mobile-bar-inner">
+        <div class="cart-mobile-bar-total">
+          <span class="label" id="mobile-summary-label">0 item dipilih</span>
+          <span class="amount" id="mobile-summary-total">Rp 0</span>
+        </div>
+        <div class="cart-mobile-bar-btn">
+          <button type="submit" form="checkoutForm"
+                  id="btnCheckoutMobile"
+                  class="btn btn-primary"
+                  style="border-radius:var(--radius-sm);opacity:.5;cursor:not-allowed;padding:.65rem 1.4rem;font-size:.9rem;"
+                  disabled>
+            <i class="bi bi-bag-check"></i> Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+
   <?php endif; ?>
 
 </div>
