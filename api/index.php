@@ -72,6 +72,12 @@ if ($uri === '/api/wilayah.php') {
     exit;
 }
 
+// API voucher validasi
+if ($uri === '/api/voucher.php') {
+    require BASE_PATH . '/api/voucher.php';
+    exit;
+}
+
 // Cari route
 if (isset($routes[$uri]) && $routes[$uri] !== null) {
     [$class, $method] = $routes[$uri];
