@@ -48,6 +48,7 @@ class VoucherModel extends Model
      */
     public function findValid(string $code): ?array
     {
+        $this->ensureTable();
         $v = $this->fetchOne(
             "SELECT * FROM vouchers
              WHERE UPPER(code) = UPPER($1)
