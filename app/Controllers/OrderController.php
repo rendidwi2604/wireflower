@@ -118,55 +118,23 @@ class OrderController extends Controller
             return null;
         }
 
-        $filename    = 'proof_' . uniqid() . '.' . $ext;
-        $fileContent = file_get_contents($_FILES['transfer_proof']['tmp_name']);
+        $filename = 'proof_' . uniqid('', true) . '.' . $ext;
+        $mimeType = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+        $content  = file_get_contents($_FILES['transfer_proof']['tmp_name']);
 
-        // ── Supabase Storage ──
-        $supabaseUrl = '';
-        $supabaseKey = '';
-        foreach (['SUPABASE_URL', 'supabase_url'] as $k) {
-            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
-            if ($v) { $supabaseUrl = $v; break; }
-        }
-        foreach (['SUPABASE_KEY', 'supabase_key'] as $k) {
-            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
-            if ($v) { $supabaseKey = $v; break; }
+        // Coba Supabase Storage
+        $url = supabase_upload('transfer-proofs', $filename, $content, $mimeType);
+        if ($url) {
+            return $url;
         }
 
-        if ($supabaseUrl && $supabaseKey) {
-            $bucket   = 'transfer-proofs';
-            $mimeType = $ext === 'pdf' ? 'application/pdf' : 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
-            $endpoint = rtrim($supabaseUrl, '/') . '/storage/v1/object/' . $bucket . '/' . $filename;
-
-            $ch = curl_init($endpoint);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST  => 'POST',
-                CURLOPT_POSTFIELDS     => $fileContent,
-                CURLOPT_HTTPHEADER     => [
-                    'Authorization: Bearer ' . $supabaseKey,
-                    'Content-Type: ' . $mimeType,
-                    'x-upsert: true',
-                ],
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode === 200 || $httpCode === 201) {
-                return rtrim($supabaseUrl, '/') . '/storage/v1/object/public/' . $bucket . '/' . $filename;
-            }
-            error_log('[Supabase Storage] proof HTTP ' . $httpCode . ': ' . $response);
+        // Fallback: filesystem lokal
+        $dir = BASE_PATH . '/assets/img/proofs/';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
         }
-
-        // ── Fallback: filesystem lokal ──
-        $dest = BASE_PATH . '/assets/img/proofs/' . $filename;
-        if (!is_dir(dirname($dest))) {
-            mkdir(dirname($dest), 0755, true);
-        }
-        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dest)) {
-            return 'proofs/' . $filename;
+        if (move_uploaded_file($_FILES['transfer_proof']['tmp_name'], $dir . $filename)) {
+            return site_url('assets/img/proofs/' . $filename);
         }
 
         return null;
