@@ -182,7 +182,19 @@ class OrderModel extends Model
     public function allWithCustomer(string $status): array
     {
         $params = [];
-        $sql    = 'SELECT o.*, u.name AS customer_name FROM orders o JOIN users u ON o.user_id = u.id';
+        $sql    = 'SELECT o.*, u.name AS customer_name,
+                          pay.id          AS payment_id,
+                          pay.method      AS payment_method,
+                          pay.status      AS payment_status,
+                          pay.transfer_proof,
+                          pay.paid_at
+                   FROM orders o
+                   JOIN users u ON o.user_id = u.id
+                   LEFT JOIN LATERAL (
+                     SELECT * FROM payments
+                     WHERE order_id = o.id
+                     ORDER BY id DESC LIMIT 1
+                   ) pay ON true';
         if ($status !== '') {
             $sql     .= ' WHERE o.status = $1';
             $params[] = $status;
