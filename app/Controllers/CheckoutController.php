@@ -8,6 +8,7 @@ use App\Models\NotificationModel;
 use App\Models\OrderModel;
 use App\Models\ProductModel;
 use App\Models\UserModel;
+use App\Models\VoucherModel;
 
 class CheckoutController extends Controller
 {
