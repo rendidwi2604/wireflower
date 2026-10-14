@@ -148,8 +148,19 @@ function slugify(string $text)
 
 function google_redirect_uri()
 {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    return $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . site_url('auth/google-callback.php');
+    // Di Vercel selalu HTTPS. Cek juga X-Forwarded-Proto dari proxy.
+    $proto  = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+    $https  = $_SERVER['HTTPS'] ?? '';
+    $isVercel = !empty($_SERVER['VERCEL']) || !empty(getenv('VERCEL'));
+
+    if ($isVercel || $proto === 'https' || ($https !== '' && $https !== 'off')) {
+        $scheme = 'https';
+    } else {
+        $scheme = 'http';
+    }
+
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    return $scheme . '://' . $host . site_url('auth/google-callback.php');
 }
 
 function has_google_oauth_config()
