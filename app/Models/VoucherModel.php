@@ -115,6 +115,7 @@ class VoucherModel extends Model
 
     public function all(): array
     {
+        $this->ensureTable();
         return $this->fetchAll(
             'SELECT * FROM vouchers ORDER BY created_at DESC'
         );
