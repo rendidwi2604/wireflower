@@ -44,6 +44,14 @@ class OrderController extends Controller
             }
             flash('success', 'Status pesanan diperbarui.');
             redirect('admin/pesanan.php');
+        }
+
+        // Verify payment (confirm bukti pembayaran)
+        if (isset($_POST['verify_payment'])) {
+            $paymentId = (int) $_POST['payment_id'];
+            $this->model(PaymentModel::class)->updateStatus($paymentId, 'success');
+            flash('success', 'Pembayaran berhasil diverifikasi.');
+            redirect('admin/pesanan.php');
         }        $this->render('admin/orders', [
             'page_title' => 'Kelola Pesanan',
             'status_filter' => $_GET['status'] ?? '',
