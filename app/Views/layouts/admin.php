@@ -291,6 +291,9 @@ tbody tr:hover td { background: #fdfbfb; }
     <a href="<?= site_url('admin/pembayaran.php') ?>" class="<?= adminNavActive('/admin/pembayaran.php', $currentUri) ?>">
       <i class="bi bi-credit-card"></i> Pembayaran
     </a>
+    <a href="<?= site_url('admin/voucher.php') ?>" class="<?= adminNavActive('/admin/voucher.php', $currentUri) ?>">
+      <i class="bi bi-ticket-perforated"></i> Voucher / Diskon
+    </a>
 
     <div class="adm-nav-label">Pengguna</div>
 
