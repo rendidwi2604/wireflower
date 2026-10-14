@@ -297,6 +297,22 @@ button, input, select, textarea { font: inherit; }
   /* Smaller cart item image on mobile */
   .cart-item-img { width: 64px; height: 64px; }
   .cart-item-name { font-size: .85rem; }
+
+  /* Checkout mobile */
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .checkout-summary-sticky {
+    display: none;
+  }
+  .checkout-mobile-bar {
+    display: block;
+  }
+  .checkout-two-col {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 /* --- Forms --- */
