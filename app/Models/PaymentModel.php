@@ -48,7 +48,7 @@ class PaymentModel extends Model
     public function allWithOrder(): array
     {
         return $this->fetchAll(
-            'SELECT pay.*, o.order_code, u.name AS customer_name
+            'SELECT pay.*, o.order_code, o.user_id, u.name AS customer_name
              FROM payments pay
              JOIN orders o ON pay.order_id = o.id
              JOIN users u ON o.user_id = u.id
