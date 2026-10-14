@@ -168,9 +168,10 @@
           </div>
           <div id="voucher-feedback" style="margin-top:.45rem;font-size:.78rem;display:none;"></div>
           <!-- Badge voucher aktif -->
-          <div id="voucher-active-badge" style="display:none;margin-top:.5rem;
-               background:#eafaf0;border:1px solid #b2e0c4;border-radius:8px;
-               padding:.45rem .75rem;display:none;align-items:center;justify-content:space-between;gap:.5rem;">
+          <div id="voucher-active-badge"
+               style="display:none;margin-top:.5rem;background:#eafaf0;border:1px solid #b2e0c4;
+                      border-radius:8px;padding:.45rem .75rem;align-items:center;
+                      justify-content:space-between;gap:.5rem;">
             <div style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;color:#1a6b3a;">
               <i class="bi bi-check-circle-fill"></i>
               <span id="voucher-badge-label">Voucher diterapkan</span>
