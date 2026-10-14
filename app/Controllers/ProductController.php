@@ -26,11 +26,24 @@ class ProductController extends Controller
         $reviews = $this->model(ReviewModel::class)->forProduct((int) $product['id']);
         $avgRating = $reviews ? array_sum(array_column($reviews, 'rating')) / count($reviews) : 0;
 
+        // SEO — deskripsi dari description produk, potong 160 karakter
+        $metaDesc = !empty($product['description'])
+            ? mb_strimwidth(strip_tags($product['description']), 0, 160, '...')
+            : 'Beli ' . $product['name'] . ' di WireFlower. Bunga kawat bulu handmade premium, dikirim ke seluruh Indonesia.';
+
+        $ogImage = !empty($product['image'])
+            ? (str_starts_with($product['image'], 'http') ? $product['image'] : 'https://wireflower.my.id/assets/img/' . $product['image'])
+            : 'https://wireflower.my.id/assets/img/logoWF.png';
+
         $this->render('product', [
-            'page_title' => $product['name'],
-            'product' => $product,
-            'reviews' => $reviews,
-            'avg_rating' => $avgRating,
+            'page_title'         => $product['name'],
+            'page_meta_desc'     => $metaDesc,
+            'page_meta_keywords' => 'WireFlower, ' . $product['name'] . ', bunga kawat bulu, handmade, ' . ($product['category_name'] ?? ''),
+            'page_og_image'      => $ogImage,
+            'page_og_type'       => 'product',
+            'product'            => $product,
+            'reviews'            => $reviews,
+            'avg_rating'         => $avgRating,
         ]);
     }
 
