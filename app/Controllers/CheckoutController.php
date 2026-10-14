@@ -83,6 +83,28 @@ class CheckoutController extends Controller
             ? $shippingRaw
             : self::SHIPPING_DEFAULT;
 
+        // ── Validasi & terapkan voucher ──
+        $discountAmount = 0;
+        $voucherCode    = '';
+        $voucherId      = (int) ($_POST['voucher_id'] ?? 0);
+
+        if ($voucherId > 0) {
+            $vModel  = $this->model(VoucherModel::class);
+            $voucher = $vModel->find($voucherId);
+
+            // Verifikasi ulang di server (jangan percaya semua dari POST)
+            if ($voucher && $voucher['is_active']) {
+                $result = $vModel->calculate($voucher, $subtotal, $shipping);
+                $discountAmount = $result['discount_amount'];
+                $shipping       = $result['shipping_cost'];
+                $voucherCode    = $voucher['code'];
+                // Tandai terpakai
+                $vModel->markUsed($voucherId);
+            }
+        }
+
+        $total = $subtotal + $shipping - $discountAmount;
+
         $addressId = $_POST['address_id'] ?? null;
         if (!$addressId || $addressId === 'new') {
             $addressId = $this->model(UserModel::class)->addAddress($userId, [
