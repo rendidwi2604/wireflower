@@ -135,13 +135,59 @@
         </div>
         <!-- Info zona ongkir -->
         <div id="co-shipping-info" style="font-size:.75rem;color:var(--text-muted);text-align:right;margin-top:.2rem;display:none;"></div>
+
+        <!-- Baris diskon voucher — tersembunyi sampai voucher diterapkan -->
+        <div class="order-summary-row" id="co-discount-row" style="display:none;color:#1a6b3a;">
+          <span style="display:flex;align-items:center;gap:.35rem;">
+            <i class="bi bi-ticket-perforated-fill"></i>
+            <span id="co-discount-label">Voucher</span>
+          </span>
+          <span id="co-discount-amount" style="font-weight:700;">- Rp 0</span>
+        </div>
+
         <div class="order-summary-row total">
           <span>Total</span>
           <span id="co-total"><?= rupiah($total) ?></span>
         </div>
 
-        <!-- Hidden input ongkir — dikirim ke server -->
-        <input type="hidden" name="shipping_cost" id="inp-shipping-cost" value="<?= (int)$shipping_cost ?>">
+        <!-- Input kode voucher -->
+        <div style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
+          <label class="form-label" style="font-size:.8rem;margin-bottom:.4rem;">
+            <i class="bi bi-ticket-perforated" style="color:var(--pink-deep);"></i> Kode Voucher
+          </label>
+          <div style="display:flex;gap:.5rem;">
+            <input type="text" id="inp-voucher-code" placeholder="Masukkan kode"
+                   class="form-input" style="text-transform:uppercase;letter-spacing:.05em;font-size:.88rem;"
+                   oninput="this.value=this.value.toUpperCase()">
+            <button type="button" onclick="applyVoucher()"
+                    id="btn-apply-voucher"
+                    class="btn btn-outline"
+                    style="white-space:nowrap;padding:.55rem .9rem;font-size:.82rem;border-radius:var(--radius-sm);flex-shrink:0;">
+              Pakai
+            </button>
+          </div>
+          <div id="voucher-feedback" style="margin-top:.45rem;font-size:.78rem;display:none;"></div>
+          <!-- Badge voucher aktif -->
+          <div id="voucher-active-badge" style="display:none;margin-top:.5rem;
+               background:#eafaf0;border:1px solid #b2e0c4;border-radius:8px;
+               padding:.45rem .75rem;display:none;align-items:center;justify-content:space-between;gap:.5rem;">
+            <div style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;color:#1a6b3a;">
+              <i class="bi bi-check-circle-fill"></i>
+              <span id="voucher-badge-label">Voucher diterapkan</span>
+            </div>
+            <button type="button" onclick="removeVoucher()"
+                    style="background:none;border:none;cursor:pointer;color:#888;font-size:.85rem;padding:0;line-height:1;"
+                    title="Hapus voucher">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden inputs untuk server -->
+        <input type="hidden" name="shipping_cost"   id="inp-shipping-cost"   value="<?= (int)$shipping_cost ?>">
+        <input type="hidden" name="voucher_id"      id="inp-voucher-id"      value="">
+        <input type="hidden" name="voucher_code"    id="inp-voucher-code-val" value="">
+        <input type="hidden" name="discount_amount" id="inp-discount-amount" value="0">
 
         <button type="submit"
                 class="btn btn-primary"
@@ -165,6 +211,10 @@
             <span style="font-size:.82rem;" id="mob-co-shipping">
               <?= $shipping_cost > 0 ? rupiah($shipping_cost) : '<span style="color:var(--text-muted);font-size:.75rem;">Pilih provinsi</span>' ?>
             </span>
+          </div>
+          <div id="mob-discount-row" style="display:none;justify-content:space-between;align-items:center;margin-bottom:.2rem;">
+            <span style="font-size:.75rem;color:#1a6b3a;"><i class="bi bi-ticket-perforated-fill"></i> Voucher</span>
+            <span style="font-size:.82rem;font-weight:700;color:#1a6b3a;" id="mob-co-discount">- Rp 0</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:.3rem;">
             <span style="font-size:.8rem;font-weight:700;">Total</span>
