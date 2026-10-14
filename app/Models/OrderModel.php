@@ -30,16 +30,24 @@ class OrderModel extends Model
         try {
             $orderCode = generate_order_code();
 
+            // Pastikan kolom voucher tersedia (auto-migrate jika belum ada)
+            $this->ensureVoucherColumns();
+
             // INSERT order → RETURNING id (PostgreSQL, bukan lastInsertId)
             $orderId = (int) $this->fetchValue(
-                "INSERT INTO orders (order_code, user_id, address_id, subtotal, shipping_cost, total, status, note)
-                 VALUES ($1, $2, $3, $4, $5, $6, 'belum_bayar', $7) RETURNING id",
+                "INSERT INTO orders
+                   (order_code, user_id, address_id, subtotal, shipping_cost,
+                    discount_amount, voucher_code, total, status, note)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'belum_bayar', $9)
+                 RETURNING id",
                 [
                     $orderCode,
                     $userId,
                     $data['address_id'],
                     $data['subtotal'],
                     $data['shipping_cost'],
+                    $data['discount_amount'] ?? 0,
+                    $data['voucher_code']    ?? null,
                     $data['total'],
                     $data['note'],
                 ]
