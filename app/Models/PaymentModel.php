@@ -16,9 +16,16 @@ class PaymentModel extends Model
 
     public function pay(int $paymentId, string $method): void
     {
-        // PostgreSQL: CURRENT_TIMESTAMP bukan NOW() (keduanya valid, tapi ini lebih standar)
         $this->run(
             "UPDATE payments SET method = $1, status = 'success', paid_at = CURRENT_TIMESTAMP WHERE id = $2",
+            [$method, $paymentId]
+        );
+    }
+
+    public function setMethod(int $paymentId, string $method): void
+    {
+        $this->run(
+            'UPDATE payments SET method = $1 WHERE id = $2',
             [$method, $paymentId]
         );
     }
