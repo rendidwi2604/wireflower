@@ -16,6 +16,33 @@ class VoucherModel extends Model
     // ---- Public: validasi kode voucher ----
 
     /**
+     * Auto-migrate: buat tabel vouchers jika belum ada.
+     */
+    private function ensureTable(): void
+    {
+        static $done = false;
+        if ($done) return;
+        $done = true;
+        $this->db->exec("
+            CREATE TABLE IF NOT EXISTS vouchers (
+                id             SERIAL PRIMARY KEY,
+                code           VARCHAR(50)   NOT NULL UNIQUE,
+                type           VARCHAR(20)   NOT NULL DEFAULT 'fixed',
+                discount_value NUMERIC(12,2) NOT NULL DEFAULT 0,
+                max_discount   NUMERIC(12,2) DEFAULT NULL,
+                min_order      NUMERIC(12,2) DEFAULT NULL,
+                usage_limit    INT           DEFAULT NULL,
+                used_count     INT           NOT NULL DEFAULT 0,
+                valid_from     DATE          DEFAULT NULL,
+                valid_until    DATE          DEFAULT NULL,
+                is_active      BOOLEAN       NOT NULL DEFAULT TRUE,
+                description    TEXT          DEFAULT '',
+                created_at     TIMESTAMPTZ   NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        ");
+    }
+
+    /**
      * Cari voucher aktif berdasarkan kode.
      * Return array voucher atau null jika tidak valid / sudah habis / expired.
      */
