@@ -424,6 +424,9 @@
     var totalEl     = document.getElementById('co-total');
     var subtotalEl  = document.getElementById('co-subtotal');
     var inpShipping = document.getElementById('inp-shipping-cost');
+    // Mobile bar
+    var mobShipping = document.getElementById('mob-co-shipping');
+    var mobTotal    = document.getElementById('mob-co-total');
 
     if (!shippingEl) return;
 
@@ -431,18 +434,22 @@
 
     if (!zona) {
       shippingEl.innerHTML = '<span style="font-size:.8rem;color:var(--text-muted);">Pilih provinsi dulu</span>';
+      if (mobShipping) mobShipping.innerHTML = '<span style="color:var(--text-muted);font-size:.75rem;">Pilih provinsi</span>';
       if (infoEl)      { infoEl.style.display = 'none'; infoEl.textContent = ''; }
       if (totalEl)     totalEl.textContent = toRupiah(subtotal);
+      if (mobTotal)    mobTotal.textContent = toRupiah(subtotal);
       if (inpShipping) inpShipping.value = 0;
       return;
     }
 
     shippingEl.textContent = toRupiah(zona.tarif);
+    if (mobShipping) mobShipping.textContent = toRupiah(zona.tarif);
     if (infoEl) {
       infoEl.textContent = zona.label;
       infoEl.style.display = 'block';
     }
     if (totalEl)     totalEl.textContent = toRupiah(subtotal + zona.tarif);
+    if (mobTotal)    mobTotal.textContent = toRupiah(subtotal + zona.tarif);
     if (inpShipping) inpShipping.value = zona.tarif;
   }
 
