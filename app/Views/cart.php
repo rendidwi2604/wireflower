@@ -77,7 +77,7 @@
       </div>
 
       <!-- Order summary -->
-      <div class="order-summary-box" style="position:sticky;top:90px;">
+      <div class="order-summary-box cart-summary-sticky">
         <h4>Ringkasan Pesanan</h4>
         <div class="order-summary-row">
           <span id="summary-label">Subtotal (0 item dipilih)</span>
