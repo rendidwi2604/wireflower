@@ -167,3 +167,59 @@ function has_google_oauth_config()
 {
     return config('google_client_id') !== '' && config('google_client_secret') !== '';
 }
+
+// ---------- Supabase Storage ----------
+
+/**
+ * Upload file ke Supabase Storage.
+ * Mengembalikan public URL jika berhasil, null jika gagal.
+ *
+ * @param string $bucket   Nama bucket (e.g. 'transfer-proofs', 'products')
+ * @param string $filename Nama file tujuan di bucket
+ * @param string $content  Isi file (binary)
+ * @param string $mimeType MIME type file
+ */
+function supabase_upload(string $bucket, string $filename, string $content, string $mimeType): ?string
+{
+    $url = config('supabase_url', '');
+    $key = config('supabase_service_key', '');
+
+    // Jika tidak ada di config, coba env langsung
+    if (!$url) $url = _env('SUPABASE_URL', '');
+    if (!$key) $key = _env('SUPABASE_SERVICE_KEY', _env('SUPABASE_KEY', _env('SUPABASE_ANON_KEY', '')));
+
+    if (!$url || !$key) {
+        error_log('[supabase_upload] SUPABASE_URL atau SUPABASE_KEY tidak terkonfigurasi.');
+        return null;
+    }
+
+    // Supabase Storage REST API menggunakan PUT untuk upload
+    $endpoint = rtrim($url, '/') . '/storage/v1/object/' . $bucket . '/' . $filename;
+
+    $ch = curl_init($endpoint);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CUSTOMREQUEST  => 'PUT',
+        CURLOPT_POSTFIELDS     => $content,
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . $key,
+            'Content-Type: ' . $mimeType,
+            'x-upsert: true',
+        ],
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_TIMEOUT        => 30,
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr  = curl_error($ch);
+    curl_close($ch);
+
+    if ($httpCode === 200 || $httpCode === 201) {
+        return rtrim($url, '/') . '/storage/v1/object/public/' . $bucket . '/' . $filename;
+    }
+
+    error_log('[supabase_upload] HTTP ' . $httpCode . ' bucket=' . $bucket . ' file=' . $filename
+        . ' curl_err=' . $curlErr . ' response=' . substr($response, 0, 300));
+    return null;
+}
