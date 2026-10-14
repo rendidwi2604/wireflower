@@ -48,59 +48,24 @@ class ProductController extends Controller
             return null;
         }
 
-        $ext      = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-        $allowed  = ['jpg','jpeg','png','webp','gif'];
+        $ext     = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
         if (!in_array($ext, $allowed, true)) {
             flash('danger', 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.');
             return null;
         }
 
-        $filename    = 'product_' . uniqid() . '.' . $ext;
-        $fileContent = file_get_contents($_FILES['image']['tmp_name']);
+        $filename = 'product_' . uniqid('', true) . '.' . $ext;
+        $mimeType = 'image/' . ($ext === 'jpg' ? 'jpeg' : $ext);
+        $content  = file_get_contents($_FILES['image']['tmp_name']);
 
-        // ── Coba Supabase Storage (untuk Vercel / server read-only) ──
-        $supabaseUrl = '';
-        $supabaseKey = '';
-
-        // Vercel meletakkan env vars di $_SERVER
-        foreach (['SUPABASE_URL', 'supabase_url'] as $k) {
-            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
-            if ($v) { $supabaseUrl = $v; break; }
-        }
-        foreach (['SUPABASE_KEY', 'supabase_key'] as $k) {
-            $v = getenv($k) ?: ($_ENV[$k] ?? '') ?: ($_SERVER[$k] ?? '');
-            if ($v) { $supabaseKey = $v; break; }
+        // Coba Supabase Storage
+        $url = supabase_upload('products', $filename, $content, $mimeType);
+        if ($url) {
+            return $url;
         }
 
-        if ($supabaseUrl && $supabaseKey) {
-            $bucket   = 'products';
-            $endpoint = rtrim($supabaseUrl, '/') . '/storage/v1/object/' . $bucket . '/' . $filename;
-
-            $ch = curl_init($endpoint);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST  => 'POST',
-                CURLOPT_POSTFIELDS     => $fileContent,
-                CURLOPT_HTTPHEADER     => [
-                    'Authorization: Bearer ' . $supabaseKey,
-                    'Content-Type: image/' . ($ext === 'jpg' ? 'jpeg' : $ext),
-                    'x-upsert: true',
-                ],
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($httpCode === 200 || $httpCode === 201) {
-                // Kembalikan public URL Supabase Storage
-                return rtrim($supabaseUrl, '/') . '/storage/v1/object/public/' . $bucket . '/' . $filename;
-            }
-            // Log error tapi lanjut ke fallback
-            error_log('[Supabase Storage] HTTP ' . $httpCode . ': ' . $response);
-        }
-
-        // ── Fallback: simpan ke filesystem lokal (localhost XAMPP) ──
+        // Fallback: filesystem lokal (localhost)
         $dest = BASE_PATH . '/assets/img/' . $filename;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
             return $filename;
