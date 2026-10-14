@@ -20,7 +20,7 @@
     <div class="cart-layout">
 
       <!-- Cart items -->
-      <div>
+      <div class="cart-layout-items-col">
         <!-- Select all bar -->
         <div style="display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:1rem;">
           <label style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600;cursor:pointer;">
