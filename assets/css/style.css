@@ -196,6 +196,28 @@ button, input, select, textarea { font: inherit; }
 .order-summary-row.total { font-size: 1.05rem; font-weight: 700; color: var(--text); padding-top: .75rem; border-top: 1px solid var(--border); margin-top: .75rem; }
 
 /* --- Product detail --- */
+.product-card-link::after { content: ''; position: absolute; inset: 0; z-index: 2; }
+.product-card-link:focus-visible::after { outline: 3px solid var(--pink-deep); outline-offset: -3px; border-radius: var(--radius-md); }
+.product-card .product-card-wishlist, .product-card .product-card-add,
+.wf-prod-card .wf-prod-card__wish, .wf-prod-card .wf-prod-card__add { z-index: 3; }
+.product-card-add, .wf-prod-card__add { position: relative; }
+.container.product-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+.product-breadcrumb { font-size: .82rem; color: var(--text-muted); margin-bottom: 1.5rem; overflow-wrap: anywhere; }
+.product-detail { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 3rem; align-items: start; }
+.product-detail > div { min-width: 0; }
+.product-detail-img { display: block; width: 100%; max-width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--cream-2); border-radius: var(--radius-md); }
+.product-detail-title, .product-detail-desc, .review-text { overflow-wrap: anywhere; }
+.product-detail-rating { flex-wrap: wrap; }
+.product-trust-badges { display: flex; flex-wrap: wrap; gap: .8rem 1.5rem; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.product-chat-button { width: 100%; justify-content: center; margin-top: .75rem; }
+.add-to-cart-group { display: flex; }
+@media (max-width: 768px) {
+  .container.product-page { padding: 1.25rem 1rem; }
+  .product-detail { grid-template-columns: minmax(0,1fr); gap: 1.5rem; }
+  .product-detail-img { max-height: 480px; }
+  .product-detail .btn { min-height: 44px; white-space: normal; }
+  .product-page .review-header { flex-wrap: wrap; gap: .4rem; }
+}
 .product-detail-category { display: inline-block; padding: .28rem .8rem; border-radius: 50px; background: var(--pink-soft); color: var(--pink-deep); font-size: .78rem; font-weight: 600; margin-bottom: .75rem; }
 .product-detail-title { font-family: Georgia, serif; font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: .5rem; }
 .product-detail-price { font-size: 1.75rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }

@@ -21,7 +21,7 @@ class AuthController extends Controller
             $user = $this->model(UserModel::class)->findByEmail(trim($_POST['email'] ?? ''));
             if ($user && password_verify($_POST['password'] ?? '', $user['password'])) {
                 login_user($user);
-                redirect($user['role'] === 'admin' ? 'admin/index.php' : 'index.php');
+                $this->redirectAfterLogin($user);
             }
             $error = 'Email atau password salah.';
         }
@@ -153,6 +153,16 @@ class AuthController extends Controller
         }
 
         login_user($user);
+        $this->redirectAfterLogin($user);
+    }
+
+    private function redirectAfterLogin(array $user): void
+    {
+        $chatReturn = $_SESSION['chat_return_to'] ?? '';
+        unset($_SESSION['chat_return_to']);
+        if ($user['role'] !== 'admin' && preg_match('/^chat\.php(?:\?product_id=\d+)?$/D', $chatReturn)) {
+            redirect($chatReturn);
+        }
         redirect($user['role'] === 'admin' ? 'admin/index.php' : 'index.php');
     }
 

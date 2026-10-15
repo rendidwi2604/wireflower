@@ -1,4 +1,4 @@
-<div class="container" style="max-width:1200px;margin:0 auto;padding:2rem 1.5rem;">
+<div class="container product-page">
 
 <?php if (!$product): ?>
   <div style="text-align:center;padding:5rem 2rem;">
@@ -16,7 +16,7 @@
 ?>
 
   <!-- Breadcrumb -->
-  <nav style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.5rem;">
+  <nav class="product-breadcrumb" aria-label="Breadcrumb">
     <a href="<?= site_url('index.php') ?>" style="color:var(--text-muted);">Home</a>
     <span style="margin:0 .4rem;opacity:.5;">/</span>
     <a href="<?= site_url('kategori.php') ?>" style="color:var(--text-muted);">Shop</a>
@@ -28,11 +28,11 @@
     <span style="color:var(--text);"><?= e($product['name']) ?></span>
   </nav>
 
-  <div class="product-detail" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3rem;align-items:start;">
+  <div class="product-detail">
 
     <!-- LEFT: Image -->
     <div>
-      <img class="product-detail-img" src="<?= $img ?>" alt="<?= e($product['name']) ?>">
+      <img class="product-detail-img" src="<?= e($img) ?>" alt="<?= e($product['name']) ?>">
     </div>
 
     <!-- RIGHT: Info -->
@@ -117,8 +117,12 @@
         </div>
       <?php endif; ?>
 
+      <a class="btn btn-outline product-chat-button" href="<?= site_url('chat.php?product_id=' . (int) $product['id']) ?>">
+        <i class="bi bi-chat-dots"></i> Chat Admin
+      </a>
+
       <!-- Trust badges -->
-      <div style="display:flex;gap:1.5rem;margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+      <div class="product-trust-badges">
         <div style="display:flex;align-items:center;gap:.45rem;font-size:.78rem;color:var(--text-muted);">
           <i class="bi bi-truck" style="color:var(--pink-deep);"></i> Pengiriman ke seluruh Indonesia
         </div>
@@ -170,7 +174,7 @@
 </div>
 
 <script>
-var PRODUCT_PRICE = <?= (int)$product['price'] ?>;
+var PRODUCT_PRICE = <?= (float)($product['price'] ?? 0) ?>;
 
 function updateTotal() {
   const input = document.getElementById('qty');

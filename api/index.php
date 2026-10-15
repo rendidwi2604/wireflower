@@ -21,6 +21,9 @@ $uri = '/' . trim($uri, '/');
 // Tidak perlu, karena routes di vercel.json sudah redirect semua ke sini
 
 $routes = [
+    '/chat.php'            => ['App\\Controllers\\ChatController', 'index'],
+    '/admin/chat.php'      => ['App\\Controllers\\ChatController', 'admin'],
+    '/api/chat.php'        => ['App\\Controllers\\ChatController', 'api'],
     '/'                    => ['App\\Controllers\\HomeController',     'index'],
     '/index.php'           => ['App\\Controllers\\HomeController',     'index'],
     '/kategori.php'        => ['App\\Controllers\\ProductController',  'category'],

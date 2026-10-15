@@ -13,8 +13,6 @@
  */
 
 define('BASE_PATH', dirname(__DIR__));
-require_once BASE_PATH . '/config/app.php';
-
 // ---- Ambil konfigurasi ----
 $config = require BASE_PATH . '/config/app.php';
 
@@ -136,7 +134,7 @@ exit(0);
 function dropAllTables(PDO $pdo): void
 {
     $tables = [
-        'migrations', 'notifications', 'reviews', 'cart_items',
+        'migrations', 'chat_messages', 'chat_threads', 'notifications', 'reviews', 'cart_items',
         'payments', 'order_items', 'orders', 'addresses',
         'products', 'categories', 'users',
     ];

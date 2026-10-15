@@ -272,6 +272,9 @@ tbody tr:hover td { background: #fdfbfb; }
 
   <nav class="adm-nav">
     <div class="adm-nav-label">Menu Utama</div>
+    <a href="<?= site_url('admin/chat.php') ?>" class="<?= adminNavActive('/admin/chat.php', $currentUri) ?>">
+      <i class="bi bi-chat-dots"></i> Chat Pelanggan
+    </a>
 
     <a href="<?= site_url('admin/index.php') ?>" class="<?= adminNavActive('/admin/index.php', $currentUri) ?>">
       <i class="bi bi-speedometer2"></i> Dashboard

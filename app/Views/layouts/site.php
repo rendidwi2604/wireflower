@@ -82,7 +82,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="<?= site_url('assets/css/style.css') ?>">
+<link rel="stylesheet" href="<?= site_url('assets/css/style.css?v=20261015') ?>">
 <style>
   /* Prevent FOUC */
   .nav-links { transition: none; }
@@ -196,6 +196,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
              class="<?= basename($_SERVER['PHP_SELF']) === 'kategori.php' ? 'active' : '' ?>">Kategori</a></li>
 
       <?php if (is_logged_in()): ?>
+        <li><a class="nav-link-icon" href="<?= site_url(is_admin() ? 'admin/chat.php' : 'chat.php') ?>"><i class="bi bi-chat-dots"></i> Chat</a></li>
         <li>
           <a href="<?= site_url('keranjang.php') ?>"
              class="nav-link-icon <?= basename($_SERVER['PHP_SELF']) === 'keranjang.php' ? 'active' : '' ?>">

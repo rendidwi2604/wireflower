@@ -518,7 +518,7 @@ if (empty($shown)) {
           <i class="bi bi-heart"></i>
         </button>
         <div class="wf-prod-card__body">
-          <a href="<?= site_url('produk.php?slug=' . $p['slug']) ?>" style="text-decoration:none;">
+          <a class="product-card-link" href="<?= e(site_url('produk.php?slug=' . rawurlencode($p['slug']))) ?>" style="text-decoration:none;">
             <p class="wf-prod-card__name"><?= e($p['name']) ?></p>
           </a>
           <p class="wf-prod-card__price"><?= rupiah($p['price']) ?></p>
@@ -621,7 +621,7 @@ if (empty($shown)) {
           <i class="bi bi-heart"></i>
         </button>
         <div class="wf-prod-card__body">
-          <a href="<?= site_url('produk.php?slug=' . $p['slug']) ?>" style="text-decoration:none;">
+          <a class="product-card-link" href="<?= e(site_url('produk.php?slug=' . rawurlencode($p['slug']))) ?>" style="text-decoration:none;">
             <p class="wf-prod-card__name"><?= e($p['name']) ?></p>
           </a>
           <p class="wf-prod-card__price"><?= rupiah($p['price']) ?></p>

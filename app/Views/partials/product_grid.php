@@ -27,7 +27,7 @@ if (empty($products)) {
 
     <!-- Body -->
     <div class="product-card-body">
-      <a href="<?= site_url('produk.php?slug=' . $p['slug']) ?>" style="text-decoration:none;color:inherit;">
+      <a class="product-card-link" href="<?= e(site_url('produk.php?slug=' . rawurlencode($p['slug']))) ?>" style="text-decoration:none;color:inherit;">
         <div class="product-card-name"><?= e($p['name']) ?></div>
       </a>
       <div class="product-card-price"><?= rupiah($p['price']) ?></div>
