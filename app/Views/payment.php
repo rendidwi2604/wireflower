@@ -68,22 +68,6 @@ $isSuccess  = $payment['status'] === 'success';
         <i class="bi bi-file-image"></i> Lihat bukti yang dikirim
       </a>
     </div>
-    <p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-bottom:1rem;">
-      Kalau ada kesalahan, kamu bisa kirim ulang bukti di bawah.
-    </p>
-    <!-- Form kirim ulang bukti -->
-    <form method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="method" value="<?= e($payment['method'] ?? 'transfer_bank') ?>">
-      <div class="form-group" style="margin-bottom:.85rem;">
-        <label class="form-label">Upload ulang bukti pembayaran</label>
-        <input type="file" name="transfer_proof" accept=".jpg,.jpeg,.png,.webp,.pdf"
-               class="form-input" style="padding:.5rem;">
-        <small style="color:var(--text-muted);font-size:.75rem;">JPG, PNG, WebP, atau PDF. Maks 5 MB.</small>
-      </div>
-      <button type="submit" class="btn btn-outline" style="width:100%;justify-content:center;border-radius:var(--radius-sm);">
-        <i class="bi bi-upload"></i> Kirim Ulang Bukti
-      </button>
-    </form>
     <div style="margin-top:1rem;text-align:center;">
       <a href="<?= site_url('pesanan.php') ?>" style="font-size:.83rem;color:var(--text-muted);">
         <i class="bi bi-arrow-left"></i> Kembali ke Pesanan
