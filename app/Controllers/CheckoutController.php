@@ -27,6 +27,7 @@ class CheckoutController extends Controller
         if (!empty($_POST['buy_now_product_id'])) {
             $product = $this->model(ProductModel::class)->find((int) $_POST['buy_now_product_id']);
             if ($product) {
+                $product['product_id'] = $product['id'];
                 $product['quantity'] = min(max(1, (int) ($_POST['buy_now_quantity'] ?? 1)), (int) $product['stock']);
                 $items[] = $product;
             }
