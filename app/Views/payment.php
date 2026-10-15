@@ -72,6 +72,13 @@ $isSuccess  = $payment['status'] === 'success';
 
     <div id="proofModal" onclick="this.style.display='none'"
          style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:1.5rem;">
+      <button type="button" onclick="document.getElementById('proofModal').style.display='none'"
+              aria-label="Tutup"
+              style="position:absolute;top:1rem;right:1rem;width:40px;height:40px;border:none;border-radius:50%;
+                     background:rgba(255,255,255,.9);color:#1e1212;font-size:1.4rem;line-height:1;cursor:pointer;
+                     display:flex;align-items:center;justify-content:center;">
+        &times;
+      </button>
       <img id="proofModalImg" src="" alt="Bukti pembayaran"
            style="max-width:100%;max-height:90vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.4);">
     </div>
