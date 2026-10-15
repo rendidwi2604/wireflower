@@ -63,11 +63,25 @@ $isSuccess  = $payment['status'] === 'success';
           Metode: <strong><?= e($payment['method']) ?></strong>
         </div>
       <?php endif; ?>
-      <a href="<?= e($payment['transfer_proof']) ?>" target="_blank"
+      <?php $proofIsPdf = strtolower(pathinfo($payment['transfer_proof'], PATHINFO_EXTENSION)) === 'pdf'; ?>
+      <a href="<?= e($payment['transfer_proof']) ?>" <?= $proofIsPdf ? 'target="_blank"' : 'onclick="showProof(this.href);return false;"' ?>
          style="display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--pink-deep);font-weight:600;">
-        <i class="bi bi-file-image"></i> Lihat bukti yang dikirim
+        <i class="bi bi-<?= $proofIsPdf ? 'file-pdf' : 'file-image' ?>"></i> Lihat bukti yang dikirim
       </a>
     </div>
+
+    <div id="proofModal" onclick="this.style.display='none'"
+         style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.75);align-items:center;justify-content:center;padding:1.5rem;">
+      <img id="proofModalImg" src="" alt="Bukti pembayaran"
+           style="max-width:100%;max-height:90vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.4);">
+    </div>
+    <script>
+    function showProof(url) {
+      var img = document.getElementById('proofModalImg');
+      img.src = url;
+      document.getElementById('proofModal').style.display = 'flex';
+    }
+    </script>
     <div style="margin-top:1rem;text-align:center;">
       <a href="<?= site_url('pesanan.php') ?>" style="font-size:.83rem;color:var(--text-muted);">
         <i class="bi bi-arrow-left"></i> Kembali ke Pesanan
