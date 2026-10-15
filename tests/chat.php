@@ -61,7 +61,7 @@ $first = ['thread_id' => $a['id'], 'action' => 'product', 'request_key' => str_r
 [$status, $result] = api('POST', $first);
 check($status === 200 && $result['message']['product']['price'] == 150000, 'product snapshot uses server price');
 check($result['message']['sender_role'] === 'customer', 'sender role cannot be spoofed');
-check(str_contains($result['message']['product']['image_url'], 'bungatangan.png'), 'product photo included');
+check($result['message']['product']['image_url'] === asset_img('bungatangan.png'), 'product photo included using optimized asset');
 $messageId = $result['message']['id'];
 [$status, $result] = api('POST', $first);
 check($result['message']['id'] === $messageId && count($chat->messages($a['id'])) === 1, 'product retry deduplicated');

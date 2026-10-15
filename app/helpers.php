@@ -130,8 +130,28 @@ function asset_img($filename, string $fallback = '')
     if (str_starts_with($filename, 'http://') || str_starts_with($filename, 'https://')) {
         return $filename;
     }
+    // Built-in photos have pre-generated WebP versions; uploaded URLs stay intact.
+    $optimized = [
+        'header1.png' => 'header1-1536.webp',
+        'header2.png' => 'header2-1536.webp',
+        'bungatangan.png' => 'bungatangan-960.webp',
+        'logoWF.png' => 'logoWF-96.webp',
+    ];
+    if (isset($optimized[$filename]) && is_file(BASE_PATH . '/assets/img/' . $optimized[$filename])) {
+        return asset_url('assets/img/' . $optimized[$filename]);
+    }
     // File lokal
     return site_url('assets/img/' . $filename);
+}
+
+function asset_url(string $path): string
+{
+    static $versions = [];
+    if (!isset($versions[$path])) {
+        $file = BASE_PATH . '/' . ltrim($path, '/');
+        $versions[$path] = is_file($file) ? substr(hash_file('sha256', $file), 0, 12) : '';
+    }
+    return site_url($path) . ($versions[$path] !== '' ? '?v=' . $versions[$path] : '');
 }
 
 function generate_order_code()

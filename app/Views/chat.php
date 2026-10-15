@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?= site_url('assets/css/chat.css?v=1') ?>">
+<link rel="stylesheet" href="<?= asset_url('assets/build/chat.min.css') ?>">
 <section class="wf-chat-page <?= $chat_admin ? 'wf-chat-page--admin' : 'container' ?>">
   <h1><?= $chat_admin ? 'Chat Pelanggan' : 'Chat Admin' ?></h1>
   <p class="wf-chat-intro"><?= $chat_admin ? 'Semua produk dalam satu percakapan per pelanggan.' : 'Tanyakan produk dan lanjutkan percakapan dengan admin di sini.' ?></p>
@@ -44,6 +44,6 @@
     </div>
   </div>
   <noscript><p>Aktifkan JavaScript untuk mengirim dan menerima chat.</p></noscript>
-  <script src="<?= site_url('assets/js/chat.js?v=2') ?>" defer></script>
+  <script src="<?= asset_url('assets/build/chat.min.js') ?>" defer></script>
   <?php endif; ?>
 </section>

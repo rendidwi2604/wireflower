@@ -32,7 +32,7 @@
 
     <!-- LEFT: Image -->
     <div>
-      <img class="product-detail-img" src="<?= e($img) ?>" alt="<?= e($product['name']) ?>">
+      <img class="product-detail-img" src="<?= e($img) ?>" alt="<?= e($product['name']) ?>" loading="eager" fetchpriority="high" decoding="async" width="600" height="600">
     </div>
 
     <!-- RIGHT: Info -->

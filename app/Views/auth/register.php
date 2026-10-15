@@ -5,7 +5,7 @@
   <div class="auth-panel-left">
     <!-- Full garden photo background -->
     <img
-      src="<?= site_url('assets/img/bungatangan.png') ?>"
+      src="<?= asset_url('assets/img/bungatangan-960.webp') ?>"
       alt="Bunga Tangan WireFlower"
       class="auth-garden-bg"
     >
@@ -15,7 +15,7 @@
     <div class="auth-left-inner">
       <!-- Brand -->
       <a href="<?= site_url('index.php') ?>" class="auth-brand" style="color:#fff;">
-        <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="WireFlower Logo" class="auth-brand-img">
+        <img src="<?= asset_url('assets/img/logoWF-96.webp') ?>" alt="WireFlower Logo" class="auth-brand-img">
         WireFlower
       </a>
 

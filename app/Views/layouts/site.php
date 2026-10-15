@@ -45,14 +45,11 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
 <meta name="twitter:image"       content="<?= e($seo_image) ?>">
 
 <!-- ── Favicon & App Icons ── -->
-<link rel="icon"             type="image/png" sizes="32x32"  href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="icon"             type="image/png" sizes="16x16"  href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="icon"             type="image/png" sizes="96x96"  href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="apple-touch-icon" sizes="180x180"                 href="<?= site_url('assets/img/logoWF.png') ?>">
-<link rel="shortcut icon"    href="<?= site_url('assets/img/logoWF.png') ?>">
+<link rel="icon" type="image/svg+xml" href="<?= site_url('assets/img/favicon.svg') ?>">
+<link rel="apple-touch-icon" sizes="180x180"                 href="<?= asset_url('assets/img/logoWF-180.webp') ?>">
 <meta name="theme-color"     content="#c9516f">
 <meta name="msapplication-TileColor" content="#c9516f">
-<meta name="msapplication-TileImage" content="<?= site_url('assets/img/logoWF.png') ?>">
+<meta name="msapplication-TileImage" content="<?= asset_url('assets/img/logoWF-96.webp') ?>">
 
 <!-- ── Mobile / PWA ── -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -80,91 +77,22 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
   "priceRange": "Rp 35.000 - Rp 500.000"
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link rel="stylesheet" href="<?= site_url('assets/css/style.css?v=20261015') ?>">
-<style>
-  /* Prevent FOUC */
-  .nav-links { transition: none; }
+<link rel="stylesheet" href="<?= asset_url('assets/build/site.min.css') ?>">
+<link rel="stylesheet" href="<?= asset_url('assets/build/icons.min.css') ?>">
+<?php if (!empty($page_is_home)): ?>
+<link rel="preload" as="image" type="image/webp" media="(max-width: 640px)" href="<?= asset_url('assets/img/header1-mobile.webp') ?>" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" media="(min-width: 641px)" href="<?= asset_url('assets/img/header1-1536.webp') ?>" imagesrcset="<?= asset_url('assets/img/header1-960.webp') ?> 960w, <?= asset_url('assets/img/header1-1536.webp') ?> 1536w" imagesizes="100vw" fetchpriority="high">
+<link rel="stylesheet" href="<?= asset_url('assets/build/home.min.css') ?>">
+<link rel="preconnect" href="https://images.unsplash.com">
+<?php endif; ?>
 
-  /* ── PAGE LOADER ── */
-  #wf-loader {
-    position: fixed; inset: 0; z-index: 99999;
-    background: #faf8f5;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 1.5rem;
-    transition: opacity .45s ease, visibility .45s ease;
-  }
-  #wf-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-  .wf-loader-brand {
-    display: flex; align-items: center; gap: .55rem;
-    font-family: Georgia, serif; font-size: 1.35rem; font-weight: 700;
-    color: #1e1212; opacity: 0;
-    animation: loaderFadeIn .5s .1s ease forwards;
-  }
-  .wf-loader-brand img { width: 34px; height: 34px; object-fit: contain; }
-
-  /* 3 flower dots */
-  .wf-loader-dots {
-    display: flex; align-items: flex-end; gap: .65rem;
-    height: 44px;
-  }
-  .wf-loader-dot {
-    width: 14px; height: 14px; border-radius: 50%;
-    animation: flowerBounce 1.1s ease-in-out infinite;
-    position: relative;
-  }
-  /* petal ring inside dot */
-  .wf-loader-dot::after {
-    content: '';
-    position: absolute; inset: 2px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.45);
-  }
-  .wf-loader-dot:nth-child(1) { background: #e8799a; animation-delay: 0s; }    /* rose */
-  .wf-loader-dot:nth-child(2) { background: #f4a460; animation-delay: .18s; }  /* peach */
-  .wf-loader-dot:nth-child(3) { background: #c9516f; animation-delay: .36s; }  /* deep rose */
-
-  @keyframes flowerBounce {
-    0%, 80%, 100% { transform: translateY(0) scale(1); box-shadow: 0 4px 10px rgba(0,0,0,.08); }
-    40%           { transform: translateY(-18px) scale(1.15); box-shadow: 0 14px 18px rgba(0,0,0,.12); }
-  }
-  @keyframes loaderFadeIn {
-    to { opacity: 1; }
-  }
-
-  .wf-loader-text {
-    font-size: .75rem; font-weight: 600; letter-spacing: .12em;
-    text-transform: uppercase; color: #b09090;
-    opacity: 0; animation: loaderFadeIn .5s .35s ease forwards;
-  }
-
-  /* ── LAZY LOAD — product card entrance ── */
-  .lazy-card {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .45s ease, transform .45s ease;
-  }
-  .lazy-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── IMG lazy placeholder ── */
-  img.lazy-img {
-    background: #fce8ef;
-    min-height: 100px;
-  }
-  img.lazy-img.loaded { background: none; }
-</style>
 </head>
-<body>
+<body data-logged-in="<?= is_logged_in() ? 'true' : 'false' ?>" data-login-url="<?= site_url('auth/login.php') ?>">
 
 <!-- ══════════ PAGE LOADER ══════════ -->
 <div id="wf-loader" role="status" aria-label="Memuat halaman">
   <div class="wf-loader-brand">
-    <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="">
+    <img src="<?= asset_url('assets/img/logoWF-96.webp') ?>" alt="" width="34" height="34">
     WireFlower
   </div>
   <div class="wf-loader-dots" aria-hidden="true">
@@ -184,7 +112,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
 
     <!-- Brand -->
     <a class="nav-brand" href="<?= site_url('index.php') ?>">
-      <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="WireFlower Logo" class="nav-brand-img">
+      <img src="<?= asset_url('assets/img/logoWF-96.webp') ?>" alt="WireFlower Logo" class="nav-brand-img" width="28" height="28">
       WireFlower
     </a>
 
@@ -336,12 +264,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
   </div>
 </div>
 
-<style>
-@keyframes wfModalIn {
-  from { opacity:0; transform:scale(.88) translateY(16px); }
-  to   { opacity:1; transform:scale(1) translateY(0); }
-}
-</style>
+
 <?php if (isset($_SESSION['flash'])): ?>
 <div class="flash-container">
   <div class="flash flash-<?= e($_SESSION['flash']['type']) ?>">
@@ -364,7 +287,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
       <!-- Brand col -->
       <div>
         <div class="footer-brand-name">
-          <img src="<?= site_url('assets/img/logoWF.png') ?>" alt="WireFlower Logo" class="footer-brand-img">
+          <img src="<?= asset_url('assets/img/logoWF-96.webp') ?>" alt="WireFlower Logo" class="footer-brand-img" width="28" height="28" loading="lazy" decoding="async">
           WireFlower
         </div>
         <p class="footer-brand-desc">
@@ -423,155 +346,11 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
 <!-- /FOOTER -->
 <?php endif; ?>
 
-<script>
-// ══ AUTH STATE (from PHP) ══
-var WF_LOGGED_IN = <?= is_logged_in() ? 'true' : 'false' ?>;
-var WF_LOGIN_URL = '<?= site_url('auth/login.php') ?>';
-
-// ══ PAGE LOADER ══
-(function () {
-  var loader = document.getElementById('wf-loader');
-  function hideLoader() {
-    if (loader) loader.classList.add('hidden');
-  }
-  // Hide on load, max 2.5s fallback
-  if (document.readyState === 'complete') {
-    setTimeout(hideLoader, 120);
-  } else {
-    window.addEventListener('load', function () { setTimeout(hideLoader, 120); });
-    setTimeout(hideLoader, 2500);
-  }
-})();
-
-// ══ LAZY CARD ENTRANCE (IntersectionObserver) ══
-(function () {
-  // Tag all product/category cards as lazy-card
-  document.querySelectorAll(
-    '.product-card, .wf-prod-card, .wf-cat-card, .category-card, .wf-benefit'
-  ).forEach(function (el) {
-    el.classList.add('lazy-card');
-  });
-
-  if (!('IntersectionObserver' in window)) {
-    // Fallback: show all immediately
-    document.querySelectorAll('.lazy-card').forEach(function (el) {
-      el.classList.add('visible');
-    });
-    return;
-  }
-
-  var cardObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        // Stagger siblings in same grid row
-        var siblings = Array.from(entry.target.parentElement.children);
-        var idx = siblings.indexOf(entry.target);
-        entry.target.style.transitionDelay = (idx % 4 * 80) + 'ms';
-        entry.target.classList.add('visible');
-        cardObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.lazy-card').forEach(function (el) {
-    cardObserver.observe(el);
-  });
-})();
-
-// ══ LAZY IMAGE LOADING (native + fallback) ══
-(function () {
-  document.querySelectorAll('img').forEach(function (img) {
-    // Skip tiny icons, logos, hero images already visible
-    if (img.closest('.site-navbar, #wf-hero, .wf-hero, #wf-loader')) return;
-    if (img.width < 40 && img.height < 40) return;
-
-    // Use native lazy if supported
-    img.loading = 'lazy';
-    img.classList.add('lazy-img');
-
-    // Mark as loaded once decoded
-    if (img.complete) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', function () { img.classList.add('loaded'); }, { once: true });
-    }
-  });
-})();
-
-// ══ MOBILE NAV ══
-const toggler = document.getElementById('navToggler');
-const navLinks = document.getElementById('navLinks');
-
-function closeNav() {
-  if (!navLinks) return;
-  navLinks.classList.remove('open');
-  const icon = toggler ? toggler.querySelector('i') : null;
-  if (icon) icon.className = 'bi bi-list';
-}
-
-if (toggler && navLinks) {
-  toggler.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = navLinks.classList.toggle('open');
-    const icon = toggler.querySelector('i');
-    icon.className = isOpen ? 'bi bi-x' : 'bi bi-list';
-  });
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => closeNav());
-  });
-  document.addEventListener('click', (e) => {
-    if (!navLinks.contains(e.target) && !toggler.contains(e.target)) closeNav();
-  });
-}
-
-// ══ AUTO-DISMISS FLASH ══
-setTimeout(() => {
-  document.querySelectorAll('.flash').forEach(el => el.remove());
-}, 5000);
-
-// ══ LOGIN PROMPT MODAL ══
-(function () {
-  var modal    = document.getElementById('wf-login-modal');
-  var backdrop = document.getElementById('wf-modal-backdrop');
-  var cancelBtn = document.getElementById('wf-modal-cancel');
-  if (!modal) return;
-
-  function showModal() {
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-  function hideModal() {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-
-  if (cancelBtn)  cancelBtn.addEventListener('click',  hideModal);
-  if (backdrop)   backdrop.addEventListener('click',   hideModal);
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') hideModal();
-  });
-
-  // Intercept ANY add-to-cart form submit when not logged in
-  if (!WF_LOGGED_IN) {
-    document.addEventListener('submit', function (e) {
-      var form = e.target;
-      // Check if it's a cart action form
-      var actionInput = form.querySelector('input[name="action"]');
-      if (!actionInput) return;
-      if (actionInput.value !== 'add' && actionInput.value !== 'buy') return;
-      e.preventDefault();
-      showModal();
-    }, true); // capture phase
-
-    // Also intercept anchor/button clicks with data-require-login
-    document.addEventListener('click', function (e) {
-      var el = e.target.closest('[data-require-login]');
-      if (!el) return;
-      e.preventDefault();
-      showModal();
-    });
-  }
-})();
-</script>
+<script src="<?= asset_url('assets/build/site.min.js') ?>" defer></script>
+<?php if (!empty($page_is_home)): ?>
+<script src="<?= site_url('assets/vendor/gsap-3.12.5.min.js') ?>" defer></script>
+<script src="<?= site_url('assets/vendor/ScrollTrigger-3.12.5.min.js') ?>" defer></script>
+<script src="<?= asset_url('assets/build/home.min.js') ?>" defer></script>
+<?php endif; ?>
 </body>
 </html>
