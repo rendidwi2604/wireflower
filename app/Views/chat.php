@@ -44,6 +44,6 @@
     </div>
   </div>
   <noscript><p>Aktifkan JavaScript untuk mengirim dan menerima chat.</p></noscript>
-  <script src="<?= site_url('assets/js/chat.js?v=1') ?>" defer></script>
+  <script src="<?= site_url('assets/js/chat.js?v=2') ?>" defer></script>
   <?php endif; ?>
 </section>

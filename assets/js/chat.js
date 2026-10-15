@@ -27,7 +27,7 @@
     return el;
   };
   async function request(params, post = false) {
-    const data = new URLSearchParams({thread_id: String(threadId), ...params});
+    const data = new URLSearchParams({...params, thread_id: String(threadId), context: role});
     if (post) data.set('csrf', root.dataset.csrf);
     const response = await fetch(post ? api : `${api}?${data}`, {
       method: post ? 'POST' : 'GET', credentials: 'same-origin', cache: 'no-store',

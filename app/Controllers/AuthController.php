@@ -160,7 +160,7 @@ class AuthController extends Controller
     {
         $chatReturn = $_SESSION['chat_return_to'] ?? '';
         unset($_SESSION['chat_return_to']);
-        if ($user['role'] !== 'admin' && preg_match('/^chat\.php(?:\?product_id=\d+)?$/D', $chatReturn)) {
+        if (preg_match('/^chat\.php(?:\?product_id=\d+)?$/D', $chatReturn)) {
             redirect($chatReturn);
         }
         redirect($user['role'] === 'admin' ? 'admin/index.php' : 'index.php');

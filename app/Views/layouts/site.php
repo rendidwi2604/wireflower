@@ -196,7 +196,7 @@ $canonical_url   = rtrim(strtok($seo_url, '?'), '/') ?: 'https://wireflower.my.i
              class="<?= basename($_SERVER['PHP_SELF']) === 'kategori.php' ? 'active' : '' ?>">Kategori</a></li>
 
       <?php if (is_logged_in()): ?>
-        <li><a class="nav-link-icon" href="<?= site_url(is_admin() ? 'admin/chat.php' : 'chat.php') ?>"><i class="bi bi-chat-dots"></i> Chat</a></li>
+        <li><a class="nav-link-icon" href="<?= site_url('chat.php') ?>"><i class="bi bi-chat-dots"></i> Chat</a></li>
         <li>
           <a href="<?= site_url('keranjang.php') ?>"
              class="nav-link-icon <?= basename($_SERVER['PHP_SELF']) === 'keranjang.php' ? 'active' : '' ?>">

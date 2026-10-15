@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\ChatModel;
 use App\Models\ProductModel;
+use App\Models\UserModel;
 
 class ChatController extends Controller
 {
@@ -15,9 +16,8 @@ class ChatController extends Controller
             $_SESSION['chat_return_to'] = 'chat.php' . ($productId ? '?product_id=' . $productId : '');
             require_login();
         }
-        if (is_admin()) {
-            redirect('admin/chat.php');
-        }
+        // The storefront always opens the shopper's own room, including when
+        // an administrator is browsing products. The inbox has its own route.
         if (!empty($_GET['product_id'])) {
             $product = $this->model(ProductModel::class)->find((int) $_GET['product_id']);
             if (!$product || !$product['is_active']) {
@@ -36,8 +36,22 @@ class ChatController extends Controller
 
     public function admin(): void
     {
-        require_admin();
+        require_login();
+        if (!$this->canManageChats()) {
+            redirect('chat.php');
+        }
         $this->page(true);
+    }
+
+    private function canManageChats(): bool
+    {
+        $user = $this->model(UserModel::class)->find($this->userId());
+        if (!$user) {
+            return false;
+        }
+        // A previously cached admin role must not grant access after demotion.
+        $_SESSION['role'] = $user['role'];
+        return $user['role'] === 'admin';
     }
 
     private function page(bool $admin, string $pending = ''): void
@@ -86,7 +100,16 @@ class ChatController extends Controller
         }
         try {
             $chat = $this->model(ChatModel::class);
-            $admin = is_admin();
+            $input = $method === 'POST' ? $_POST : $_GET;
+            $context = (string) ($input['context'] ?? 'customer');
+            if (!in_array($context, ['customer', 'admin'], true)) {
+                throw new \InvalidArgumentException('Konteks chat tidak valid. Muat ulang halaman.');
+            }
+            $admin = $context === 'admin';
+            if ($admin && !$this->canManageChats()) {
+                $this->json(['error' => 'Akses ditolak.'], 403);
+                return;
+            }
             if ($method === 'GET' && ($_GET['action'] ?? '') === 'inbox') {
                 if (!$admin) {
                     $this->json(['error' => 'Akses ditolak.'], 403);
@@ -95,7 +118,6 @@ class ChatController extends Controller
                 $this->json(['threads' => $chat->inbox()]);
                 return;
             }
-            $input = $method === 'POST' ? $_POST : $_GET;
             $thread = $chat->find((int) ($input['thread_id'] ?? 0));
             if (!$thread || (!$admin && (int) $thread['customer_id'] !== $this->userId())) {
                 $this->json(['error' => 'Percakapan tidak ditemukan.'], 404);
